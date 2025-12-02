@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Navbar from '../components/Navbar'
 import profileImage from '../assets/profilephoto.jpg'
 import { FaGithub, FaLinkedin, FaNode, FaReact } from 'react-icons/fa'
@@ -10,11 +10,53 @@ import gsap from 'gsap'
 
 
 const Home = () => {
+    const imageRef = useRef(null)
+    const heroTitleRef = useRef(null)
+    const heroInfoRef = useRef(null)
+    const heroStackRef = useRef(null)
+    const linkRef = useRef(null)
+    const projectRef = useRef(null)
+
     useGSAP(() => {
-        gsap.to('#image',{
-           rotate:360,
+        gsap.to(imageRef.current, {
+            rotate: 360,
         })
-    })
+
+        gsap.from(heroTitleRef.current, {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: 'power2.out'
+        })
+
+        gsap.from(heroInfoRef.current, {
+            y: 50,
+            opacity: 0,
+            duration:1,
+            ease: 'back.in'
+        })
+
+        gsap.from(heroStackRef.current, {
+            z:50,
+            opacity:0,
+            duration:1,
+            ease: 'sine.inOut'
+        })
+
+        gsap.from(linkRef.current, {
+            x: 100,
+            opacity:0,
+            duration:1,
+            ease: 'circ.inOut'
+        })
+
+        gsap.from(projectRef.current, {
+            x:50,
+            opacity:0,
+            duration:1,
+            ease: 'power4.out'
+        })
+    }, [])
 
   return (
     <div>
@@ -23,16 +65,16 @@ const Home = () => {
             <div className='w-1/2 p-12 sticky top-0 self-start h-screen'>
                 <div className='flex size-60 '>
                     <img
-                      id='image'
+                      ref={imageRef}
                       src={profileImage}
                       alt="profile"
                       className='w-60 h-60 rounded-full object-cover shadow-lg p-6'
                     />
-                    <div className='pl-15'>
+                    <div ref={linkRef} className='pl-15'>
                         <h1 className='text-white pt-12 flex items-center gap-2'>
                             <FaGithub className='w-6 h-6'/>
                             <a href='https://github.com/PRN-6'
-                            className='hover:text-blue-300 hover:'>
+                            className='hover:text-blue-300'>
                                 Github
                             </a>
                         </h1>
@@ -58,14 +100,14 @@ const Home = () => {
                         </h1>
                     </div>
                 </div>
-                <h1 className='text-5xl font-bold pb-8 pt-4'>
+                <h1 ref={heroTitleRef} className='text-5xl font-bold pb-8 pt-4'>
                     Prinson Royal Nazareth
                 </h1>
-                <h2>I’m a self-taught developer with a strong passion for building clean, user-friendly applications.<strong> I love learning new technologies and constantly improving my skills.</strong>
+                <h2 ref={heroInfoRef} className=''>I’m a self-taught developer with a strong passion for building clean, user-friendly applications.<strong> I love learning new technologies and constantly improving my skills.</strong>
                 </h2>
                 <h2 className='pt-6'>   
                     Leveling up in:
-                    <div className='flex items-center gap-2 pt-3'>
+                    <div ref={heroStackRef} className='flex items-center gap-2 pt-3'>
                         <FaReact className='w-8 h-8' />React<DotIcon/>
                         <SiExpress className='w-8 h-8'/>Express<DotIcon/>
                         <FaNode className='w-8 h-8'/>Node<DotIcon/>
@@ -74,10 +116,22 @@ const Home = () => {
                     </div>
                 </h2>
             </div>
-            <div className='w-1/2 bg-blue-500'>
-                need to create project section 
-                skill section 
-                
+            <div className='w-1/2 h-screen overflow-y-auto p-12'>
+                <h1 className='mb-6 text-2xl'>Projects</h1>
+                <div ref={projectRef} className='flex items-center gap-4'>
+                    <div className='w-1/2 size-100 rounded-2xl bg-amber-900'>
+                        left
+                    </div>  
+                    <div className='w-1/2 size-100 rounded-2xl bg-fuchsia-700'>
+                        right
+                    </div>
+                </div>
+                <div className= 'mt-6 '>
+                    <h1 className='text-2xl'>
+                        Technologies & Tools
+                    </h1>
+                </div>
+               
 
             </div>
 
