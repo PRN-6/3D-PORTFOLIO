@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { DAY_LENGTH, members, nightAmount, sampleWalk, schedules, speakerAt } from './partySchedule';
+import { DAY_LENGTH, members, sampleWalk, schedules, speakerAt } from './partySchedule';
 import type { Beat, Member } from './partySchedule';
 import { createPartyPalette } from './partyMaterials';
 import { dayNightManager } from '../../config/dayNightState';
@@ -104,12 +104,14 @@ function animateMember(name: Member, root: THREE.Object3D, clips: THREE.Animatio
 
 function daylight(scene: THREE.Scene, parent: THREE.Object3D) {
   const settings = [
-    ['HomeSun', '#a9bde8', .35], ['HomeAmbient', '#a9b9df', .32],
-    ['HomeRim', '#a6c5ff', .85], ['HomeSky', '#829bc9', .42],
+    ['HomeSun', '#a6c5ff', 1.1],     // Silvery moonlight
+    ['HomeAmbient', '#1e2540', 0.6],  // Cool nocturnal ambient
+    ['HomeRim', '#818cf8', 1.4],      // Twilight rim highlight
+    ['HomeSky', '#312e81', 0.5],      // Celestial bounce
   ] as const;
   const lights = settings.flatMap(([name, night, level]) => {
     const light = scene.getObjectByName(name) as THREE.Light | undefined;
-    return light ? [{ light, day: light.color.clone(), strength: light.intensity, night: new THREE.Color(night), level }] : [];
+    return light ? [{ light, night: new THREE.Color(night), level }] : [];
   });
 
   // Find house window, gate lantern and hearth materials
@@ -126,27 +128,26 @@ function daylight(scene: THREE.Scene, parent: THREE.Object3D) {
     }
   });
 
-  const fire = new THREE.PointLight('#ff9d42', 0, 9, 2);
+  const fire = new THREE.PointLight('#ff9d42', 5.5, 9, 2);
   fire.name = 'CampfireGlow';
   fire.position.set(2.58, .69, 2.88);
   parent.add(fire);
   return {
     update(t: number) {
-      const amount = nightAmount(t);
-      for (const { light, day, strength, night, level } of lights) {
-        light.color.copy(day).lerp(night, amount);
-        light.intensity = THREE.MathUtils.lerp(strength, level, amount);
+      // Locked permanently to night
+      for (const { light, night, level } of lights) {
+        light.color.copy(night);
+        light.intensity = level;
       }
-      fire.intensity = (.25 + 5.5 * amount) * (1 + .053 * Math.sin(t * 5.4) + .036 * Math.sin(t * 8.8));
+      fire.intensity = 5.2 * (1 + .053 * Math.sin(t * 5.4) + .036 * Math.sin(t * 8.8));
 
-      // Warm glowing windows in the cottage and bright campfire embers at night
-      const glow = THREE.MathUtils.lerp(0.12, 2.8, amount) * (1 + 0.04 * Math.sin(t * 4.2));
+      // Warm glowing windows in the cottage and bright campfire embers (always on at night)
+      const glow = 2.7 * (1 + 0.04 * Math.sin(t * 4.2));
       for (const mat of lampMats) {
         mat.emissiveIntensity = glow;
       }
     },
     dispose() {
-      for (const { light, day, strength } of lights) { light.color.copy(day); light.intensity = strength; }
       for (const mat of lampMats) { mat.emissiveIntensity = 1.0; }
       fire.removeFromParent();
       fire.dispose();

@@ -52,7 +52,7 @@ export interface SceneConfig {
 }
 
 export const SCENE_CONFIG: SceneConfig = {
-  // Model file expected in public/models/home-island.glb
+  // Model file in public/models/home-island.glb
   modelPath: '/models/home-island.glb',
 
   camera: {
@@ -64,39 +64,41 @@ export const SCENE_CONFIG: SceneConfig = {
     far: 1000,
     minDistance: 5,
     maxDistance: 32,
-    minPolarAngle: Math.PI / 8, // ~22.5 deg from top
-    maxPolarAngle: Math.PI / 2.05, // keeps camera slightly above underside
+    minPolarAngle: Math.PI / 8,
+    maxPolarAngle: Math.PI / 2.05,
     dampingFactor: 0.05,
   },
 
+  // Permanent Magical Night Lighting
   lighting: {
     ambient: {
-      color: '#e0f2fe',
-      intensity: 0.75,
+      color: '#1e2540',
+      intensity: 0.6,
     },
     directional: {
-      color: '#fff7ea',
-      intensity: 2.4,
-      position: [14, 20, 12],
+      color: '#a6c5ff', // Silvery moonlight
+      intensity: 1.1,
+      position: [12, 18, 10],
       shadowBias: -0.0001,
       shadowMapSize: 2048,
     },
     rim: {
-      color: '#bae6fd',
-      intensity: 0.95,
+      color: '#818cf8', // Indigo/cyan fantasy rim
+      intensity: 1.4,
       position: [-12, 8, -12],
     },
     hemisphere: {
-      skyColor: '#93c5fd',
-      groundColor: '#4ade80',
-      intensity: 0.6,
+      skyColor: '#312e81',
+      groundColor: '#0f172a',
+      intensity: 0.5,
     },
   },
 
+  // Deep night atmospheric fog
   fog: {
-    color: '#93c5fd',
-    near: 35,
-    far: 95,
+    color: '#0a0c1a',
+    near: 25,
+    far: 75,
   },
 
   modelTransform: {
