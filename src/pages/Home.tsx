@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { Scene } from '../components/Scene/Scene';
 import { Navigation } from '../components/UI/Navigation';
-import { ControlsHint } from '../components/UI/ControlsHint';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
+import { StartAdventureButton } from '../components/UI/StartAdventureButton';
 import { useModelInteraction } from '../hooks/useModelInteraction';
+import { useDayNight } from '../hooks/useDayNight';
 
 export const Home: React.FC = () => {
   const [resetSignal, setResetSignal] = useState(0);
@@ -11,12 +12,11 @@ export const Home: React.FC = () => {
     'checking' | 'loading' | 'loaded' | 'fallback'
   >('checking');
 
+  const { isNight, nightProgress } = useDayNight();
+
   const {
-    hoveredObject,
-    selectedObject,
     handleHover,
     handleSelect,
-    clearSelection,
   } = useModelInteraction();
 
   const handleResetCamera = useCallback(() => {
@@ -30,9 +30,13 @@ export const Home: React.FC = () => {
     []
   );
 
+  const handleStartAdventure = useCallback(() => {
+    console.log("[Hero's Home] Start Adventure invoked. Ready for future adventure features.");
+  }, []);
+
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#08090f]">
-      {/* 3D Canvas Scene */}
+      {/* 3D Canvas Scene with Dynamic Fantasy Atmosphere */}
       <Scene
         resetSignal={resetSignal}
         onSelectObject={handleSelect}
@@ -40,41 +44,18 @@ export const Home: React.FC = () => {
         onStatusChange={handleStatusChange}
       />
 
-      {/* Minimal Header Navigation */}
-      <Navigation
-        onResetCamera={handleResetCamera}
-        status={modelStatus}
-        hoveredObject={hoveredObject}
+      {/* Discreet Camera Reset Control (Top-Right) */}
+      <Navigation onResetCamera={handleResetCamera} />
+
+      {/* Prominent Fantasy START ADVENTURE Button (Bottom-Center) */}
+      <StartAdventureButton
+        isNight={isNight}
+        nightProgress={nightProgress}
+        onStartAdventure={handleStartAdventure}
       />
 
-      {/* Floating Controls Overlay */}
-      <ControlsHint />
-
-      {/* Minimal Initial Loading Screen */}
+      {/* Minimal Initial Asset Loading Screen */}
       <LoadingScreen manualFinished={modelStatus === 'fallback' || modelStatus === 'loaded'} />
-
-      {/* Subtle Toast / Notification when an object is clicked */}
-      {selectedObject && (
-        <aside
-          role="status"
-          className="fixed bottom-16 left-1/2 -translate-x-1/2 z-20 pointer-events-auto fantasy-glass px-4 py-2 rounded-xl border border-indigo-500/40 text-xs text-indigo-100 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300"
-        >
-          <span>
-            Selected Target:{' '}
-            <strong className="text-white capitalize">
-              {selectedObject.name.replace(/_/g, ' ')}
-            </strong>
-          </span>
-          <button
-            onClick={clearSelection}
-            type="button"
-            className="text-slate-400 hover:text-white cursor-pointer ml-1 text-sm font-bold"
-            aria-label="Dismiss selection"
-          >
-            ×
-          </button>
-        </aside>
-      )}
     </main>
   );
 };

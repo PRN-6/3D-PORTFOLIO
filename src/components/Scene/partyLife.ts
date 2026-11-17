@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { DAY_LENGTH, members, nightAmount, sampleWalk, schedules, speakerAt } from './partySchedule';
 import type { Beat, Member } from './partySchedule';
 import { createPartyPalette } from './partyMaterials';
+import { dayNightManager } from '../../config/dayNightState';
 
 const { smoothstep, damp, clamp } = THREE.MathUtils;
 const turn = (from: number, to: number) => Math.atan2(Math.sin(to - from), Math.cos(to - from));
@@ -103,14 +104,29 @@ function animateMember(name: Member, root: THREE.Object3D, clips: THREE.Animatio
 
 function daylight(scene: THREE.Scene, parent: THREE.Object3D) {
   const settings = [
-    ['HomeSun', '#a9bde8', .29], ['HomeAmbient', '#a9b9df', .29],
-    ['HomeRim', '#a6c5ff', .78], ['HomeSky', '#829bc9', .40],
+    ['HomeSun', '#a9bde8', .35], ['HomeAmbient', '#a9b9df', .32],
+    ['HomeRim', '#a6c5ff', .85], ['HomeSky', '#829bc9', .42],
   ] as const;
   const lights = settings.flatMap(([name, night, level]) => {
     const light = scene.getObjectByName(name) as THREE.Light | undefined;
     return light ? [{ light, day: light.color.clone(), strength: light.intensity, night: new THREE.Color(night), level }] : [];
   });
-  const fire = new THREE.PointLight('#ffac67', 0, 8, 2);
+
+  // Find house window, gate lantern and hearth materials
+  const lampMats: THREE.MeshStandardMaterial[] = [];
+  parent.traverse((child) => {
+    if ((child as THREE.Mesh).isMesh) {
+      const m = (child as THREE.Mesh).material;
+      const list = Array.isArray(m) ? m : [m];
+      for (const mat of list) {
+        if (mat && mat.name === 'LamplightAndEmbers' && !lampMats.includes(mat as THREE.MeshStandardMaterial)) {
+          lampMats.push(mat as THREE.MeshStandardMaterial);
+        }
+      }
+    }
+  });
+
+  const fire = new THREE.PointLight('#ff9d42', 0, 9, 2);
   fire.name = 'CampfireGlow';
   fire.position.set(2.58, .69, 2.88);
   parent.add(fire);
@@ -121,10 +137,17 @@ function daylight(scene: THREE.Scene, parent: THREE.Object3D) {
         light.color.copy(day).lerp(night, amount);
         light.intensity = THREE.MathUtils.lerp(strength, level, amount);
       }
-      fire.intensity = (.24 + 5.2*amount) * (1 + .053*Math.sin(t*5.4) + .036*Math.sin(t*8.8));
+      fire.intensity = (.25 + 5.5 * amount) * (1 + .053 * Math.sin(t * 5.4) + .036 * Math.sin(t * 8.8));
+
+      // Warm glowing windows in the cottage and bright campfire embers at night
+      const glow = THREE.MathUtils.lerp(0.12, 2.8, amount) * (1 + 0.04 * Math.sin(t * 4.2));
+      for (const mat of lampMats) {
+        mat.emissiveIntensity = glow;
+      }
     },
     dispose() {
       for (const { light, day, strength } of lights) { light.color.copy(day); light.intensity = strength; }
+      for (const mat of lampMats) { mat.emissiveIntensity = 1.0; }
       fire.removeFromParent();
       fire.dispose();
     },
@@ -186,6 +209,7 @@ export function createPartyLife(model: THREE.Object3D, scene: THREE.Scene, clips
   let time = 0;
   function update(delta: number) {
     time = (time + delta) % DAY_LENGTH;
+    dayNightManager.updateTime(time);
     for (const actor of actors) actor.update(time, delta, floor);
     for (const actor of actors) actor.look(time, delta, party);
     light.update(time);

@@ -57,9 +57,9 @@ export const SCENE_CONFIG: SceneConfig = {
 
   camera: {
     // Attractive RPG isometric-style starting angle
-    initialPosition: [9.2, 10.2, 17],
-    target: [0, 0.55, 0],
-    fov: 38,
+    initialPosition: [14, 10, 14],
+    target: [0, 0.5, 0],
+    fov: 45,
     near: 0.1,
     far: 1000,
     minDistance: 5,
@@ -71,32 +71,32 @@ export const SCENE_CONFIG: SceneConfig = {
 
   lighting: {
     ambient: {
-      color: '#eee3cc',
-      intensity: 0.9,
+      color: '#e0f2fe',
+      intensity: 0.75,
     },
     directional: {
-      color: '#ffebc9',
-      intensity: 2.2,
-      position: [-7, 18, 11],
+      color: '#fff7ea',
+      intensity: 2.4,
+      position: [14, 20, 12],
       shadowBias: -0.0001,
       shadowMapSize: 2048,
     },
     rim: {
-      color: '#b6d7da',
-      intensity: 1.0,
+      color: '#bae6fd',
+      intensity: 0.95,
       position: [-12, 8, -12],
     },
     hemisphere: {
-      skyColor: '#dce9ea',
-      groundColor: '#a08872',
-      intensity: 0.65,
+      skyColor: '#93c5fd',
+      groundColor: '#4ade80',
+      intensity: 0.6,
     },
   },
 
   fog: {
-    color: '#08090f',
-    near: 24,
-    far: 70,
+    color: '#93c5fd',
+    near: 35,
+    far: 95,
   },
 
   modelTransform: {
@@ -105,4 +105,3 @@ export const SCENE_CONFIG: SceneConfig = {
     rotation: [0, 0, 0],
   },
 };
-

@@ -1,10 +1,10 @@
 import React from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
-import { Sparkles } from '@react-three/drei';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { CameraController } from './CameraController';
 import { EnvironmentLoader } from './EnvironmentLoader';
+import { FantasySky } from './FantasySky';
 
 export interface SceneProps {
   resetSignal?: number;
@@ -31,7 +31,7 @@ export const Scene: React.FC<SceneProps> = ({
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.1,
+          toneMappingExposure: 1.15,
         }}
         camera={{
           position: SCENE_CONFIG.camera.initialPosition,
@@ -40,8 +40,7 @@ export const Scene: React.FC<SceneProps> = ({
           far: SCENE_CONFIG.camera.far,
         }}
       >
-        {/* Dark atmospheric background & depth fog */}
-        <color attach="background" args={[SCENE_CONFIG.fog.color]} />
+        {/* Dynamic Fog (interpolated between day and night by FantasySky) */}
         <fog
           attach="fog"
           args={[
@@ -51,23 +50,17 @@ export const Scene: React.FC<SceneProps> = ({
           ]}
         />
 
-        {/* Ambient Fantasy Particles / Magical Sky Dust */}
-        <Sparkles
-          count={50}
-          scale={24}
-          size={2.5}
-          speed={0.3}
-          color="#a5b4fc"
-          opacity={0.5}
-        />
+        {/* Dynamic Fantasy Sky Dome, Clouds, Stars & Ambient Particles */}
+        <FantasySky />
 
-        {/* Lighting Setup */}
+        {/* Ambient Fill Light */}
         <ambientLight
           name="HomeAmbient"
           color={SCENE_CONFIG.lighting.ambient.color}
           intensity={SCENE_CONFIG.lighting.ambient.intensity}
         />
 
+        {/* Sun / Moon Directional Light with Soft Shadows */}
         <directionalLight
           name="HomeSun"
           castShadow
@@ -75,18 +68,18 @@ export const Scene: React.FC<SceneProps> = ({
           intensity={SCENE_CONFIG.lighting.directional.intensity}
           color={SCENE_CONFIG.lighting.directional.color}
           shadow-bias={SCENE_CONFIG.lighting.directional.shadowBias}
-          shadow-normalBias={0.012}
+          shadow-normalBias={0.015}
           shadow-mapSize-width={SCENE_CONFIG.lighting.directional.shadowMapSize}
           shadow-mapSize-height={SCENE_CONFIG.lighting.directional.shadowMapSize}
           shadow-camera-near={0.5}
-          shadow-camera-far={40}
-          shadow-camera-left={-10}
-          shadow-camera-right={10}
-          shadow-camera-top={10}
-          shadow-camera-bottom={-10}
+          shadow-camera-far={45}
+          shadow-camera-left={-11}
+          shadow-camera-right={11}
+          shadow-camera-top={11}
+          shadow-camera-bottom={-11}
         />
 
-        {/* Fantasy Indigo/Cyan Rim Light */}
+        {/* Rim Light for Beautiful Edge Highlights */}
         <directionalLight
           name="HomeRim"
           position={SCENE_CONFIG.lighting.rim.position}
@@ -94,7 +87,7 @@ export const Scene: React.FC<SceneProps> = ({
           color={SCENE_CONFIG.lighting.rim.color}
         />
 
-        {/* Ground Bounce Fill Light */}
+        {/* Hemisphere Sky / Ground Fill Bounce */}
         <hemisphereLight
           name="HomeSky"
           args={[
@@ -104,14 +97,14 @@ export const Scene: React.FC<SceneProps> = ({
           ]}
         />
 
-        {/* Floating Island Model (or Placeholder fallback) */}
+        {/* Floating Island Model & Characters */}
         <EnvironmentLoader
           onSelectObject={onSelectObject}
           onHoverObject={onHoverObject}
           onStatusChange={onStatusChange}
         />
 
-        {/* Camera and Navigation Controller */}
+        {/* Orbit Camera and Navigation Controller */}
         <CameraController
           resetSignal={resetSignal}
           onResetComplete={onResetComplete}
@@ -120,4 +113,3 @@ export const Scene: React.FC<SceneProps> = ({
     </div>
   );
 };
-
