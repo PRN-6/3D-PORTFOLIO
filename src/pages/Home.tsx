@@ -4,15 +4,12 @@ import { Navigation } from '../components/UI/Navigation';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
 import { StartAdventureButton } from '../components/UI/StartAdventureButton';
 import { useModelInteraction } from '../hooks/useModelInteraction';
-import { useDayNight } from '../hooks/useDayNight';
 
 export const Home: React.FC = () => {
   const [resetSignal, setResetSignal] = useState(0);
   const [modelStatus, setModelStatus] = useState<
     'checking' | 'loading' | 'loaded' | 'fallback'
   >('checking');
-
-  const { isNight, nightProgress } = useDayNight();
 
   const {
     handleHover,
@@ -31,7 +28,7 @@ export const Home: React.FC = () => {
   );
 
   const handleStartAdventure = useCallback(() => {
-    console.log("[Hero's Home] Start Adventure invoked. Ready for future adventure features.");
+    console.log("[Hero's Home] Start Adventure invoked.");
   }, []);
 
   return (
@@ -47,12 +44,8 @@ export const Home: React.FC = () => {
       {/* Discreet Camera Reset Control (Top-Right) */}
       <Navigation onResetCamera={handleResetCamera} />
 
-      {/* Prominent Fantasy START ADVENTURE Button (Bottom-Center) */}
-      <StartAdventureButton
-        isNight={isNight}
-        nightProgress={nightProgress}
-        onStartAdventure={handleStartAdventure}
-      />
+      {/* Minimal Clean START ADVENTURE Button (Bottom-Center) */}
+      <StartAdventureButton onStartAdventure={handleStartAdventure} />
 
       {/* Minimal Initial Asset Loading Screen */}
       <LoadingScreen manualFinished={modelStatus === 'fallback' || modelStatus === 'loaded'} />
