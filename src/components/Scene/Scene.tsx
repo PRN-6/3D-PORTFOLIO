@@ -63,11 +63,13 @@ export const Scene: React.FC<SceneProps> = ({
 
         {/* Lighting Setup */}
         <ambientLight
+          name="HomeAmbient"
           color={SCENE_CONFIG.lighting.ambient.color}
           intensity={SCENE_CONFIG.lighting.ambient.intensity}
         />
 
         <directionalLight
+          name="HomeSun"
           castShadow
           position={SCENE_CONFIG.lighting.directional.position}
           intensity={SCENE_CONFIG.lighting.directional.intensity}
@@ -86,6 +88,7 @@ export const Scene: React.FC<SceneProps> = ({
 
         {/* Fantasy Indigo/Cyan Rim Light */}
         <directionalLight
+          name="HomeRim"
           position={SCENE_CONFIG.lighting.rim.position}
           intensity={SCENE_CONFIG.lighting.rim.intensity}
           color={SCENE_CONFIG.lighting.rim.color}
@@ -93,6 +96,7 @@ export const Scene: React.FC<SceneProps> = ({
 
         {/* Ground Bounce Fill Light */}
         <hemisphereLight
+          name="HomeSky"
           args={[
             SCENE_CONFIG.lighting.hemisphere.skyColor,
             SCENE_CONFIG.lighting.hemisphere.groundColor,

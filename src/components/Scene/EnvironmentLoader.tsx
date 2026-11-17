@@ -1,7 +1,10 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { type ThreeEvent } from '@react-three/fiber';
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
+import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+import { createPartyLife } from './partyLife';
+import { members } from './partySchedule';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { ModelErrorBoundary } from './ModelErrorBoundary';
 import { PlaceholderIsland } from './PlaceholderIsland';
@@ -60,17 +63,35 @@ const ModelScene: React.FC<{
 
   // Clone scene so multiple instances don't mutate the cached GLTF
   const clonedScene = useMemo(() => {
-    const clone = gltf.scene.clone(true);
+    const clone = cloneSkeleton(gltf.scene);
     clone.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
       }
+      if (child instanceof THREE.SkinnedMesh && child.parent?.userData.partyMember) {
+        // Include the raised staff and the full axe swing in picking and culling.
+        child.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0.8, 0), 1.75);
+      }
     });
     return clone;
   }, [gltf.scene]);
 
-  const { actions } = useAnimations(gltf.animations, clonedScene);
+  const world = useThree(state => state.scene);
+  const party = useRef<ReturnType<typeof createPartyLife>>(undefined);
+  useEffect(() => {
+    party.current = createPartyLife(clonedScene, world, gltf.animations);
+    return () => {
+      party.current?.dispose();
+      party.current = undefined;
+    };
+  }, [clonedScene, world, gltf.animations]);
+  useFrame((_, delta) => party.current?.update(Math.min(delta, .10)));
+
+  const ambientClips = useMemo(() => gltf.animations.filter(clip =>
+    !members.some(name => clonedScene.getObjectByName(name)?.userData.partyMember && clip.name.startsWith(name + '_'))
+  ), [gltf.animations, clonedScene]);
+  const { actions } = useAnimations(ambientClips, clonedScene);
   useEffect(() => {
     const loops = Object.values(actions).filter(action => action !== null);
     loops.forEach(action => action.reset().play());
