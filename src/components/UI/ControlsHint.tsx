@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, MousePointer, Move, ZoomIn, X } from 'lucide-react';
+import { HelpCircle, MousePointer, Lock, X } from 'lucide-react';
 
 export const ControlsHint: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -25,23 +25,15 @@ export const ControlsHint: React.FC = () => {
         {/* Rotate Hint */}
         <div className="flex items-center gap-1.5 whitespace-nowrap">
           <MousePointer className="w-3.5 h-3.5 text-indigo-400" />
-          <span><strong className="text-white font-medium">Drag:</strong> Rotate</span>
+          <span><strong className="text-white font-medium">Drag:</strong> Rotate 360°</span>
         </div>
 
         <div className="w-px h-3 bg-slate-700 hidden sm:block" />
 
-        {/* Zoom Hint */}
+        {/* Fixed Distance Hint */}
         <div className="flex items-center gap-1.5 whitespace-nowrap">
-          <ZoomIn className="w-3.5 h-3.5 text-indigo-400" />
-          <span><strong className="text-white font-medium">Scroll / Pinch:</strong> Zoom</span>
-        </div>
-
-        <div className="w-px h-3 bg-slate-700 hidden sm:block" />
-
-        {/* Pan Hint */}
-        <div className="hidden sm:flex items-center gap-1.5 whitespace-nowrap">
-          <Move className="w-3.5 h-3.5 text-indigo-400" />
-          <span><strong className="text-white font-medium">Right Click:</strong> Pan</span>
+          <Lock className="w-3.5 h-3.5 text-indigo-400" />
+          <span><strong className="text-white font-medium">Camera Distance:</strong> Fixed</span>
         </div>
 
         {/* Close hint button */}

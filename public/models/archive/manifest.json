@@ -1,0 +1,87 @@
+{
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "assemblyOrigin": [
+    0,
+    0,
+    0
+  ],
+  "files": [
+    "archive-island.glb",
+    "archive-library.glb",
+    "archive-decorations.glb",
+    "archive-grimoires.glb",
+    "archive-floating-books.glb"
+  ],
+  "grimoires": [
+    {
+      "category": "Frontend Magic",
+      "node": "Grimoire_1",
+      "file": "grimoire-frontend.glb",
+      "position": [
+        -6.086761704288983,
+        1.3,
+        3.25
+      ]
+    },
+    {
+      "category": "Backend Alchemy",
+      "node": "Grimoire_2",
+      "file": "grimoire-backend.glb",
+      "position": [
+        -4.381101477943608,
+        1.3,
+        4.043510090594839
+      ]
+    },
+    {
+      "category": "AI and Autonomous Agents",
+      "node": "Grimoire_3",
+      "file": "grimoire-ai-agents.glb",
+      "position": [
+        -1.5916152778550696,
+        1.3,
+        4.533926296998457
+      ]
+    },
+    {
+      "category": "Systems and Programming",
+      "node": "Grimoire_4",
+      "file": "grimoire-systems.glb",
+      "position": [
+        1.5916152778550718,
+        1.3,
+        4.533926296998457
+      ]
+    },
+    {
+      "category": "3D and Creative Technology",
+      "node": "Grimoire_5",
+      "file": "grimoire-creative-3d.glb",
+      "position": [
+        4.381101477943608,
+        1.3,
+        4.043510090594839
+      ]
+    },
+    {
+      "category": "Tools and Technologies",
+      "node": "Grimoire_6",
+      "file": "grimoire-tools.glb",
+      "position": [
+        6.086761704288983,
+        1.3,
+        3.25
+      ]
+    }
+  ],
+  "reuse": {
+    "character": "/models/transition/frieren.glb",
+    "magic": "/models/transition/frieren-magic.glb",
+    "readingClip": {
+      "file": "/models/home-island.glb",
+      "name": "Frieren_Read"
+    }
+  }
+}

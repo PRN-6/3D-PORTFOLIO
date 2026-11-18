@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { CameraController } from './CameraController';
 import { EnvironmentLoader } from './EnvironmentLoader';
-import { FantasySky } from './FantasySky';
 
 interface WorldAHeroIslandProps {
   disableCamera?: boolean;
@@ -24,19 +23,6 @@ export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
 }) => {
   return (
     <group name="WorldA_HeroIslandRoot">
-      {/* Dynamic Fog (locked to night) */}
-      <fog
-        attach="fog"
-        args={[
-          SCENE_CONFIG.fog.color,
-          SCENE_CONFIG.fog.near,
-          SCENE_CONFIG.fog.far,
-        ]}
-      />
-
-      {/* Dynamic Fantasy Sky Dome, Clouds, Stars & Ambient Particles */}
-      <FantasySky />
-
       {/* Ambient Fill Light */}
       <ambientLight
         name="HomeAmbient"
@@ -93,7 +79,6 @@ export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
         <CameraController
           resetSignal={resetSignal}
           onResetComplete={onResetComplete}
-          showcaseActive={false}
         />
       )}
     </group>

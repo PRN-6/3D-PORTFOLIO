@@ -1,0 +1,438 @@
+{
+  "version": 1,
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "islandOrigin": "Local terrain origin only; final world placement belongs to Antigravity.",
+  "files": [
+    {
+      "file": "whispering-forest-island.glb",
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "file": "ancient-tree.glb",
+      "position": [
+        0.7,
+        0.6453902581431961,
+        -2.6
+      ]
+    },
+    {
+      "file": "forest-vegetation.glb",
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "file": "enchanted-pond.glb",
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "file": "forest-waterfall.glb",
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "file": "heiter-resting-area.glb",
+      "position": [
+        -5.5,
+        0.2638593447222541,
+        1
+      ]
+    },
+    {
+      "file": "about-interaction-assets.glb",
+      "position": [
+        1.35,
+        0.43485320829303487,
+        0.5
+      ]
+    },
+    {
+      "file": "forest-decorations.glb",
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "file": "forest-effects.glb",
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "file": "stairs-straight.glb",
+      "width": 1.6,
+      "run": 3.2,
+      "rise": 1.6,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        1.6,
+        3.2
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "stairs-ceremonial.glb",
+      "width": 3.4,
+      "run": 4.8,
+      "rise": 2,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        2,
+        4.8
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "stairs-small.glb",
+      "width": 1.4,
+      "run": 1.35,
+      "rise": 0.6,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0.6,
+        1.35
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "stairs-curved.glb",
+      "width": 1.5,
+      "run": 3.46,
+      "rise": 1.8,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        2.2,
+        1.8,
+        2.2
+      ],
+      "exitYaw": 1.5707963267948966
+    },
+    {
+      "file": "stairs-spiral.glb",
+      "width": 1.3,
+      "run": 12.57,
+      "rise": 4.32,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        4.32,
+        0
+      ],
+      "exitYaw": 6.283185307179586
+    },
+    {
+      "file": "bridge-wooden.glb",
+      "width": 1.8,
+      "run": 4,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        4
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "bridge-stone.glb",
+      "width": 2.2,
+      "run": 4.8,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        4.8
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "bridge-curved.glb",
+      "width": 1.7,
+      "run": 4.7,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        2.9936305732484074,
+        0,
+        2.9936305732484074
+      ],
+      "exitYaw": 1.5707963267948966
+    },
+    {
+      "file": "walkway-narrow.glb",
+      "width": 1.1,
+      "run": 3,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        3
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "platform-small.glb",
+      "width": 1.8,
+      "run": 1.8,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        1.8
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "platform-medium.glb",
+      "width": 3.2,
+      "run": 3.2,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        3.2
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "platform-large.glb",
+      "width": 4.8,
+      "run": 4.8,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        4.8
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "stepping-stone.glb",
+      "width": 0.8,
+      "run": 0.8,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.8
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "platform-decorative.glb",
+      "width": 2.6,
+      "run": 2.6,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        2.6
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "detail-arch.glb",
+      "width": 2.4,
+      "run": 0.4,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.4
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "detail-pillar.glb",
+      "width": 0.7,
+      "run": 0.7,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.7
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "detail-railing.glb",
+      "width": 0.12,
+      "run": 2,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        2
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "detail-lantern.glb",
+      "width": 0.55,
+      "run": 0.55,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.55
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "detail-crystal-light.glb",
+      "width": 0.65,
+      "run": 0.65,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.65
+      ],
+      "exitYaw": 0
+    },
+    {
+      "file": "detail-runestone.glb",
+      "width": 0.7,
+      "run": 0.4,
+      "rise": 0,
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.4
+      ],
+      "exitYaw": 0
+    }
+  ],
+  "heiter": {
+    "file": "/models/transition/heiter.glb",
+    "clip": "heiter_idle",
+    "anchor": "HeiterIdleAnchor",
+    "optionalSeated": {
+      "source": "/models/home-island.glb",
+      "clip": "Heiter_Drink",
+      "anchor": "HeiterSeatAnchor"
+    }
+  },
+  "interaction": {
+    "node": "BiographyBook",
+    "contentId": "about-me",
+    "actualContent": "provided by website"
+  }
+}

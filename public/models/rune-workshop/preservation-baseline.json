@@ -1,0 +1,338 @@
+[
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/archive-decorations.glb",
+    "sha256": "5613ee9dfdcc73b9b8a61dee61c9aa257c4e7e69d24caeb8a0af1f2f7f6b7a04"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/archive-floating-books.glb",
+    "sha256": "68b2e52de16d37962d8969bd8032898859881bad2e5e9b17a0fd20396ede6751"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/archive-grimoires.glb",
+    "sha256": "31fb8166516902a4d6436ea3639c246278209be9d4ac801ce9f3891faf753b1e"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/archive-island.glb",
+    "sha256": "3b65b548a1a3e1a7e008ca7e685ad40e317b819f7a56577e757b31a33d42b62b"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/archive-library.glb",
+    "sha256": "455039e444d3a51e67c46bffae2ccd55b8455d5242a4f5212ad1822c39aca3cf"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/floating-closed-book.glb",
+    "sha256": "c4b25bbf3678134ef3ad069c300f0b2b12ee67d2d2eb40c7caa7c81130c523bc"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/floating-open-book.glb",
+    "sha256": "fea8e86bce840ca766644a027b6d119d0a5f7e31b37f334d7332fb352b123cab"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/grimoire-ai-agents.glb",
+    "sha256": "4c7b1d190ebb485dc84f0b117d9d58504a8114aabefe63ea6e97280a40e7aa07"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/grimoire-backend.glb",
+    "sha256": "ed001b9439598ffd249e11f79d778d6750594b7509c50471dd6de4f9113a54c0"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/grimoire-creative-3d.glb",
+    "sha256": "ec4b07dd3f83570eb2a733c60e5ec7f9173353064bf77e9f0e000e68b0d2eca2"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/grimoire-frontend.glb",
+    "sha256": "441024d07b32e2ff26cc38b53494a30f332ce2989abdc5921913b8a3dfa8a3d5"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/grimoire-systems.glb",
+    "sha256": "3f3ce5803899164d77ffcfef5c0df27200c9af56c320357c07ec14219f412960"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/grimoire-tools.glb",
+    "sha256": "833fbcd24d964ab7a532f593279f13b2de9ec733f8223942bf65370741b70898"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/manifest.json",
+    "sha256": "0d941f350c752a0e2b485925d08e8757680ae1ebfcab53ce72e0de27e404ef1c"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/previews/archive-library.png",
+    "sha256": "95e738c9056c611dc430ca71c2116a6e33d3450613074ab7252447a2e5f2188e"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/previews/archive-overview.png",
+    "sha256": "eac330681ec103ca5fd9d1c5e2888b547706b34275bc75091dc5e0f22bb7f7e2"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/previews/archive-reading.png",
+    "sha256": "45aaab41f136a60e9bc23fdb08444673b42ec7f312ce90e49a251375819a4e11"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/previews/archive-underneath.png",
+    "sha256": "c33c9749af71ad76ad5439e4ac903791d4c25adc689f8e07ac4187a8ddebf5e2"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/README.md",
+    "sha256": "2c241bb45c2e582f539addae38a86ba79bdb5e4e507b745a8a43b055f8eebb73"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/textures/stone.png",
+    "sha256": "14680d3aed76036cc1930a1b277585b7b25c58fb1cc56856c2203f7245aff7c8"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/archive/textures/wood.png",
+    "sha256": "ba30bf26bf6c27d1e8159df4eb1bc10bf88ded43dbb5461d3fc595ed87e0cef5"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/home-island.glb",
+    "sha256": "76f991572394c6ec6deb1e0b337405fee0f69490adf1c8c8242a98253a39664c"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/README.md",
+    "sha256": "2f02cf637867a298859fb379ba326d4bbe5b3f9860717cb756a174ac43a7c085"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/eisen-expressions.png",
+    "sha256": "bb4daa1397bc46cf984f9cc570244466ed20bf3c270077d45b889be4b2032dd6"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/eisen.glb",
+    "sha256": "d69f8fb6c191cbfd160148dbfc2afdb7442ac30f71f06b7ea1229d1be5d04b84"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/frieren-expressions.png",
+    "sha256": "5abe92ef6f18620f9bc89963e48f3d55af38185bb90b1073b13d230e6b64c5a1"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/frieren-magic.glb",
+    "sha256": "b4adc9c798be1fa5e312992919861b294c039506abd41db522cd0f63b784b03d"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/frieren.glb",
+    "sha256": "e214e4f461669e6498fe9dac1f2cead63862ce634cbf858a8727dbe7ff48557a"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/heiter-expressions.png",
+    "sha256": "20ff7061820acf140f82c01909cd48075221d7aa0d93e5885376ddf3ad41e616"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/heiter.glb",
+    "sha256": "c12f31fcabe2d662b12c2f80f3102398d4a753a6f3a90664c7039f1191e83b7c"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/himmel-expressions.png",
+    "sha256": "5f027778d5c33dd120c4e00cb1b95ec969a5a46836fbfe278a281d2c86598273"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/himmel.glb",
+    "sha256": "b5e41d1b3b63e8e9f42f1db92ed616e29b07251e170f6bd1cd2f8ed3ab02db36"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/manifest.json",
+    "sha256": "e68d433d0150662d70df796d0f371873ad719d86667940f0c134fb97f93af0b8"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/project-display.glb",
+    "sha256": "5e8c4cc7cd65dc0624810fc1941d2c4eb6c8399e97cf7b8781613a4106c5f73b"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/transition/README.md",
+    "sha256": "f8939d6cde783c331be68187a0c1c17ac0a78f2783375c8f4497cb43f0c64792"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/about-interaction-assets.glb",
+    "sha256": "25ca8c4fd7c2bece62833101217115d7e6d7ba483b7b116184799d33acdad82c"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/ancient-tree.glb",
+    "sha256": "310e81d6f16de18e7bd38203f271fe36f4596e139d97a38e422b671bd59674a8"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/asset-dimensions.json",
+    "sha256": "9f2c566d546377ec64f52b52fc1498db5c0336ebbef94fe2cbc3540dbf22ba51"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/audit-assets.mjs",
+    "sha256": "198ff620560b832e149b9ddd2f54f87f29b74fbe51ffa760680a2733f567148f"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/bridge-curved.glb",
+    "sha256": "e10c60af88af803c66a38a5b08f58677ffe11e2ebdbd2799783984da0f4bbafa"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/bridge-stone.glb",
+    "sha256": "8a0a1fd58924f50c6527878d6e98281ac6969cc0098f3ca2fbdb0ff58f5b1b05"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/bridge-wooden.glb",
+    "sha256": "ff9a807c492dddf57778a0461047858e9c15a71c6f7f9077ccb5470eb01c47c6"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/build-assets.mjs",
+    "sha256": "630cd5f4f949301b2906e2b4d8baf588dfa1b8f6b64b0b7882d696169aef1320"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/detail-arch.glb",
+    "sha256": "a1261fee441607e75d1dba0fa307dd1b3c9caab5168ddad5d115bf9ad6eeedf4"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/detail-crystal-light.glb",
+    "sha256": "3200204fbf0e4ed9d3ba540a2212e17ca21587974bc977e842f0795037759839"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/detail-lantern.glb",
+    "sha256": "b9f373464f68c56202ada793d604d4bd31f5c689dde971be458eb9fa81662a21"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/detail-pillar.glb",
+    "sha256": "773ca2ac90d9ec8d5ece21dad320163212d351019333abd888d5f70a24bd2093"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/detail-railing.glb",
+    "sha256": "25d0cf8fba8d9689cfbeb044fce6c51f593ad25fa29fa52a51a740915d399faf"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/detail-runestone.glb",
+    "sha256": "1a2a8c365ff47694c8c3e8be89fcb0d7b23f280cfcb169dece914bbc24a8e00f"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/enchanted-pond.glb",
+    "sha256": "b076b860c59e8b2fb4a626a2fcc9128b93ab02ecb569bc5de3eb89f266007f89"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/forest-decorations.glb",
+    "sha256": "bfba98db72bef4c2a5ed13e447e9c58984532c8560666cf22df0c1efe5b0b18b"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/forest-effects.glb",
+    "sha256": "94d7ff81d039845b2e21a683529da3f52743332a5af96eabaa4a6421d556edf7"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/forest-vegetation.glb",
+    "sha256": "0c525920f70436c3b5090d0b5b35a8f43f28bff636be55f4d098019e2b3f4a15"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/forest-waterfall.glb",
+    "sha256": "f2b1e0c59b24fd24fbc152f80f11c3b4e8af954b8cbe54a4629cdf30d5359eaf"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/HANDOFF.md",
+    "sha256": "c66d81d97e9fdcbfdb5b0ef2ef1a8d2db48e4b716fdf646b4adc157d57bcade2"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/heiter-resting-area.glb",
+    "sha256": "c7986feb6b0ad14dc536ec49e1271efddca742b2d88b18932af593434c3322fc"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/manifest.json",
+    "sha256": "e7684e0d204b10a04c60b0975fddf090fe483385f5f7363c4dc4f577a261b402"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/platform-decorative.glb",
+    "sha256": "20e6648bca7c28432182b297b38881c227f48bc143e5067dedc0a0f52e433c7d"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/platform-large.glb",
+    "sha256": "912743b8e4d315e2b92f6fd50d39dd1501895407987bbd22f4cf4c1d710cc5f5"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/platform-medium.glb",
+    "sha256": "cb487a75b9167a1d07aee91cad3eaf5690c3f66c1d2c0703131206fc10e496b4"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/platform-small.glb",
+    "sha256": "fc023700ee0dec5112af929d18e4f72343468bfc13a8b99e497342241f32ad20"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/preview.html",
+    "sha256": "d2926f1823dfc9bc9c05d9bc00dd0c701e161aa1313d3a9b2c0d0e925c27ac33"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/preview.js",
+    "sha256": "f5384743bdb05426c85fba05597fd15e82d61ce7b92b0f570a90ec0d3444b437"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-about.png",
+    "sha256": "d95e0af26b290382eaa64a1922d31128235de8b5e3fec6cedc175bc41491e348"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-connections.png",
+    "sha256": "0cfb59561e62bd9491c4ac642d1242f3ea6bace034ff9545298abdfaf19167f5"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-heiter.png",
+    "sha256": "bef8277b3c4cfbf40271c9b7edef5274a5f61755eea59329d2ff3befad33a829"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-mobile.png",
+    "sha256": "3b25e0ba697f25cb5706bfdb2d5a983bda51f2b9d348ccd9ecbcaf95f2062175"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-overview.png",
+    "sha256": "66deeb89cfd5b5e29ad0b5fe42e97f091385385af080d9ab70bb1d2eab3c9f31"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-pond.png",
+    "sha256": "f73f6cbca14ec1eb8b2181db300078baf51a84ac1baf29a9bef02374b953aa25"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-tree.png",
+    "sha256": "20543d7f7f114ff8e0ad4c10e272ab7f7b1b885b78a61edb62cb04f5369f86f6"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/previews/forest-underside.png",
+    "sha256": "cd146064cb47f59b699b8a1b4635691b910a41185908007fd259226a8c9d717c"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/README.md",
+    "sha256": "c9a80571f2ad2e723c4cec2cafc3dfb1ca94d2b9a30c0a870fd44ffbe5bec8c8"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/stairs-ceremonial.glb",
+    "sha256": "b9336bdadfce57735501c330265d05c701c60beccb689b0d91e7183436feacf9"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/stairs-curved.glb",
+    "sha256": "ef47cb95a6a0938e7398f76a101b8112e3b2e8544343870e1f2c9250446efada"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/stairs-small.glb",
+    "sha256": "2d7b4a32d223b09d3f4bc9f0d677504910120731980f7bd0658a53f77f9e0acb"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/stairs-spiral.glb",
+    "sha256": "c03e8aad9e6244a169d4c933eff34273fa1a8522c016c2e90fa1f017799c9276"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/stairs-straight.glb",
+    "sha256": "3dca9c0226cc63f8845332f2d9ce1234ea1f9cad3675de94c9a2b49907611eaf"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/stepping-stone.glb",
+    "sha256": "97a15c188acce16cfc4220ceac57ba625dba4bb1b141bb291580a3404dfbc04e"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/textures/stone.png",
+    "sha256": "24e745820f5a0b18ae4aa00bec0ff7d65be0829d5e2928f3ab6242d1e84e3dc4"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/textures/wood.png",
+    "sha256": "fa5f5e4d753f9a959cd65aab85dbfde36d4f801f660ed08b31258245b309dc9b"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/verification.json",
+    "sha256": "f2cd96f93f1f0a4dd0c3b8c85346c167ee9098f9a5e4b6f45c6dfa213fef238d"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/verify-render.mjs",
+    "sha256": "383a1337ed77253400b285588b116c8a66450e1b3729ef522346f3bdfe86225f"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/walkway-narrow.glb",
+    "sha256": "f43e8266f40514373df32ad5913b0565c94ff4db0b320e8c33c07fc2ccd0690e"
+  },
+  {
+    "file": "D:/projects/3D-PORTFOLIO/public/models/whispering-forest/whispering-forest-island.glb",
+    "sha256": "c0fa14a66e0a29b2cde182a2b1b4d59c18db551c9498db6439f97bc7ae4d21ec"
+  }
+]

@@ -1,0 +1,1088 @@
+{
+  "validatedAt": "2026-11-18T14:08:48.374Z",
+  "assetCount": 29,
+  "bytes": 11430204,
+  "validation": "Manifest inventory, GLB v2 headers, buffer ranges, finite accessors, declared bounds, normals, UVs, index ranges, no degenerate triangles, animation time order and value counts, transformed mesh bounds, embedded PNG headers and dimensions, material/texture/image links, preserved Heiter hash.",
+  "heiter": {
+    "path": "/models/transition/heiter.glb",
+    "sha256": "c12f31fcabe2d662b12c2f80f3102398d4a753a6f3a90664c7039f1191e83b7c",
+    "unchanged": true,
+    "skins": 1,
+    "clips": [
+      "heiter_idle",
+      "heiter_jump",
+      "heiter_fall",
+      "heiter_landing_prepare",
+      "heiter_landing"
+    ]
+  },
+  "assets": [
+    {
+      "file": "about-interaction-assets.glb",
+      "sha256": "25ca8c4fd7c2bece62833101217115d7e6d7ba483b7b116184799d33acdad82c",
+      "bytes": 169020,
+      "dimensions": [
+        3.5,
+        2.526,
+        3.5
+      ],
+      "bounds": {
+        "min": [
+          -1.75,
+          -0.014999998733401299,
+          -1.75
+        ],
+        "max": [
+          1.75,
+          2.5110507017374037,
+          1.75
+        ]
+      },
+      "triangles": 2364,
+      "degenerateTriangles": 0,
+      "drawBatches": 15,
+      "embeddedTextures": 2,
+      "materials": [
+        "stone",
+        "gold",
+        "edge",
+        "violet",
+        "paper",
+        "wood",
+        "glow",
+        "teal",
+        "green"
+      ],
+      "animations": [
+        {
+          "name": "StoryPageDrift_0",
+          "duration": 7
+        },
+        {
+          "name": "StoryPageDrift_1",
+          "duration": 8
+        },
+        {
+          "name": "StoryPageDrift_2",
+          "duration": 9
+        }
+      ]
+    },
+    {
+      "file": "ancient-tree.glb",
+      "sha256": "310e81d6f16de18e7bd38203f271fe36f4596e139d97a38e422b671bd59674a8",
+      "bytes": 1954996,
+      "dimensions": [
+        11.174,
+        8.996,
+        10.281
+      ],
+      "bounds": {
+        "min": [
+          -5.348902702331543,
+          -0.193420872092247,
+          -5.67733097076416
+        ],
+        "max": [
+          5.824760437011719,
+          8.802486419677734,
+          4.603896141052246
+        ]
+      },
+      "triangles": 27812,
+      "degenerateTriangles": 0,
+      "drawBatches": 12,
+      "embeddedTextures": 1,
+      "materials": [
+        "bark",
+        "dark",
+        "barkLight",
+        "leafDark",
+        "leaf",
+        "gold",
+        "flame",
+        "wood",
+        "leafLight",
+        "glow",
+        "paper",
+        "rune"
+      ],
+      "animations": []
+    },
+    {
+      "file": "bridge-curved.glb",
+      "sha256": "e10c60af88af803c66a38a5b08f58677ffe11e2ebdbd2799783984da0f4bbafa",
+      "bytes": 134256,
+      "dimensions": [
+        3.879,
+        1.33,
+        3.902
+      ],
+      "bounds": {
+        "min": [
+          -0.8729494214057922,
+          -0.14000000059604645,
+          -0.03500000014901161
+        ],
+        "max": [
+          3.0058352947235107,
+          1.189965009689331,
+          3.8665578365325928
+        ]
+      },
+      "triangles": 2288,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "wood",
+        "barkLight",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "bridge-stone.glb",
+      "sha256": "8a0a1fd58924f50c6527878d6e98281ac6969cc0098f3ca2fbdb0ff58f5b1b05",
+      "bytes": 146760,
+      "dimensions": [
+        2.236,
+        1.33,
+        4.844
+      ],
+      "bounds": {
+        "min": [
+          -1.1180000305175781,
+          -0.14000000059604645,
+          -0.03500000014901161
+        ],
+        "max": [
+          1.1180000305175781,
+          1.1899935007095337,
+          4.808896541595459
+        ]
+      },
+      "triangles": 1968,
+      "degenerateTriangles": 0,
+      "drawBatches": 2,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "edge"
+      ],
+      "animations": []
+    },
+    {
+      "file": "bridge-wooden.glb",
+      "sha256": "ff9a807c492dddf57778a0461047858e9c15a71c6f7f9077ccb5470eb01c47c6",
+      "bytes": 111912,
+      "dimensions": [
+        1.844,
+        1.329,
+        4.046
+      ],
+      "bounds": {
+        "min": [
+          -0.921999990940094,
+          -0.14000000059604645,
+          -0.03500000014901161
+        ],
+        "max": [
+          0.921999990940094,
+          1.1885069608688354,
+          4.0105462074279785
+        ]
+      },
+      "triangles": 1948,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "wood",
+        "barkLight",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "detail-arch.glb",
+      "sha256": "a1261fee441607e75d1dba0fa307dd1b3c9caab5168ddad5d115bf9ad6eeedf4",
+      "bytes": 81124,
+      "dimensions": [
+        2.85,
+        3.363,
+        0.5
+      ],
+      "bounds": {
+        "min": [
+          -1.4249999523162842,
+          2.6822091214739885e-9,
+          -0.05000000074505806
+        ],
+        "max": [
+          1.4249999523162842,
+          3.36283278465271,
+          0.44999998807907104
+        ]
+      },
+      "triangles": 664,
+      "degenerateTriangles": 0,
+      "drawBatches": 2,
+      "embeddedTextures": 1,
+      "materials": [
+        "edge",
+        "stone"
+      ],
+      "animations": []
+    },
+    {
+      "file": "detail-crystal-light.glb",
+      "sha256": "3200204fbf0e4ed9d3ba540a2212e17ca21587974bc977e842f0795037759839",
+      "bytes": 52016,
+      "dimensions": [
+        0.507,
+        1.341,
+        0.45
+      ],
+      "bounds": {
+        "min": [
+          -0.2535712420940399,
+          -0.18560542166233063,
+          0.09993300586938858
+        ],
+        "max": [
+          0.2535712420940399,
+          1.1556627750396729,
+          0.5500670075416565
+        ]
+      },
+      "triangles": 50,
+      "degenerateTriangles": 0,
+      "drawBatches": 2,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "glow"
+      ],
+      "animations": []
+    },
+    {
+      "file": "detail-lantern.glb",
+      "sha256": "b9f373464f68c56202ada793d604d4bd31f5c689dde971be458eb9fa81662a21",
+      "bytes": 46256,
+      "dimensions": [
+        0.249,
+        1.55,
+        0.249
+      ],
+      "bounds": {
+        "min": [
+          -0.12473364174365997,
+          2.3841858265427618e-8,
+          0.1502663642168045
+        ],
+        "max": [
+          0.12473364174365997,
+          1.5499999523162842,
+          0.39973363280296326
+        ]
+      },
+      "triangles": 924,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "wood",
+        "flame",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "detail-pillar.glb",
+      "sha256": "773ca2ac90d9ec8d5ece21dad320163212d351019333abd888d5f70a24bd2093",
+      "bytes": 51308,
+      "dimensions": [
+        0.65,
+        2.7,
+        0.65
+      ],
+      "bounds": {
+        "min": [
+          -0.32499998807907104,
+          -2.3841858265427618e-8,
+          0.025000011548399925
+        ],
+        "max": [
+          0.32499998807907104,
+          2.700000047683716,
+          0.675000011920929
+        ]
+      },
+      "triangles": 56,
+      "degenerateTriangles": 0,
+      "drawBatches": 2,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "edge"
+      ],
+      "animations": []
+    },
+    {
+      "file": "detail-railing.glb",
+      "sha256": "25d0cf8fba8d9689cfbeb044fce6c51f593ad25fa29fa52a51a740915d399faf",
+      "bytes": 21932,
+      "dimensions": [
+        0.084,
+        0.962,
+        2.05
+      ],
+      "bounds": {
+        "min": [
+          -0.041999999433755875,
+          1.1920929132713809e-8,
+          -0.02500000037252903
+        ],
+        "max": [
+          0.041999999433755875,
+          0.9620000123977661,
+          2.0250000953674316
+        ]
+      },
+      "triangles": 192,
+      "degenerateTriangles": 0,
+      "drawBatches": 2,
+      "embeddedTextures": 1,
+      "materials": [
+        "gold",
+        "wood"
+      ],
+      "animations": []
+    },
+    {
+      "file": "detail-runestone.glb",
+      "sha256": "1a2a8c365ff47694c8c3e8be89fcb0d7b23f280cfcb169dece914bbc24a8e00f",
+      "bytes": 81676,
+      "dimensions": [
+        1.156,
+        1.148,
+        0.48
+      ],
+      "bounds": {
+        "min": [
+          -0.5777620673179626,
+          0.07622963190078735,
+          -0.04022039845585823
+        ],
+        "max": [
+          0.5777620673179626,
+          1.2237703800201416,
+          0.4402203857898712
+        ]
+      },
+      "triangles": 988,
+      "degenerateTriangles": 0,
+      "drawBatches": 2,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "glow"
+      ],
+      "animations": []
+    },
+    {
+      "file": "enchanted-pond.glb",
+      "sha256": "b076b860c59e8b2fb4a626a2fcc9128b93ab02ecb569bc5de3eb89f266007f89",
+      "bytes": 587648,
+      "dimensions": [
+        4.867,
+        0.577,
+        7.18
+      ],
+      "bounds": {
+        "min": [
+          -5.603471279144287,
+          -0.14000000059604645,
+          0.4940570890903473
+        ],
+        "max": [
+          -0.7369121313095093,
+          0.436786025762558,
+          7.673999786376953
+        ]
+      },
+      "triangles": 9562,
+      "degenerateTriangles": 0,
+      "drawBatches": 11,
+      "embeddedTextures": 1,
+      "materials": [
+        "water",
+        "dark",
+        "moss",
+        "leafDark",
+        "glow",
+        "stone",
+        "leaf",
+        "foam"
+      ],
+      "animations": [
+        {
+          "name": "PondRipplePulse_0",
+          "duration": 4
+        },
+        {
+          "name": "PondRipplePulse_1",
+          "duration": 4
+        },
+        {
+          "name": "PondRipplePulse_2",
+          "duration": 4
+        },
+        {
+          "name": "PondRipplePulse_3",
+          "duration": 4
+        }
+      ]
+    },
+    {
+      "file": "forest-decorations.glb",
+      "sha256": "bfba98db72bef4c2a5ed13e447e9c58984532c8560666cf22df0c1efe5b0b18b",
+      "bytes": 491884,
+      "dimensions": [
+        10.554,
+        1.591,
+        8.057
+      ],
+      "bounds": {
+        "min": [
+          -6.394186496734619,
+          0.09847894310951233,
+          -1.4550000429153442
+        ],
+        "max": [
+          4.159999847412109,
+          1.689049243927002,
+          6.601813316345215
+        ]
+      },
+      "triangles": 10152,
+      "degenerateTriangles": 0,
+      "drawBatches": 7,
+      "embeddedTextures": 2,
+      "materials": [
+        "edge",
+        "wood",
+        "flame",
+        "gold",
+        "stone",
+        "rune",
+        "moss"
+      ],
+      "animations": []
+    },
+    {
+      "file": "forest-effects.glb",
+      "sha256": "94d7ff81d039845b2e21a683529da3f52743332a5af96eabaa4a6421d556edf7",
+      "bytes": 201128,
+      "dimensions": [
+        11.148,
+        5.7,
+        11.378
+      ],
+      "bounds": {
+        "min": [
+          -5.928790092468262,
+          0.7604775428771973,
+          -5.445057392120361
+        ],
+        "max": [
+          5.219295978546143,
+          6.4609222412109375,
+          5.93300199508667
+        ]
+      },
+      "triangles": 1860,
+      "degenerateTriangles": 0,
+      "drawBatches": 7,
+      "embeddedTextures": 0,
+      "materials": [
+        "glow",
+        "flame",
+        "pink",
+        "leafLight",
+        "dark"
+      ],
+      "animations": [
+        {
+          "name": "FireflyDrift",
+          "duration": 11
+        },
+        {
+          "name": "LeafDrift",
+          "duration": 13
+        },
+        {
+          "name": "SpiritDrift",
+          "duration": 9
+        }
+      ]
+    },
+    {
+      "file": "forest-vegetation.glb",
+      "sha256": "0c525920f70436c3b5090d0b5b35a8f43f28bff636be55f4d098019e2b3f4a15",
+      "bytes": 3943700,
+      "dimensions": [
+        17.004,
+        5.338,
+        14.803
+      ],
+      "bounds": {
+        "min": [
+          -8.655765533447266,
+          0.020370885729789734,
+          -8.046757698059082
+        ],
+        "max": [
+          8.348426818847656,
+          5.358179569244385,
+          6.756363391876221
+        ]
+      },
+      "triangles": 46622,
+      "degenerateTriangles": 0,
+      "drawBatches": 8,
+      "embeddedTextures": 0,
+      "materials": [
+        "bark",
+        "leaf",
+        "leafLight",
+        "leafDark",
+        "moss",
+        "glow",
+        "paper",
+        "rune"
+      ],
+      "animations": []
+    },
+    {
+      "file": "forest-waterfall.glb",
+      "sha256": "f2b1e0c59b24fd24fbc152f80f11c3b4e8af954b8cbe54a4629cdf30d5359eaf",
+      "bytes": 108520,
+      "dimensions": [
+        0.88,
+        8.4,
+        0.279
+      ],
+      "bounds": {
+        "min": [
+          -3.3415043354034424,
+          -8.270000457763672,
+          7.673999786376953
+        ],
+        "max": [
+          -2.4615042209625244,
+          0.12999999523162842,
+          7.952999999612386
+        ]
+      },
+      "triangles": 1740,
+      "degenerateTriangles": 0,
+      "drawBatches": 8,
+      "embeddedTextures": 0,
+      "materials": [
+        "water",
+        "glow",
+        "foam"
+      ],
+      "animations": [
+        {
+          "name": "WaterFlow_0",
+          "duration": 4
+        },
+        {
+          "name": "WaterFlow_1",
+          "duration": 4
+        },
+        {
+          "name": "WaterFlow_2",
+          "duration": 4
+        },
+        {
+          "name": "WaterFlow_3",
+          "duration": 4
+        },
+        {
+          "name": "WaterFlow_4",
+          "duration": 4
+        },
+        {
+          "name": "WaterFlow_5",
+          "duration": 4
+        },
+        {
+          "name": "WaterFlow_6",
+          "duration": 4
+        }
+      ]
+    },
+    {
+      "file": "heiter-resting-area.glb",
+      "sha256": "c7986feb6b0ad14dc536ec49e1271efddca742b2d88b18932af593434c3322fc",
+      "bytes": 254724,
+      "dimensions": [
+        3.145,
+        1.501,
+        1.914
+      ],
+      "bounds": {
+        "min": [
+          -1.5450835227966309,
+          -0.0012828023172914982,
+          -0.9727486371994019
+        ],
+        "max": [
+          1.600000023841858,
+          1.5,
+          0.9411795735359192
+        ]
+      },
+      "triangles": 3994,
+      "degenerateTriangles": 0,
+      "drawBatches": 8,
+      "embeddedTextures": 1,
+      "materials": [
+        "wood",
+        "gold",
+        "green",
+        "paper",
+        "flame",
+        "rune",
+        "leafDark",
+        "glow"
+      ],
+      "animations": []
+    },
+    {
+      "file": "platform-decorative.glb",
+      "sha256": "20e6648bca7c28432182b297b38881c227f48bc143e5067dedc0a0f52e433c7d",
+      "bytes": 75176,
+      "dimensions": [
+        2.6,
+        1.969,
+        2.6
+      ],
+      "bounds": {
+        "min": [
+          -1.2999999523162842,
+          -1.940000057220459,
+          4.7683716530855236e-8
+        ],
+        "max": [
+          1.2999999523162842,
+          0.029320508241653442,
+          2.5999999046325684
+        ]
+      },
+      "triangles": 814,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "dark",
+        "rune"
+      ],
+      "animations": []
+    },
+    {
+      "file": "platform-large.glb",
+      "sha256": "912743b8e4d315e2b92f6fd50d39dd1501895407987bbd22f4cf4c1d710cc5f5",
+      "bytes": 75152,
+      "dimensions": [
+        4.8,
+        3.399,
+        4.8
+      ],
+      "bounds": {
+        "min": [
+          -2.4000000953674316,
+          -3.369999885559082,
+          -9.536743306171047e-8
+        ],
+        "max": [
+          2.4000000953674316,
+          0.029320508241653442,
+          4.800000190734863
+        ]
+      },
+      "triangles": 814,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "dark",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "platform-medium.glb",
+      "sha256": "cb487a75b9167a1d07aee91cad3eaf5690c3f66c1d2c0703131206fc10e496b4",
+      "bytes": 75160,
+      "dimensions": [
+        3.2,
+        2.359,
+        3.2
+      ],
+      "bounds": {
+        "min": [
+          -1.600000023841858,
+          -2.3299999237060547,
+          -2.3841858265427618e-8
+        ],
+        "max": [
+          1.600000023841858,
+          0.029320508241653442,
+          3.200000047683716
+        ]
+      },
+      "triangles": 814,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "dark",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "platform-small.glb",
+      "sha256": "fc023700ee0dec5112af929d18e4f72343468bfc13a8b99e497342241f32ad20",
+      "bytes": 75160,
+      "dimensions": [
+        1.8,
+        1.449,
+        1.8
+      ],
+      "bounds": {
+        "min": [
+          -0.8999999761581421,
+          -1.4199999570846558,
+          2.3841858265427618e-8
+        ],
+        "max": [
+          0.8999999761581421,
+          0.029320508241653442,
+          1.7999999523162842
+        ]
+      },
+      "triangles": 814,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "dark",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "stairs-ceremonial.glb",
+      "sha256": "b9336bdadfce57735501c330265d05c701c60beccb689b0d91e7183436feacf9",
+      "bytes": 94696,
+      "dimensions": [
+        3.95,
+        2.892,
+        4.87
+      ],
+      "bounds": {
+        "min": [
+          -1.975000023841858,
+          -2.3841858265427618e-8,
+          -0.03500000014901161
+        ],
+        "max": [
+          1.975000023841858,
+          2.891538381576538,
+          4.835000038146973
+        ]
+      },
+      "triangles": 772,
+      "degenerateTriangles": 0,
+      "drawBatches": 4,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "edge",
+        "gold",
+        "glow"
+      ],
+      "animations": []
+    },
+    {
+      "file": "stairs-curved.glb",
+      "sha256": "ef47cb95a6a0938e7398f76a101b8112e3b2e8544343870e1f2c9250446efada",
+      "bytes": 133984,
+      "dimensions": [
+        3.007,
+        2.813,
+        3.012
+      ],
+      "bounds": {
+        "min": [
+          -0.7848626375198364,
+          -2.8257601455554697e-17,
+          -0.027000000700354576
+        ],
+        "max": [
+          2.221796751022339,
+          2.8125200271606445,
+          2.9848625659942627
+        ]
+      },
+      "triangles": 1640,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "edge",
+        "gold",
+        "stone"
+      ],
+      "animations": []
+    },
+    {
+      "file": "stairs-small.glb",
+      "sha256": "2d7b4a32d223b09d3f4bc9f0d677504910120731980f7bd0658a53f77f9e0acb",
+      "bytes": 63468,
+      "dimensions": [
+        1.462,
+        1.491,
+        1.403
+      ],
+      "bounds": {
+        "min": [
+          -0.7310000061988831,
+          -1.1920929132713809e-8,
+          -0.03500000014901161
+        ],
+        "max": [
+          0.7310000061988831,
+          1.491121530532837,
+          1.3682762384414673
+        ]
+      },
+      "triangles": 264,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "edge",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "stairs-spiral.glb",
+      "sha256": "c03e8aad9e6244a169d4c933eff34273fa1a8522c016c2e90fa1f017799c9276",
+      "bytes": 252880,
+      "dimensions": [
+        5.369,
+        5.334,
+        5.369
+      ],
+      "bounds": {
+        "min": [
+          -0.684553861618042,
+          -4.199745524186471e-17,
+          -2.684553861618042
+        ],
+        "max": [
+          4.684553623199463,
+          5.333582401275635,
+          2.684553861618042
+        ]
+      },
+      "triangles": 3936,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "edge",
+        "gold",
+        "stone"
+      ],
+      "animations": []
+    },
+    {
+      "file": "stairs-straight.glb",
+      "sha256": "3dca9c0226cc63f8845332f2d9ce1234ea1f9cad3675de94c9a2b49907611eaf",
+      "bytes": 81836,
+      "dimensions": [
+        1.658,
+        2.49,
+        3.27
+      ],
+      "bounds": {
+        "min": [
+          -0.8289999961853027,
+          -1.1920929132713809e-8,
+          -0.03500000014901161
+        ],
+        "max": [
+          0.8289999961853027,
+          2.4902491569519043,
+          3.234999895095825
+        ]
+      },
+      "triangles": 576,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "edge",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "stepping-stone.glb",
+      "sha256": "97a15c188acce16cfc4220ceac57ba625dba4bb1b141bb291580a3404dfbc04e",
+      "bytes": 75152,
+      "dimensions": [
+        0.8,
+        0.799,
+        0.8
+      ],
+      "bounds": {
+        "min": [
+          -0.4000000059604645,
+          -0.7699999809265137,
+          -5.9604645663569045e-9
+        ],
+        "max": [
+          0.4000000059604645,
+          0.029320508241653442,
+          0.800000011920929
+        ]
+      },
+      "triangles": 814,
+      "degenerateTriangles": 0,
+      "drawBatches": 3,
+      "embeddedTextures": 1,
+      "materials": [
+        "stone",
+        "dark",
+        "gold"
+      ],
+      "animations": []
+    },
+    {
+      "file": "walkway-narrow.glb",
+      "sha256": "f43e8266f40514373df32ad5913b0565c94ff4db0b320e8c33c07fc2ccd0690e",
+      "bytes": 22828,
+      "dimensions": [
+        1.1,
+        0.14,
+        2.99
+      ],
+      "bounds": {
+        "min": [
+          -0.550000011920929,
+          -0.14000000059604645,
+          0.005000002682209015
+        ],
+        "max": [
+          0.550000011920929,
+          2.98023217215615e-10,
+          2.994999885559082
+        ]
+      },
+      "triangles": 144,
+      "degenerateTriangles": 0,
+      "drawBatches": 1,
+      "embeddedTextures": 1,
+      "materials": [
+        "wood"
+      ],
+      "animations": []
+    },
+    {
+      "file": "whispering-forest-island.glb",
+      "sha256": "c0fa14a66e0a29b2cde182a2b1b4d59c18db551c9498db6439f97bc7ae4d21ec",
+      "bytes": 1965852,
+      "dimensions": [
+        23.963,
+        8.833,
+        20.211
+      ],
+      "bounds": {
+        "min": [
+          -11.358939713850223,
+          -6.800000190734863,
+          -10.407581025395077
+        ],
+        "max": [
+          12.604216454550624,
+          2.0325024395715445,
+          9.803574754649325
+        ]
+      },
+      "triangles": 19234,
+      "degenerateTriangles": 0,
+      "drawBatches": 24,
+      "embeddedTextures": 1,
+      "materials": [
+        "grass",
+        "stone",
+        "dark",
+        "bark",
+        "leaf",
+        "moss",
+        "rune",
+        "glow"
+      ],
+      "animations": [
+        {
+          "name": "FloatingStoneDrift_0",
+          "duration": 7
+        },
+        {
+          "name": "FloatingStoneDrift_1",
+          "duration": 8
+        },
+        {
+          "name": "FloatingStoneDrift_2",
+          "duration": 9
+        },
+        {
+          "name": "FloatingStoneDrift_3",
+          "duration": 10
+        },
+        {
+          "name": "FloatingStoneDrift_4",
+          "duration": 11
+        },
+        {
+          "name": "FloatingStoneDrift_5",
+          "duration": 12
+        },
+        {
+          "name": "FloatingStoneDrift_6",
+          "duration": 13
+        },
+        {
+          "name": "FloatingStoneDrift_7",
+          "duration": 14
+        }
+      ]
+    }
+  ]
+}

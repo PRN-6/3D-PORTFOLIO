@@ -1,0 +1,330 @@
+{
+  "valid": true,
+  "triangles": 137328,
+  "meshes": 102,
+  "biographyHit": true,
+  "decodedTextureBindings": 38,
+  "drawCalls": 103,
+  "connections": [
+    {
+      "file": "stairs-straight.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        1.6,
+        3.2
+      ],
+      "surfaceSamples": 24
+    },
+    {
+      "file": "stairs-ceremonial.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        2,
+        4.8
+      ],
+      "surfaceSamples": 30
+    },
+    {
+      "file": "stairs-small.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0.6,
+        1.35
+      ],
+      "surfaceSamples": 9
+    },
+    {
+      "file": "stairs-curved.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        2.2,
+        1.8,
+        2.2
+      ],
+      "surfaceSamples": 30
+    },
+    {
+      "file": "stairs-spiral.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        4.32,
+        0
+      ],
+      "surfaceSamples": 72
+    },
+    {
+      "file": "bridge-wooden.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        4
+      ],
+      "surfaceSamples": 72
+    },
+    {
+      "file": "bridge-stone.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        4.8
+      ],
+      "surfaceSamples": 72
+    },
+    {
+      "file": "bridge-curved.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        2.9936305732484074,
+        0,
+        2.9936305732484074
+      ],
+      "surfaceSamples": 72
+    },
+    {
+      "file": "walkway-narrow.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        3
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "platform-small.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        1.8
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "platform-medium.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        3.2
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "platform-large.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        4.8
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "stepping-stone.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.8
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "platform-decorative.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        2.6
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "detail-arch.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.4
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "detail-pillar.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.7
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "detail-railing.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        2
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "detail-lantern.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.55
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "detail-crystal-light.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.65
+      ],
+      "surfaceSamples": 0
+    },
+    {
+      "file": "detail-runestone.glb",
+      "entry": [
+        0,
+        0,
+        0
+      ],
+      "exit": [
+        0,
+        0,
+        0.4
+      ],
+      "surfaceSamples": 0
+    }
+  ],
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 1
+  },
+  "verifiedAt": "2026-11-18T14:10:09.280Z",
+  "browser": "Chrome/157.0.8103.79",
+  "renderer": "Headless Chrome, SwiftShader; visual viewport check, not a physical-device FPS benchmark",
+  "assetHashes": {
+    "about-interaction-assets.glb": "25ca8c4fd7c2bece62833101217115d7e6d7ba483b7b116184799d33acdad82c",
+    "ancient-tree.glb": "310e81d6f16de18e7bd38203f271fe36f4596e139d97a38e422b671bd59674a8",
+    "bridge-curved.glb": "e10c60af88af803c66a38a5b08f58677ffe11e2ebdbd2799783984da0f4bbafa",
+    "bridge-stone.glb": "8a0a1fd58924f50c6527878d6e98281ac6969cc0098f3ca2fbdb0ff58f5b1b05",
+    "bridge-wooden.glb": "ff9a807c492dddf57778a0461047858e9c15a71c6f7f9077ccb5470eb01c47c6",
+    "detail-arch.glb": "a1261fee441607e75d1dba0fa307dd1b3c9caab5168ddad5d115bf9ad6eeedf4",
+    "detail-crystal-light.glb": "3200204fbf0e4ed9d3ba540a2212e17ca21587974bc977e842f0795037759839",
+    "detail-lantern.glb": "b9f373464f68c56202ada793d604d4bd31f5c689dde971be458eb9fa81662a21",
+    "detail-pillar.glb": "773ca2ac90d9ec8d5ece21dad320163212d351019333abd888d5f70a24bd2093",
+    "detail-railing.glb": "25d0cf8fba8d9689cfbeb044fce6c51f593ad25fa29fa52a51a740915d399faf",
+    "detail-runestone.glb": "1a2a8c365ff47694c8c3e8be89fcb0d7b23f280cfcb169dece914bbc24a8e00f",
+    "enchanted-pond.glb": "b076b860c59e8b2fb4a626a2fcc9128b93ab02ecb569bc5de3eb89f266007f89",
+    "forest-decorations.glb": "bfba98db72bef4c2a5ed13e447e9c58984532c8560666cf22df0c1efe5b0b18b",
+    "forest-effects.glb": "94d7ff81d039845b2e21a683529da3f52743332a5af96eabaa4a6421d556edf7",
+    "forest-vegetation.glb": "0c525920f70436c3b5090d0b5b35a8f43f28bff636be55f4d098019e2b3f4a15",
+    "forest-waterfall.glb": "f2b1e0c59b24fd24fbc152f80f11c3b4e8af954b8cbe54a4629cdf30d5359eaf",
+    "heiter-resting-area.glb": "c7986feb6b0ad14dc536ec49e1271efddca742b2d88b18932af593434c3322fc",
+    "platform-decorative.glb": "20e6648bca7c28432182b297b38881c227f48bc143e5067dedc0a0f52e433c7d",
+    "platform-large.glb": "912743b8e4d315e2b92f6fd50d39dd1501895407987bbd22f4cf4c1d710cc5f5",
+    "platform-medium.glb": "cb487a75b9167a1d07aee91cad3eaf5690c3f66c1d2c0703131206fc10e496b4",
+    "platform-small.glb": "fc023700ee0dec5112af929d18e4f72343468bfc13a8b99e497342241f32ad20",
+    "stairs-ceremonial.glb": "b9336bdadfce57735501c330265d05c701c60beccb689b0d91e7183436feacf9",
+    "stairs-curved.glb": "ef47cb95a6a0938e7398f76a101b8112e3b2e8544343870e1f2c9250446efada",
+    "stairs-small.glb": "2d7b4a32d223b09d3f4bc9f0d677504910120731980f7bd0658a53f77f9e0acb",
+    "stairs-spiral.glb": "c03e8aad9e6244a169d4c933eff34273fa1a8522c016c2e90fa1f017799c9276",
+    "stairs-straight.glb": "3dca9c0226cc63f8845332f2d9ce1234ea1f9cad3675de94c9a2b49907611eaf",
+    "stepping-stone.glb": "97a15c188acce16cfc4220ceac57ba625dba4bb1b141bb291580a3404dfbc04e",
+    "walkway-narrow.glb": "f43e8266f40514373df32ad5913b0565c94ff4db0b320e8c33c07fc2ccd0690e",
+    "whispering-forest-island.glb": "c0fa14a66e0a29b2cde182a2b1b4d59c18db551c9498db6439f97bc7ae4d21ec"
+  },
+  "errors": []
+}

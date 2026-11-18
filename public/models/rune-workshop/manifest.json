@@ -1,0 +1,439 @@
+{
+  "version": 1,
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "placement": "All positions are island-local, not world coordinates.",
+  "assets": [
+    {
+      "file": "island/workshop-island.glb",
+      "role": "Organic island, layered underside and reference anchors",
+      "placements": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "file": "architecture/rune-workshop.glb",
+      "role": "Open-front stone and timber workshop, roofs, rear windows and high rune arch",
+      "placements": [
+        {
+          "position": [
+            0,
+            0.2,
+            -0.6
+          ]
+        }
+      ]
+    },
+    {
+      "file": "workshop/rune-crafting-table.glb",
+      "role": "Central engraved crafting table and workpiece",
+      "placements": [
+        {
+          "position": [
+            0.55,
+            0.39,
+            -0.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "workshop/shelves-and-benches.glb",
+      "role": "Fitted component shelves, workbenches, books, jars, scrolls and lamps",
+      "placements": [
+        {
+          "position": [
+            0,
+            0.39,
+            -0.6
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-01.glb",
+      "role": "Rune relic",
+      "placements": [
+        {
+          "position": [
+            -6.4,
+            0.2,
+            1.55
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-02.glb",
+      "role": "Enchanted mechanism",
+      "placements": [
+        {
+          "position": [
+            -3.6,
+            0.2,
+            4.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-03.glb",
+      "role": "Crystal construction",
+      "placements": [
+        {
+          "position": [
+            0,
+            0.2,
+            5.15
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-04.glb",
+      "role": "Floating miniature architecture",
+      "placements": [
+        {
+          "position": [
+            3.6,
+            0.2,
+            4.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-05.glb",
+      "role": "Experimental spell instrument",
+      "placements": [
+        {
+          "position": [
+            6.4,
+            0.2,
+            1.55
+          ]
+        }
+      ]
+    },
+    {
+      "file": "workshop/crafting-tools.glb",
+      "role": "Hammer, tongs, measuring cup and small design scroll",
+      "placements": [
+        {
+          "position": [
+            3.45,
+            1.34,
+            -2.9
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/arcane-rings.glb",
+      "role": "Three independently pivoted rotating rings",
+      "placements": [
+        {
+          "position": [
+            0.55,
+            2.25,
+            -0.5
+          ],
+          "scale": [
+            0.7,
+            0.7,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/rune-symbol.glb",
+      "role": "Upright floating rune seal",
+      "placements": [
+        {
+          "position": [
+            0,
+            3.85,
+            -3.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/rune-floor-circle.glb",
+      "role": "Horizontal opaque emissive floor markings",
+      "placements": [
+        {
+          "position": [
+            0.55,
+            0.415,
+            -0.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/crystal-cluster.glb",
+      "role": "Faceted crystal group",
+      "placements": [
+        {
+          "position": [
+            -6.9,
+            0.2,
+            -1.8
+          ]
+        },
+        {
+          "position": [
+            6.9,
+            0.2,
+            -2.1
+          ]
+        },
+        {
+          "position": [
+            4.8,
+            0.2,
+            5.5
+          ],
+          "scale": [
+            0.7,
+            0.7,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/enchanted-scroll.glb",
+      "role": "Floating rolled parchment",
+      "placements": [
+        {
+          "position": [
+            -3.2,
+            2.1,
+            -2.9
+          ],
+          "rotation": [
+            0.16,
+            0,
+            0.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/floating-tome.glb",
+      "role": "Open floating spell book",
+      "placements": [
+        {
+          "position": [
+            3.55,
+            2.25,
+            -2.8
+          ],
+          "rotation": [
+            0.2,
+            0,
+            -0.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/decorative-artifacts.glb",
+      "role": "Small divination sphere and sealed hourglass ornament",
+      "placements": [
+        {
+          "position": [
+            -4.5,
+            1.34,
+            -2.9
+          ]
+        }
+      ]
+    },
+    {
+      "file": "decorations/enchanted-lamp.glb",
+      "role": "Warm post lamp",
+      "placements": [
+        {
+          "position": [
+            -7,
+            0.2,
+            3.7
+          ]
+        },
+        {
+          "position": [
+            7,
+            0.2,
+            3.7
+          ]
+        },
+        {
+          "position": [
+            -2,
+            0.2,
+            5.8
+          ]
+        },
+        {
+          "position": [
+            2,
+            0.2,
+            5.8
+          ]
+        }
+      ]
+    },
+    {
+      "file": "decorations/island-landscaping.glb",
+      "role": "Sparse plants, two rear trees, stone paths and edge rocks",
+      "placements": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/workshop-motes.glb",
+      "role": "Lightweight opaque animated mote group",
+      "placements": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "eisen": {
+    "file": "/models/transition/eisen.glb",
+    "root": "Eisen",
+    "clip": "eisen_idle",
+    "position": [
+      -1.5,
+      0.39,
+      0.55
+    ],
+    "yaw": 0.28,
+    "scale": 1,
+    "anchor": "EisenWorkAnchor",
+    "sha256": "d69f8fb6c191cbfd160148dbfc2afdb7442ac30f71f06b7ea1229d1be5d04b84"
+  },
+  "projectStations": [
+    {
+      "slotId": "project-slot-01",
+      "file": "project-displays/station-01.glb",
+      "node": "ProjectStation_01",
+      "position": [
+        -6.4,
+        0.2,
+        1.55
+      ],
+      "content": "provided by website"
+    },
+    {
+      "slotId": "project-slot-02",
+      "file": "project-displays/station-02.glb",
+      "node": "ProjectStation_02",
+      "position": [
+        -3.6,
+        0.2,
+        4.1
+      ],
+      "content": "provided by website"
+    },
+    {
+      "slotId": "project-slot-03",
+      "file": "project-displays/station-03.glb",
+      "node": "ProjectStation_03",
+      "position": [
+        0,
+        0.2,
+        5.15
+      ],
+      "content": "provided by website"
+    },
+    {
+      "slotId": "project-slot-04",
+      "file": "project-displays/station-04.glb",
+      "node": "ProjectStation_04",
+      "position": [
+        3.6,
+        0.2,
+        4.1
+      ],
+      "content": "provided by website"
+    },
+    {
+      "slotId": "project-slot-05",
+      "file": "project-displays/station-05.glb",
+      "node": "ProjectStation_05",
+      "position": [
+        6.4,
+        0.2,
+        1.55
+      ],
+      "content": "provided by website"
+    }
+  ],
+  "anchors": {
+    "entry": {
+      "node": "EntryAnchor",
+      "position": [
+        0,
+        0.23,
+        7
+      ],
+      "yaw": 0
+    },
+    "exit": {
+      "node": "ExitAnchor",
+      "position": [
+        7,
+        0.23,
+        -0.4
+      ],
+      "yaw": 1.5707963267948966
+    }
+  },
+  "suggestedLights": [
+    {
+      "type": "PointLight",
+      "position": [
+        0.55,
+        2.1,
+        -0.5
+      ],
+      "color": "#ffd79c",
+      "intensity": 3,
+      "distance": 7
+    },
+    {
+      "type": "PointLight",
+      "position": [
+        0,
+        3.5,
+        -3.5
+      ],
+      "color": "#9fa7fa",
+      "intensity": 2,
+      "distance": 7
+    }
+  ]
+}

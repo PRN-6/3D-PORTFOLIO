@@ -1,0 +1,226 @@
+{
+  "finite": true,
+  "uniqueGeometryTriangles": 57254,
+  "meshCount": 138,
+  "decodedTextureBindings": 34,
+  "drawCalls": 138,
+  "renderedTriangles": 82080,
+  "stations": [
+    {
+      "node": "ProjectStation_01",
+      "visibleSamples": 8,
+      "totalSamples": 9,
+      "screenCenter": [
+        -0.5322442124627235,
+        -0.016015913960892282,
+        0.9964287737041047
+      ],
+      "inFrame": true,
+      "raycast": true
+    },
+    {
+      "node": "ProjectStation_02",
+      "visibleSamples": 9,
+      "totalSamples": 9,
+      "screenCenter": [
+        -0.3311843650305331,
+        -0.13574143521538767,
+        0.9959884847713204
+      ],
+      "inFrame": true,
+      "raycast": true
+    },
+    {
+      "node": "ProjectStation_03",
+      "visibleSamples": 5,
+      "totalSamples": 9,
+      "screenCenter": [
+        -0.00013374412685696844,
+        -0.17681560985785996,
+        0.9957645333870491
+      ],
+      "inFrame": true,
+      "raycast": true
+    },
+    {
+      "node": "ProjectStation_04",
+      "visibleSamples": 9,
+      "totalSamples": 9,
+      "screenCenter": [
+        0.33210692559248806,
+        -0.12297722209591154,
+        0.9959797342755627
+      ],
+      "inFrame": true,
+      "raycast": true
+    },
+    {
+      "node": "ProjectStation_05",
+      "visibleSamples": 6,
+      "totalSamples": 9,
+      "screenCenter": [
+        0.5319826143917921,
+        -0.0069840953243571055,
+        0.9964290131150584
+      ],
+      "inFrame": true,
+      "raycast": true
+    }
+  ],
+  "eisenVisibility": {
+    "node": "Eisen",
+    "visibleSamples": 7,
+    "totalSamples": 9,
+    "screenCenter": [
+      -0.13134818484226848,
+      -0.0009157981445845607,
+      0.9965960267340054
+    ],
+    "inFrame": true
+  },
+  "anchors": [
+    {
+      "name": "EntryAnchor",
+      "position": [
+        0,
+        0.23,
+        7
+      ]
+    },
+    {
+      "name": "ExitAnchor",
+      "position": [
+        7,
+        0.23,
+        -0.4
+      ]
+    },
+    {
+      "name": "EisenWorkAnchor",
+      "position": [
+        -1.4999999999999998,
+        0.39,
+        0.55
+      ]
+    }
+  ],
+  "floorChecks": [
+    {
+      "name": "Eisen feet",
+      "surfaceHeight": 0.39650000333786034,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 0",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 1",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 2",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 3",
+      "surfaceHeight": 0.39650000333786034,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 4",
+      "surfaceHeight": 0.39650000333786034,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 5",
+      "surfaceHeight": 0.3965000033378599,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 6",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 7",
+      "surfaceHeight": 0.3800000071525574,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 8",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 9",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 10",
+      "surfaceHeight": 0.3965000033378601,
+      "valid": true
+    },
+    {
+      "name": "Crafting circle 11",
+      "surfaceHeight": 0.3800000071525574,
+      "valid": true
+    }
+  ],
+  "files": [
+    "island/workshop-island.glb",
+    "architecture/rune-workshop.glb",
+    "workshop/rune-crafting-table.glb",
+    "workshop/shelves-and-benches.glb",
+    "project-displays/station-01.glb",
+    "project-displays/station-02.glb",
+    "project-displays/station-03.glb",
+    "project-displays/station-04.glb",
+    "project-displays/station-05.glb",
+    "workshop/crafting-tools.glb",
+    "magical-objects/arcane-rings.glb",
+    "magical-objects/rune-symbol.glb",
+    "magical-objects/rune-floor-circle.glb",
+    "magical-objects/crystal-cluster.glb",
+    "magical-objects/enchanted-scroll.glb",
+    "magical-objects/floating-tome.glb",
+    "magical-objects/decorative-artifacts.glb",
+    "decorations/enchanted-lamp.glb",
+    "decorations/island-landscaping.glb",
+    "magical-objects/workshop-motes.glb"
+  ],
+  "mobileViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "errors": [],
+  "verifiedAt": "2026-11-18T14:31:20.462Z",
+  "browser": "Chrome/157.0.8103.79",
+  "renderer": "SwiftShader, no physical-device FPS benchmark",
+  "hashes": {
+    "island/workshop-island.glb": "a9402f71264c7fa8ab8f6a885c0fd0a1e9d83f6fd1b3c9658fc6d554232b813a",
+    "architecture/rune-workshop.glb": "e9da7a5534b0a43d6a31630e8a6e5ade3aaaff5ed33add6e84bd3861bb5fe3f7",
+    "workshop/rune-crafting-table.glb": "74e80542887fbb4820ced16a63f2370011b0e63a348164d59bf804166b40049c",
+    "workshop/shelves-and-benches.glb": "c58d249a91bdace71e9956c3196c702c03a43aa1cbc108dca5d2d08216fcb3d2",
+    "project-displays/station-01.glb": "85d4609a3d58e98ad5d8674b2a4b6f0b74be8a01cae4f5b0a346848764112650",
+    "project-displays/station-02.glb": "b6a0e15088766f51abf755a420f96c94b34108a86a45c406a2bdc36da2f57fcf",
+    "project-displays/station-03.glb": "a3d90b9c47212eb3b63d5f1618aae52a87261d0a4c99aab1a3088ce6a2d530cf",
+    "project-displays/station-04.glb": "1ccfdfbcc0b410770a84a1e4c5f96520fc1a56269d52a1c77aecee0f838c6003",
+    "project-displays/station-05.glb": "55e38d3d5a45dabf2eaf2177a4d866948489c7258ea71a128014e400b9ab8370",
+    "workshop/crafting-tools.glb": "4d8b38a456dff430d21b62da7db3e374215f71141f2ba9b4e85bb9ddda350060",
+    "magical-objects/arcane-rings.glb": "887f24d774d6364f88ba9da676fd9ce45e7af9873435cb10067e8a9fa8ad2cfa",
+    "magical-objects/rune-symbol.glb": "dcfe79897f473942347ff2f5e1a2ea1f23b359351fc101a462f56d1e36cb6e03",
+    "magical-objects/rune-floor-circle.glb": "c13afe6eabe9150992e941084ba1b4e30ab7e546dd9c63a7de69a86afa725ebf",
+    "magical-objects/crystal-cluster.glb": "16a57e39323d595be2cca7147d66f7cbe19b7956dbc000433cc9e438c8d32d61",
+    "magical-objects/enchanted-scroll.glb": "93479fb862863511f93ea38e820e608f0bd16221bbe96481f5f8786d2288154a",
+    "magical-objects/floating-tome.glb": "21c43099c27598f61e80b8723c9107a11e40aa6cc19133e55152ecde8ff80953",
+    "magical-objects/decorative-artifacts.glb": "e4f0dfd0e7d431091502265e11022aac6c50bdf866ae77b18ac34457f17afd33",
+    "decorations/enchanted-lamp.glb": "66908fc8954aee7e668c6940209e333f0a304019c81f8dde35c308d066941dc1",
+    "decorations/island-landscaping.glb": "65a432e5aaffc47f53357e2eaf2360e09d78ba14b9c6078e053c5902710f80de",
+    "magical-objects/workshop-motes.glb": "85623ca00181f39a4cc80a6e249437aff525e657e18560e6c30f76be4da0f6ef"
+  }
+}

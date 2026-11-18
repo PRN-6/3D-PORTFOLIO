@@ -7,13 +7,117 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #08090f;
+    background-color: #000000;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 }
 
 .font-fantasy {
   font-family: 'Cinzel', serif;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Four Distinct Artistic Typography Styles for PRINSON Title                */
+/* 1. Pixel Block (8-bit arcade)                                              */
+/* 2. Gothic Blackletter (ornamental medieval)                                */
+/* 3. Minimal Pixel (thin geometric terminal)                                 */
+/* 4. Luxury Editorial Serif (high-contrast fashion)                          */
+/* -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Press Start 2P';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'UnifrakturCook';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/UnifrakturCook-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Silkscreen';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Silkscreen-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Silkscreen';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/Silkscreen-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Bodoni Moda';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/BodoniModa-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Bodoni Moda';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/BodoniModa-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/Cinzel-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/Cinzel-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Courier Prime';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/CourierPrime-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/SpaceMono-Bold.ttf') format('truetype');
 }
 
 /* Glassmorphism helpers for minimal fantasy UI */
@@ -27,5 +131,23 @@
 
 .fantasy-glow {
   box-shadow: 0 0 20px -3px rgba(129, 140, 248, 0.25);
+}
+
+/* Responsive Navigation Breakpoints (Portrait Mobile & Landscape Mobile) */
+@media (max-width: 767px), (max-height: 500px) {
+  .mobile-nav-only {
+    display: flex !important;
+  }
+  .desktop-nav-only {
+    display: none !important;
+  }
+}
+@media (min-width: 768px) and (min-height: 501px) {
+  .mobile-nav-only {
+    display: none !important;
+  }
+  .desktop-nav-only {
+    display: flex !important;
+  }
 }
 

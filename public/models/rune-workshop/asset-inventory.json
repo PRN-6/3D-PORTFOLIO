@@ -1,0 +1,1175 @@
+{
+  "validatedAt": "2026-11-18T14:33:24.918Z",
+  "checks": "Inventory, GLB buffers/accessors/indices, finite data, bounds, normals/UVs, nondegenerate geometry, used materials, embedded PNGs and references, animation keys/targets, preservation hashes.",
+  "assetCount": 20,
+  "totalBytes": 2350480,
+  "totalTriangles": 34748,
+  "existingAssetsChecked": 84,
+  "existingAssetsUnchanged": true,
+  "eisen": {
+    "file": "/models/transition/eisen.glb",
+    "sha256": "d69f8fb6c191cbfd160148dbfc2afdb7442ac30f71f06b7ea1229d1be5d04b84",
+    "skins": 1,
+    "clips": [
+      "eisen_idle",
+      "eisen_jump",
+      "eisen_fall",
+      "eisen_landing_prepare",
+      "eisen_landing"
+    ]
+  },
+  "assets": [
+    {
+      "file": "island/workshop-island.glb",
+      "role": "Organic island, layered underside and reference anchors",
+      "bytes": 334808,
+      "sha256": "a9402f71264c7fa8ab8f6a885c0fd0a1e9d83f6fd1b3c9658fc6d554232b813a",
+      "dimensions": [
+        24.34,
+        6.291,
+        16.989
+      ],
+      "bounds": {
+        "min": [
+          -11.850813609351103,
+          -6,
+          -9.336758066770415
+        ],
+        "max": [
+          12.489413193939253,
+          0.2906782627105713,
+          7.6526618003845215
+        ]
+      },
+      "triangles": 3160,
+      "drawBatches": 18,
+      "materials": [
+        "stone",
+        "dark",
+        "grass",
+        "glow",
+        "violet",
+        "rune",
+        "moss"
+      ],
+      "textures": 1,
+      "animations": [
+        {
+          "name": "RockDrift_0",
+          "duration": 10,
+          "targets": [
+            {
+              "node": "SatelliteRock_0",
+              "path": "translation"
+            },
+            {
+              "node": "SatelliteRock_0",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RockDrift_1",
+          "duration": 11,
+          "targets": [
+            {
+              "node": "SatelliteRock_1",
+              "path": "translation"
+            },
+            {
+              "node": "SatelliteRock_1",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RockDrift_2",
+          "duration": 12,
+          "targets": [
+            {
+              "node": "SatelliteRock_2",
+              "path": "translation"
+            },
+            {
+              "node": "SatelliteRock_2",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RockDrift_3",
+          "duration": 13,
+          "targets": [
+            {
+              "node": "SatelliteRock_3",
+              "path": "translation"
+            },
+            {
+              "node": "SatelliteRock_3",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RockDrift_4",
+          "duration": 14,
+          "targets": [
+            {
+              "node": "SatelliteRock_4",
+              "path": "translation"
+            },
+            {
+              "node": "SatelliteRock_4",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RockDrift_5",
+          "duration": 15,
+          "targets": [
+            {
+              "node": "SatelliteRock_5",
+              "path": "translation"
+            },
+            {
+              "node": "SatelliteRock_5",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "file": "architecture/rune-workshop.glb",
+      "role": "Open-front stone and timber workshop, roofs, rear windows and high rune arch",
+      "bytes": 503256,
+      "sha256": "e9da7a5534b0a43d6a31630e8a6e5ade3aaaff5ed33add6e84bd3861bb5fe3f7",
+      "dimensions": [
+        11.95,
+        6.7,
+        8
+      ],
+      "bounds": {
+        "min": [
+          -5.974999904632568,
+          -2.4492937051703357e-16,
+          -5.550000190734863
+        ],
+        "max": [
+          5.974999904632568,
+          6.699999809265137,
+          2.450000047683716
+        ]
+      },
+      "triangles": 7724,
+      "drawBatches": 9,
+      "materials": [
+        "stone",
+        "edge",
+        "dark",
+        "wood",
+        "gold",
+        "violet",
+        "blue",
+        "flame",
+        "rune"
+      ],
+      "textures": 2,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            0,
+            0.2,
+            -0.6
+          ]
+        }
+      ]
+    },
+    {
+      "file": "workshop/rune-crafting-table.glb",
+      "role": "Central engraved crafting table and workpiece",
+      "bytes": 78444,
+      "sha256": "74e80542887fbb4820ced16a63f2370011b0e63a348164d59bf804166b40049c",
+      "dimensions": [
+        2.4,
+        1.65,
+        2.4
+      ],
+      "bounds": {
+        "min": [
+          -1.2000000476837158,
+          4.76837147544984e-9,
+          -1.2000000476837158
+        ],
+        "max": [
+          1.2000000476837158,
+          1.649999976158142,
+          1.2000000476837158
+        ]
+      },
+      "triangles": 1616,
+      "drawBatches": 6,
+      "materials": [
+        "wood",
+        "gold",
+        "dark",
+        "flame",
+        "edge",
+        "teal"
+      ],
+      "textures": 1,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            0.55,
+            0.39,
+            -0.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "workshop/shelves-and-benches.glb",
+      "role": "Fitted component shelves, workbenches, books, jars, scrolls and lamps",
+      "bytes": 257616,
+      "sha256": "c58d249a91bdace71e9956c3196c702c03a43aa1cbc108dca5d2d08216fcb3d2",
+      "dimensions": [
+        10.02,
+        2.78,
+        3.005
+      ],
+      "bounds": {
+        "min": [
+          -5.010000228881836,
+          -5.9604645663569045e-9,
+          -4.875
+        ],
+        "max": [
+          5.010000228881836,
+          2.7799999713897705,
+          -1.8700000047683716
+        ]
+      },
+      "triangles": 4472,
+      "drawBatches": 9,
+      "materials": [
+        "wood",
+        "teal",
+        "paper",
+        "violet",
+        "gold",
+        "rune",
+        "green",
+        "flame",
+        "dark"
+      ],
+      "textures": 1,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            0,
+            0.39,
+            -0.6
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-01.glb",
+      "role": "Rune relic",
+      "bytes": 102632,
+      "sha256": "85d4609a3d58e98ad5d8674b2a4b6f0b74be8a01cae4f5b0a346848764112650",
+      "dimensions": [
+        1.704,
+        1.718,
+        1.704
+      ],
+      "bounds": {
+        "min": [
+          -0.8519999980926514,
+          -4.439344675185111e-17,
+          -0.8519999980926514
+        ],
+        "max": [
+          0.8519999980926514,
+          1.7179999685287477,
+          0.8519999980926514
+        ]
+      },
+      "triangles": 1340,
+      "drawBatches": 7,
+      "materials": [
+        "dark",
+        "stone",
+        "edge",
+        "violet",
+        "rune",
+        "gold"
+      ],
+      "textures": 1,
+      "animations": [
+        {
+          "name": "ArtifactFloat_01",
+          "duration": 8,
+          "targets": [
+            {
+              "node": "Artifact_01",
+              "path": "translation"
+            },
+            {
+              "node": "Artifact_01",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            -6.4,
+            0.2,
+            1.55
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-02.glb",
+      "role": "Enchanted mechanism",
+      "bytes": 81824,
+      "sha256": "b6a0e15088766f51abf755a420f96c94b34108a86a45c406a2bdc36da2f57fcf",
+      "dimensions": [
+        1.704,
+        1.493,
+        1.704
+      ],
+      "bounds": {
+        "min": [
+          -0.8519999980926514,
+          5.9604643443123e-10,
+          -0.8519999980926514
+        ],
+        "max": [
+          0.8519999980926514,
+          1.4928389525413515,
+          0.8519999980926514
+        ]
+      },
+      "triangles": 1884,
+      "drawBatches": 5,
+      "materials": [
+        "wood",
+        "gold",
+        "teal",
+        "flame"
+      ],
+      "textures": 1,
+      "animations": [
+        {
+          "name": "MechanismTurn_02",
+          "duration": 24,
+          "targets": [
+            {
+              "node": "Artifact_02",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            -3.6,
+            0.2,
+            4.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-03.glb",
+      "role": "Crystal construction",
+      "bytes": 91532,
+      "sha256": "a3d90b9c47212eb3b63d5f1618aae52a87261d0a4c99aab1a3088ce6a2d530cf",
+      "dimensions": [
+        1.704,
+        1.85,
+        1.704
+      ],
+      "bounds": {
+        "min": [
+          -0.8519999980926514,
+          7.1525572131747595e-9,
+          -0.8519999980926514
+        ],
+        "max": [
+          0.8519999980926514,
+          1.8499999976158144,
+          0.8519999980926514
+        ]
+      },
+      "triangles": 1164,
+      "drawBatches": 6,
+      "materials": [
+        "stone",
+        "gold",
+        "glow",
+        "violet",
+        "teal"
+      ],
+      "textures": 1,
+      "animations": [
+        {
+          "name": "CrystalFloat_03",
+          "duration": 9,
+          "targets": [
+            {
+              "node": "Artifact_03",
+              "path": "translation"
+            },
+            {
+              "node": "Artifact_03",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            0,
+            0.2,
+            5.15
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-04.glb",
+      "role": "Floating miniature architecture",
+      "bytes": 95532,
+      "sha256": "1ccfdfbcc0b410770a84a1e4c5f96520fc1a56269d52a1c77aecee0f838c6003",
+      "dimensions": [
+        1.704,
+        1.84,
+        1.704
+      ],
+      "bounds": {
+        "min": [
+          -0.8519999980926514,
+          -4.2862636531758425e-17,
+          -0.8519999980926514
+        ],
+        "max": [
+          0.8519999980926514,
+          1.8400000071525575,
+          0.8519999980926514
+        ]
+      },
+      "triangles": 836,
+      "drawBatches": 9,
+      "materials": [
+        "stone",
+        "wood",
+        "edge",
+        "blue",
+        "violet",
+        "flame",
+        "rune"
+      ],
+      "textures": 2,
+      "animations": [
+        {
+          "name": "MiniatureFloat_04",
+          "duration": 11,
+          "targets": [
+            {
+              "node": "Artifact_04",
+              "path": "translation"
+            },
+            {
+              "node": "Artifact_04",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            3.6,
+            0.2,
+            4.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "project-displays/station-05.glb",
+      "role": "Experimental spell instrument",
+      "bytes": 80244,
+      "sha256": "55e38d3d5a45dabf2eaf2177a4d866948489c7258ea71a128014e400b9ab8370",
+      "dimensions": [
+        1.704,
+        1.783,
+        1.704
+      ],
+      "bounds": {
+        "min": [
+          -0.8519999980926514,
+          -3.5762786065873797e-9,
+          -0.8519999980926514
+        ],
+        "max": [
+          0.8519999980926514,
+          1.7829206919670106,
+          0.8519999980926514
+        ]
+      },
+      "triangles": 2160,
+      "drawBatches": 7,
+      "materials": [
+        "dark",
+        "gold",
+        "violet",
+        "glow",
+        "rune"
+      ],
+      "textures": 0,
+      "animations": [
+        {
+          "name": "ExperimentTurn_05",
+          "duration": 18,
+          "targets": [
+            {
+              "node": "Artifact_05",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            6.4,
+            0.2,
+            1.55
+          ]
+        }
+      ]
+    },
+    {
+      "file": "workshop/crafting-tools.glb",
+      "role": "Hammer, tongs, measuring cup and small design scroll",
+      "bytes": 30132,
+      "sha256": "4d8b38a456dff430d21b62da7db3e374215f71141f2ba9b4e85bb9ddda350060",
+      "dimensions": [
+        0.63,
+        0.21,
+        0.605
+      ],
+      "bounds": {
+        "min": [
+          -0.3149999976158142,
+          -1.2246468525851679e-17,
+          -0.20000000298023224
+        ],
+        "max": [
+          0.3149999976158142,
+          0.20999999344348907,
+          0.4050000011920929
+        ]
+      },
+      "triangles": 348,
+      "drawBatches": 4,
+      "materials": [
+        "wood",
+        "dark",
+        "gold",
+        "paper"
+      ],
+      "textures": 1,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            3.45,
+            1.34,
+            -2.9
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/arcane-rings.glb",
+      "role": "Three independently pivoted rotating rings",
+      "bytes": 76464,
+      "sha256": "887f24d774d6364f88ba9da676fd9ce45e7af9873435cb10067e8a9fa8ad2cfa",
+      "dimensions": [
+        2.15,
+        1.464,
+        2.15
+      ],
+      "bounds": {
+        "min": [
+          -1.0750000476837158,
+          -0.731913149356842,
+          -1.0750000476837158
+        ],
+        "max": [
+          1.0750000476837158,
+          0.731913149356842,
+          1.0750000476837158
+        ]
+      },
+      "triangles": 1632,
+      "drawBatches": 6,
+      "materials": [
+        "gold",
+        "glow",
+        "rune"
+      ],
+      "textures": 0,
+      "animations": [
+        {
+          "name": "RingOrbit_0",
+          "duration": 18,
+          "targets": [
+            {
+              "node": "RingPivot_0",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RingOrbit_1",
+          "duration": 25,
+          "targets": [
+            {
+              "node": "RingPivot_1",
+              "path": "rotation"
+            }
+          ]
+        },
+        {
+          "name": "RingOrbit_2",
+          "duration": 32,
+          "targets": [
+            {
+              "node": "RingPivot_2",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            0.55,
+            2.25,
+            -0.5
+          ],
+          "scale": [
+            0.7,
+            0.7,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/rune-symbol.glb",
+      "role": "Upright floating rune seal",
+      "bytes": 31160,
+      "sha256": "dcfe79897f473942347ff2f5e1a2ea1f23b359351fc101a462f56d1e36cb6e03",
+      "dimensions": [
+        0.984,
+        0.984,
+        0.028
+      ],
+      "bounds": {
+        "min": [
+          -0.492000013589859,
+          -0.492000013589859,
+          -0.014000000432133675
+        ],
+        "max": [
+          0.492000013589859,
+          0.492000013589859,
+          0.014000000432133675
+        ]
+      },
+      "triangles": 704,
+      "drawBatches": 2,
+      "materials": [
+        "rune",
+        "gold"
+      ],
+      "textures": 0,
+      "animations": [
+        {
+          "name": "RuneHover",
+          "duration": 9,
+          "targets": [
+            {
+              "node": "FloatingRune",
+              "path": "translation"
+            },
+            {
+              "node": "FloatingRune",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            0,
+            3.85,
+            -3.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/rune-floor-circle.glb",
+      "role": "Horizontal opaque emissive floor markings",
+      "bytes": 84756,
+      "sha256": "c13afe6eabe9150992e941084ba1b4e30ab7e546dd9c63a7de69a86afa725ebf",
+      "dimensions": [
+        4.064,
+        0.036,
+        4.064
+      ],
+      "bounds": {
+        "min": [
+          -2.0320000648498535,
+          0.006587321870028973,
+          -2.0320000648498535
+        ],
+        "max": [
+          2.0320000648498535,
+          0.0429999977350235,
+          2.0320000648498535
+        ]
+      },
+      "triangles": 2336,
+      "drawBatches": 2,
+      "materials": [
+        "rune",
+        "gold"
+      ],
+      "textures": 0,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            0.55,
+            0.415,
+            -0.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/crystal-cluster.glb",
+      "role": "Faceted crystal group",
+      "bytes": 54948,
+      "sha256": "16a57e39323d595be2cca7147d66f7cbe19b7956dbc000433cc9e438c8d32d61",
+      "dimensions": [
+        0.625,
+        0.986,
+        0.68
+      ],
+      "bounds": {
+        "min": [
+          -0.28732913732528687,
+          -0.18585440516471863,
+          -0.3592712879180908
+        ],
+        "max": [
+          0.3372243344783783,
+          0.800000011920929,
+          0.3207969069480896
+        ]
+      },
+      "triangles": 164,
+      "drawBatches": 3,
+      "materials": [
+        "stone",
+        "rune",
+        "teal"
+      ],
+      "textures": 1,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            -6.9,
+            0.2,
+            -1.8
+          ]
+        },
+        {
+          "position": [
+            6.9,
+            0.2,
+            -2.1
+          ]
+        },
+        {
+          "position": [
+            4.8,
+            0.2,
+            5.5
+          ],
+          "scale": [
+            0.7,
+            0.7,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/enchanted-scroll.glb",
+      "role": "Floating rolled parchment",
+      "bytes": 21716,
+      "sha256": "93479fb862863511f93ea38e820e608f0bd16221bbe96481f5f8786d2288154a",
+      "dimensions": [
+        0.636,
+        0.081,
+        0.5
+      ],
+      "bounds": {
+        "min": [
+          -0.31804224848747253,
+          -0.008999999612569809,
+          -0.25
+        ],
+        "max": [
+          0.31804224848747253,
+          0.07199999690055847,
+          0.25
+        ]
+      },
+      "triangles": 180,
+      "drawBatches": 3,
+      "materials": [
+        "paper",
+        "gold",
+        "wood"
+      ],
+      "textures": 1,
+      "animations": [
+        {
+          "name": "ScrollDrift",
+          "duration": 12,
+          "targets": [
+            {
+              "node": "EnchantedScroll",
+              "path": "translation"
+            },
+            {
+              "node": "EnchantedScroll",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            -3.2,
+            2.1,
+            -2.9
+          ],
+          "rotation": [
+            0.16,
+            0,
+            0.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/floating-tome.glb",
+      "role": "Open floating spell book",
+      "bytes": 26116,
+      "sha256": "21c43099c27598f61e80b8723c9107a11e40aa6cc19133e55152ecde8ff80953",
+      "dimensions": [
+        0.627,
+        0.123,
+        0.48
+      ],
+      "bounds": {
+        "min": [
+          -0.31357166171073914,
+          -0.04101330041885376,
+          -0.23999999463558197
+        ],
+        "max": [
+          0.31357166171073914,
+          0.0815502181649208,
+          0.23999999463558197
+        ]
+      },
+      "triangles": 192,
+      "drawBatches": 3,
+      "materials": [
+        "violet",
+        "paper",
+        "wood"
+      ],
+      "textures": 1,
+      "animations": [
+        {
+          "name": "TomeDrift",
+          "duration": 14,
+          "targets": [
+            {
+              "node": "FloatingTome",
+              "path": "translation"
+            },
+            {
+              "node": "FloatingTome",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            3.55,
+            2.25,
+            -2.8
+          ],
+          "rotation": [
+            0.2,
+            0,
+            -0.1
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/decorative-artifacts.glb",
+      "role": "Small divination sphere and sealed hourglass ornament",
+      "bytes": 29300,
+      "sha256": "e4f0dfd0e7d431091502265e11022aac6c50bdf866ae77b18ac34457f17afd33",
+      "dimensions": [
+        0.753,
+        0.38,
+        0.376
+      ],
+      "bounds": {
+        "min": [
+          -0.4031594693660736,
+          0.009999996051192284,
+          -0.18799999356269836
+        ],
+        "max": [
+          0.3499999940395355,
+          0.38999998569488525,
+          0.18799999356269836
+        ]
+      },
+      "triangles": 708,
+      "drawBatches": 3,
+      "materials": [
+        "blue",
+        "gold",
+        "teal"
+      ],
+      "textures": 0,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            -4.5,
+            1.34,
+            -2.9
+          ]
+        }
+      ]
+    },
+    {
+      "file": "decorations/enchanted-lamp.glb",
+      "role": "Warm post lamp",
+      "bytes": 78628,
+      "sha256": "66908fc8954aee7e668c6940209e333f0a304019c81f8dde35c308d066941dc1",
+      "dimensions": [
+        0.3,
+        1.574,
+        0.3
+      ],
+      "bounds": {
+        "min": [
+          -0.15000000596046448,
+          -9.184851394388759e-18,
+          -0.15000000596046448
+        ],
+        "max": [
+          0.15000000596046448,
+          1.5735000371932983,
+          0.15000000596046448
+        ]
+      },
+      "triangles": 664,
+      "drawBatches": 5,
+      "materials": [
+        "stone",
+        "wood",
+        "flame",
+        "gold",
+        "dark"
+      ],
+      "textures": 2,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            -7,
+            0.2,
+            3.7
+          ]
+        },
+        {
+          "position": [
+            7,
+            0.2,
+            3.7
+          ]
+        },
+        {
+          "position": [
+            -2,
+            0.2,
+            5.8
+          ]
+        },
+        {
+          "position": [
+            2,
+            0.2,
+            5.8
+          ]
+        }
+      ]
+    },
+    {
+      "file": "decorations/island-landscaping.glb",
+      "role": "Sparse plants, two rear trees, stone paths and edge rocks",
+      "bytes": 267252,
+      "sha256": "65a432e5aaffc47f53357e2eaf2360e09d78ba14b9c6078e053c5902710f80de",
+      "dimensions": [
+        18.699,
+        3.689,
+        13.815
+      ],
+      "bounds": {
+        "min": [
+          -9.191564559936523,
+          0.0578441359102726,
+          -6.905096530914307
+        ],
+        "max": [
+          9.50745677947998,
+          3.7465028762817383,
+          6.909999847412109
+        ]
+      },
+      "triangles": 3272,
+      "drawBatches": 7,
+      "materials": [
+        "moss",
+        "leaf",
+        "rune",
+        "stone",
+        "wood",
+        "leafDark",
+        "edge"
+      ],
+      "textures": 2,
+      "animations": [],
+      "placements": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "file": "magical-objects/workshop-motes.glb",
+      "role": "Lightweight opaque animated mote group",
+      "bytes": 24120,
+      "sha256": "85623ca00181f39a4cc80a6e249437aff525e657e18560e6c30f76be4da0f6ef",
+      "dimensions": [
+        6.657,
+        1.164,
+        5.587
+      ],
+      "bounds": {
+        "min": [
+          -3.692594289779663,
+          0.9547146558761597,
+          -2.5850586891174316
+        ],
+        "max": [
+          2.964613199234009,
+          2.1189663410186768,
+          3.00229549407959
+        ]
+      },
+      "triangles": 192,
+      "drawBatches": 1,
+      "materials": [
+        "flame"
+      ],
+      "textures": 0,
+      "animations": [
+        {
+          "name": "MoteDrift",
+          "duration": 15,
+          "targets": [
+            {
+              "node": "WorkshopMotes",
+              "path": "translation"
+            },
+            {
+              "node": "WorkshopMotes",
+              "path": "rotation"
+            }
+          ]
+        }
+      ],
+      "placements": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

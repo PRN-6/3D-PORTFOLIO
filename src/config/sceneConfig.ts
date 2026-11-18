@@ -49,6 +49,7 @@ export interface SceneConfig {
     scale: [number, number, number];
     rotation: [number, number, number];
   };
+  transitionMode?: 'EXPLODED' | 'STAIRCASE';
 }
 
 export const SCENE_CONFIG: SceneConfig = {
@@ -106,4 +107,5 @@ export const SCENE_CONFIG: SceneConfig = {
     scale: [1, 1, 1],
     rotation: [0, 0, 0],
   },
+  transitionMode: 'EXPLODED',
 };

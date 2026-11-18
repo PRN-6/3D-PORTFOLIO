@@ -132,6 +132,11 @@ const ModelScene: React.FC<{
   );
 };
 
+// Module-level cache so verified models never flash placeholder on remount
+const modelAvailabilityCache: Record<string, boolean> = {
+  '/models/home-island.glb': true,
+};
+
 /**
  * Reusable EnvironmentLoader:
  * - Checks model availability first to prevent unhandled 404 network crashes
@@ -147,7 +152,9 @@ export const EnvironmentLoader: React.FC<EnvironmentLoaderProps> = ({
   onHoverObject,
   onStatusChange,
 }) => {
-  const [modelAvailable, setModelAvailable] = useState<boolean | null>(null);
+  const [modelAvailable, setModelAvailable] = useState<boolean | null>(
+    modelAvailabilityCache[modelPath] ?? true
+  );
 
   useEffect(() => {
     let isCancelled = false;
@@ -160,11 +167,13 @@ export const EnvironmentLoader: React.FC<EnvironmentLoaderProps> = ({
         // Verify response is successful and not an HTML SPA fallback (404 returning index.html)
         const contentType = res.headers.get('content-type') || '';
         const isOk = res.ok && !contentType.includes('text/html');
+        modelAvailabilityCache[modelPath] = isOk;
         setModelAvailable(isOk);
         onStatusChange?.(isOk ? 'loading' : 'fallback');
       })
       .catch(() => {
         if (!isCancelled) {
+          modelAvailabilityCache[modelPath] = false;
           setModelAvailable(false);
           onStatusChange?.('fallback');
         }
