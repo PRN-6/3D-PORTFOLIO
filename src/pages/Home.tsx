@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Scene, type WorldState } from '../components/Scene/Scene';
 import { Navigation } from '../components/UI/Navigation';
 import { Footer } from '../components/UI/Footer';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
 import type { NavTabId } from '../components/UI/DestinationSelector';
+import { audioManager } from '../services/audioManager';
 import { HeroSubtitle } from '../components/UI/HeroSubtitle';
 import { FunModal } from '../components/UI/FunModal';
 import { ContactModal } from '../components/UI/ContactModal';
@@ -34,7 +35,6 @@ export const Home: React.FC = () => {
   // Application World State & Destination Tracking
   const [worldState, setWorldState] = useState<WorldState>('HOME_IDLE');
   const [activeDestination, setActiveDestination] = useState<DestinationId>('HOME');
-  const [isDestinationTransitioning, setIsDestinationTransitioning] = useState(false);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
@@ -69,7 +69,6 @@ export const Home: React.FC = () => {
   // UNIFIED MULTI-ISLAND DESTINATION SELECTION & HANDOVER
   // =========================================================================
   const handleDestinationReached = useCallback((dest: DestinationId) => {
-    setIsDestinationTransitioning(false);
     setActiveDestination(dest);
     if (dest === 'HOME') setWorldState('HOME_IDLE');
     else if (dest === 'ARCHIVE') setWorldState('ARCHIVE_WORLD');
@@ -90,7 +89,6 @@ export const Home: React.FC = () => {
       setSelectedGrimoire(null);
       setSelectedProject(null);
       setIsScrollOpen(false);
-      setIsDestinationTransitioning(true);
       setActiveDestination(dest);
     },
     [activeDestination]
@@ -206,21 +204,18 @@ export const Home: React.FC = () => {
     ? 'PROJECTS'
     : isProductsOpen
     ? 'PRODUCTS'
-    : worldState === 'WORKSHOP_WORLD' || activeDestination === 'WORKSHOP'
+    : activeDestination === 'WORKSHOP'
     ? 'PRODUCTS'
-    : worldState === 'FOREST_WORLD' || activeDestination === 'FOREST'
+    : activeDestination === 'FOREST'
     ? 'ABOUT'
-    : worldState === 'ARCHIVE_WORLD' || activeDestination === 'ARCHIVE'
+    : activeDestination === 'ARCHIVE'
     ? 'PROJECTS'
     : 'HOME';
 
-  const isTransitioning =
-    isDestinationTransitioning ||
-    worldState === 'TRANSITION_HOME_TO_ARCHIVE' ||
-    worldState === 'TRANSITION_ARCHIVE_TO_HOME' ||
-    worldState === 'TRANSITION_ARCHIVE_TO_FOREST' ||
-    worldState === 'TRANSITION_FOREST_TO_ARCHIVE' ||
-    worldState === 'TRANSITIONING_ISLAND';
+  // Synchronize Website-Wide Background Music with Active Section
+  useEffect(() => {
+    audioManager.setSection(activeNavTab);
+  }, [activeNavTab]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#000000]">
@@ -247,14 +242,11 @@ export const Home: React.FC = () => {
       />
 
       {/* Top-Right Navigation Header (Reset View + Responsive Mobile Hamburger Menu) */}
-      {!isTransitioning && (
-        <Navigation
-          onResetCamera={handleResetCamera}
-          activeNav={activeNavTab}
-          onSelectNav={handleSelectNav}
-          isTransitioning={isTransitioning}
-        />
-      )}
+      <Navigation
+        onResetCamera={handleResetCamera}
+        activeNav={activeNavTab}
+        onSelectNav={handleSelectNav}
+      />
 
       {/* HERO SUBTITLE: Just a Developer */}
       {worldState === 'HOME_IDLE' && <HeroSubtitle />}

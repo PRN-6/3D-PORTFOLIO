@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mail } from 'lucide-react';
+import { MusicControls } from './MusicControls';
 
 /**
  * GitHub SVG Icon
@@ -154,14 +155,18 @@ export const Footer: React.FC = () => {
         ))}
       </nav>
 
-      {/* 2. Bottom-Right: Copyright and Persistent Visitor Counter */}
-      <div
-        data-testid="footer-copyright-counter"
-        className="pointer-events-auto flex items-center font-mono text-[10px] sm:text-[11px] md:text-xs text-slate-400/80 tracking-wider"
-      >
-        <span>&copy; {currentYear}</span>
-        <span className="mx-1.5 sm:mx-2 text-slate-600 select-none">•</span>
-        <span>vis: {visitorCount}</span>
+      {/* 2. Bottom-Right: Music Controls + Copyright & Persistent Visitor Counter */}
+      <div className="flex items-center gap-3 sm:gap-4 pointer-events-auto">
+        <MusicControls />
+
+        <div
+          data-testid="footer-copyright-counter"
+          className="flex items-center font-mono text-[10px] sm:text-[11px] md:text-xs text-slate-400/80 tracking-wider whitespace-nowrap"
+        >
+          <span>&copy; {currentYear}</span>
+          <span className="mx-1.5 sm:mx-2 text-slate-600 select-none">•</span>
+          <span>vis: {visitorCount}</span>
+        </div>
       </div>
     </footer>
   );

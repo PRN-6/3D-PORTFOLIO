@@ -13,7 +13,6 @@ export const Navigation: React.FC<NavigationProps> = ({
   onResetCamera,
   activeNav = 'HOME',
   onSelectNav,
-  isTransitioning = false,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -40,7 +39,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   const handleItemClick = (tabId: NavTabId) => {
     setIsMenuOpen(false);
-    if (!isTransitioning && onSelectNav) {
+    if (onSelectNav) {
       onSelectNav(tabId);
     }
   };
@@ -65,14 +64,13 @@ export const Navigation: React.FC<NavigationProps> = ({
               <button
                 type="button"
                 onClick={() => handleItemClick(item.id)}
-                disabled={isTransitioning}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
                 className={`transition-colors duration-200 cursor-pointer lowercase ${
                   isActive
                     ? 'text-white font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
                     : 'text-zinc-500 hover:text-white'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                }`}
               >
                 {item.label}
               </button>
@@ -158,12 +156,11 @@ export const Navigation: React.FC<NavigationProps> = ({
                       role="menuitem"
                       type="button"
                       onClick={() => handleItemClick(item.id)}
-                      disabled={isTransitioning}
                       className={`w-full flex items-center justify-between px-3.5 py-2 rounded-lg font-mono text-xs tracking-wider transition-all select-none cursor-pointer text-left active:scale-[0.98] ${
                         isActive
                           ? 'bg-white/15 text-white font-medium border border-white/20 shadow-sm'
                           : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      }`}
                     >
                       <span className="lowercase">{item.label}</span>
                       {isActive && (
