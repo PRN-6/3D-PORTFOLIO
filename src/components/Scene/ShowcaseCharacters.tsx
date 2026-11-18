@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createPartyPalette } from './partyMaterials';
@@ -18,31 +18,31 @@ interface AssignedCharacter {
   patrolBounds: { minX: number; maxX: number; minZ: number; maxZ: number };
 }
 
-// 4 Assigned Characters on 4 Existing Cubes
+// 4 Assigned Characters on 4 Existing Cubes with balanced foreground spacing
 const ASSIGNMENTS: AssignedCharacter[] = [
   {
     name: 'Frieren',
     cubeIndex: 1, // cubix68 (upper left)
-    groundPos: [-0.8, -1.6, 6.0],
-    patrolBounds: { minX: -1.5, maxX: -0.2, minZ: 5.8, maxZ: 6.4 },
+    groundPos: [-0.9, -1.7, 6.0],
+    patrolBounds: { minX: -1.7, maxX: -0.2, minZ: 5.8, maxZ: 6.4 },
   },
   {
     name: 'Himmel',
     cubeIndex: 2, // code68 (upper right)
-    groundPos: [0.8, -1.6, 6.0],
-    patrolBounds: { minX: 0.2, maxX: 1.5, minZ: 5.8, maxZ: 6.4 },
+    groundPos: [0.9, -1.7, 6.0],
+    patrolBounds: { minX: 0.2, maxX: 1.7, minZ: 5.8, maxZ: 6.4 },
   },
   {
     name: 'Heiter',
     cubeIndex: 5, // programmer66 (mid left)
-    groundPos: [2.8, -1.6, 6.2],
-    patrolBounds: { minX: 1.8, maxX: 3.8, minZ: 6.0, maxZ: 6.6 },
+    groundPos: [2.8, -1.7, 6.2],
+    patrolBounds: { minX: 1.9, maxX: 3.8, minZ: 6.0, maxZ: 6.6 },
   },
   {
     name: 'Eisen',
     cubeIndex: 6, // web68 (mid right)
-    groundPos: [-2.8, -1.6, 6.2],
-    patrolBounds: { minX: -3.8, maxX: -1.8, minZ: 6.0, maxZ: 6.6 },
+    groundPos: [-2.8, -1.7, 6.2],
+    patrolBounds: { minX: -3.8, maxX: -1.9, minZ: 6.0, maxZ: 6.6 },
   },
 ];
 
@@ -70,6 +70,12 @@ interface ActorRuntime {
 export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
   onOccupiedCubesChange,
 }) => {
+  const { size } = useThree();
+  const isMobile = size.width < 768;
+  // Scaled down to ~35% of previous 1.45 (1.45 * 0.35 = 0.5075)
+  // Responsive: 0.51 on desktop (~10-11% viewport height), 0.44 on mobile
+  const characterScale = isMobile ? 0.44 : 0.51;
+
   const rootGroupRef = useRef<THREE.Group>(null);
   const actorsRef = useRef<ActorRuntime[]>([]);
   const startTimeRef = useRef<number | null>(null);
@@ -184,7 +190,7 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
       const palette = createPartyPalette();
       const paint = palette.dress(root);
 
-      clone.scale.set(1.45, 1.45, 1.45);
+      clone.scale.set(characterScale, characterScale, characterScale);
       clone.visible = false; // Hidden until materialization
 
       group.add(clone);
@@ -207,8 +213,8 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
       const cubeTopY = cubeBasePos.y + project.size / 2;
       const cubePhase = assignment.cubeIndex * 1.35;
 
-      // Start position directly above assigned cube
-      const startPos = new THREE.Vector3(cubeBasePos.x, cubeTopY + 1.2, cubeBasePos.z);
+      // Start position directly above assigned cube with proportionate hover offset
+      const startPos = new THREE.Vector3(cubeBasePos.x, cubeTopY + 0.65, cubeBasePos.z);
       clone.position.copy(startPos);
 
       // Start with idle clip ready
@@ -260,6 +266,11 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
     const actors = actorsRef.current;
     if (actors.length === 0) return;
 
+    // Maintain responsive scale across all screen resizes
+    for (const actor of actors) {
+      actor.root.scale.set(characterScale, characterScale, characterScale);
+    }
+
     // -------------------------------------------------------------------------
     // PHASE 1: MATERIALIZATION ON TOP OF CUBES (t = 0.8s -> 2.2s)
     // -------------------------------------------------------------------------
@@ -276,8 +287,8 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
         const bobY = Math.sin(tClock * 0.8 + actor.cubePhase) * 0.22;
         const bobX = Math.cos(tClock * 0.6 + actor.cubePhase) * 0.12;
 
-        // Touchdown from Y_top + 1.2 down onto Y_top
-        const dropOffset = (1.0 - matProgress) * 1.2;
+        // Touchdown from Y_top + 0.65 down onto Y_top
+        const dropOffset = (1.0 - matProgress) * 0.65;
         actor.currentPos.set(
           actor.cubeBasePos.x + bobX,
           actor.cubeTopY + bobY + dropOffset,
@@ -397,8 +408,8 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
       const u = THREE.MathUtils.clamp((elapsed - 5.5) / 2.7, 0, 1);
       // Cubic ease-out deceleration curve
       const easeOut = 1 - Math.pow(1 - u, 3);
-      // Small initial lift-off arc
-      const lift = Math.sin(u * Math.PI) * 0.35;
+      // Small initial lift-off arc proportionate to chibi scale
+      const lift = Math.sin(u * Math.PI) * 0.18;
 
       for (const actor of actors) {
         const [targetX, targetY, targetZ] = actor.assignment.groundPos;
@@ -474,7 +485,7 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
         } else if (!actor.hasLanded) {
           // Still in final descent
           const approachU = THREE.MathUtils.clamp((elapsed - 8.2) / (landTime - 8.2 + 0.001), 0, 1);
-          const currentY = THREE.MathUtils.lerp(targetY + 0.25, targetY, approachU);
+          const currentY = THREE.MathUtils.lerp(targetY + 0.12, targetY, approachU);
           actor.currentPos.set(targetX, currentY, targetZ);
           actor.root.position.copy(actor.currentPos);
         } else if (actor.hasLanded && !actor.hasFinishedLanding) {
@@ -568,11 +579,11 @@ export const ShowcaseCharacters: React.FC<ShowcaseCharactersProps> = ({
         actor.facing = THREE.MathUtils.damp(actor.facing, actor.targetFacing, 4.0, delta);
         actor.root.rotation.set(0, actor.facing, 0);
 
-        const walkStep = 0.7 * delta;
-        actor.currentPos.lerp(actor.targetPos, THREE.MathUtils.clamp(walkStep, 0, 0.2));
+        const walkStep = 0.38 * delta;
+        actor.currentPos.lerp(actor.targetPos, THREE.MathUtils.clamp(walkStep, 0, 0.15));
         actor.root.position.copy(actor.currentPos);
 
-        if (actor.currentPos.distanceTo(actor.targetPos) < 0.15) {
+        if (actor.currentPos.distanceTo(actor.targetPos) < 0.1) {
           actor.isWalking = false;
           // Next gentle roam in 7 to 15 seconds
           actor.nextRoamTime = elapsed + 7.0 + Math.random() * 8.0;
