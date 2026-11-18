@@ -132,7 +132,7 @@ export const Footer: React.FC = () => {
     <footer
       data-testid="portfolio-footer"
       aria-label="Portfolio Footer"
-      className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none select-none flex items-center justify-between p-3.5 sm:p-5 md:p-6 pb-[max(0.875rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]"
+      className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none select-none flex items-center justify-between p-3.5 sm:p-5 md:p-6 pb-[max(0.875rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]"
     >
       {/* 1. Bottom-Left: Social Icons */}
       <nav
