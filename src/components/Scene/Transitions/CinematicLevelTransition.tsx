@@ -1,7 +1,6 @@
 import React, { useRef, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Stars } from '@react-three/drei';
 import {
   MagicalFloatingStairs,
   DEFAULT_STAIRCASE_CONFIG,
@@ -168,20 +167,6 @@ export const CinematicLevelTransition: React.FC<CinematicLevelTransitionProps> =
 
   return (
     <group name={`CinematicTransitionRoot_${transitionName}`}>
-      {/* Deep Celestial Atmosphere & Floating Cosmic Stars */}
-      <color attach="background" args={['#030409']} />
-      <fog attach="fog" args={['#030409', 24, 88]} />
-
-      <Stars
-        radius={240}
-        depth={60}
-        count={3200}
-        factor={4.5}
-        saturation={0.9}
-        fade
-        speed={1.0}
-      />
-
       {/* Dedicated Transition Shaft Lighting illuminating the stone flights */}
       <ambientLight color="#334155" intensity={1.1} />
       <directionalLight position={[12, 24, 16]} intensity={1.6} color="#dbeafe" />

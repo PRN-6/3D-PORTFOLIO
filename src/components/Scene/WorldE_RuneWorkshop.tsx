@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF, useAnimations, Stars, Sparkles } from '@react-three/drei';
+import { useGLTF, useAnimations } from '@react-three/drei';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { PROJECTS_DATA, type ProjectItem } from '../../data/projectsData';
 import { createPartyPalette } from './partyMaterials';
@@ -212,16 +212,6 @@ export const WorldE_RuneWorkshop: React.FC<WorldERuneWorkshopProps> = ({
 }) => {
   return (
     <group name="WorldE_RuneWorkshopRoot" position={[0, 0, 0]}>
-      {/* Twilight Workshop Atmosphere */}
-      <color attach="background" args={['#060814']} />
-      <fog attach="fog" args={['#060814', 24, 80]} />
-
-      <Stars radius={220} depth={50} count={2500} factor={4.5} saturation={0.95} fade speed={1.2} />
-
-      {/* Floating Arcane Embers & Motes */}
-      <Sparkles count={70} scale={[24, 12, 24]} position={[0, 4, 0]} size={3.0} speed={0.4} color="#38bdf8" opacity={0.6} />
-      <Sparkles count={40} scale={[18, 8, 18]} position={[0, 2, 0]} size={2.5} speed={0.3} color="#f59e0b" opacity={0.5} />
-
       {/* Lighting Scheme verified from preview.js */}
       <directionalLight position={[-7, 12, 12]} intensity={2.0} color="#d2d6f1" castShadow />
       <hemisphereLight args={['#c5c8e6', '#343340', 1.2]} />

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Sparkles } from '@react-three/drei';
 import { WorldA_HeroIsland } from '../WorldA_HeroIsland';
 import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
@@ -85,7 +84,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   const archiveGroupRef = useRef<THREE.Group>(null);
   const forestGroupRef = useRef<THREE.Group>(null);
   const workshopGroupRef = useRef<THREE.Group>(null);
-  const particlesRef = useRef<THREE.Group>(null);
 
   // Original transforms snapshots
   const homeOriginalsRef = useRef<Map<string, OriginalTransform> | null>(null);
@@ -199,7 +197,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
       fromGroup.visible = true;
       toGroup.visible = false;
-      if (particlesRef.current) particlesRef.current.visible = false;
 
       phaseRef.current = 'DISASSEMBLE';
       phaseStartTimeRef.current = 0; // Trigger on next frame
@@ -237,7 +234,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
-      if (particlesRef.current) particlesRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'ARCHIVE_WORLD') {
       phaseRef.current = 'IDLE';
@@ -249,7 +245,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       }
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
-      if (particlesRef.current) particlesRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'FOREST_WORLD') {
       phaseRef.current = 'IDLE';
@@ -261,7 +256,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         if (forestOriginalsRef.current) restoreOriginalTransforms(forestGroupRef.current, forestOriginalsRef.current);
       }
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
-      if (particlesRef.current) particlesRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'WORKSHOP_WORLD') {
       phaseRef.current = 'IDLE';
@@ -273,7 +267,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         workshopGroupRef.current.visible = true;
         if (workshopOriginalsRef.current) restoreOriginalTransforms(workshopGroupRef.current, workshopOriginalsRef.current);
       }
-      if (particlesRef.current) particlesRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'TRANSITION_HOME_TO_ARCHIVE') {
       initiateTransition('HOME', 'ARCHIVE');
@@ -364,7 +357,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         // Advance to brief PAUSE in empty presentation space
         phaseRef.current = 'PAUSE';
         phaseStartTimeRef.current = now;
-        if (particlesRef.current) particlesRef.current.visible = true;
       }
     }
 
@@ -402,7 +394,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (elapsed >= PAUSE_DURATION) {
         phaseRef.current = 'REASSEMBLE';
         phaseStartTimeRef.current = now;
-        if (particlesRef.current) particlesRef.current.visible = false;
       }
     }
 
@@ -503,12 +494,6 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
       <group name="PresentationAnchorGroup" position={[0, 0, 0]}>
-        {/* Lingering magic particles in the presentation space during pause */}
-        <group ref={particlesRef} visible={false}>
-          <Sparkles count={50} scale={[14, 8, 14]} size={4.0} speed={1.2} color="#67e8f9" />
-          <Sparkles count={35} scale={[12, 6, 12]} size={3.5} speed={0.9} color="#c084fc" />
-        </group>
-
         {/* DESTINATION 1: Hero's Home */}
         <group
           ref={homeGroupRef}

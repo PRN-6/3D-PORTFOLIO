@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Stars, Sparkles } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { ArchiveEnvironment } from './Archive/ArchiveEnvironment';
 import { ArchiveFrieren } from './Archive/ArchiveFrieren';
@@ -144,31 +144,6 @@ export const WorldC_ArchiveIsland: React.FC<WorldCArchiveIslandProps> = ({
 }) => {
   return (
     <group name="WorldC_ArchiveIslandRoot">
-      {/* Deep Magical Twilight Atmosphere & Celestial Stars */}
-      <color attach="background" args={['#030409']} />
-      <fog attach="fog" args={['#030409', 22, 75]} />
-
-      <Stars
-        radius={220}
-        depth={50}
-        count={2500}
-        factor={4.5}
-        saturation={0.95}
-        fade
-        speed={1.2}
-      />
-
-      {/* Floating Arcane Dust Particles */}
-      <Sparkles
-        count={65}
-        scale={[24, 14, 24]}
-        position={[0, 4, 2]}
-        size={2.6}
-        speed={0.3}
-        color="#818cf8"
-        opacity={0.5}
-      />
-
       {/* Local Archive Atmosphere Accents */}
       {/* Electric Cyan Edge Bounce */}
       <directionalLight position={[12, -2, 6]} intensity={0.7} color="#38bdf8" />

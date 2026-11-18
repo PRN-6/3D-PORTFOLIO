@@ -4,7 +4,6 @@ import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
 import { ModularExplodedTransition } from './Transitions/ModularExplodedTransition';
-import { CosmicStarfieldBackground } from './Background/CosmicStarfieldBackground';
 import { CinematicBackgroundTitle } from './Title/CinematicBackgroundTitle';
 import type { ProjectItem } from '../../data/projectsData';
 import type { GrimoireItem } from '../../data/archiveData';
@@ -105,13 +104,10 @@ export const Scene: React.FC<SceneProps> = ({
       className="relative w-full h-full bg-[#000000] overflow-hidden select-none"
       onWheel={(e) => e.preventDefault()}
     >
-      {/* 1. Deep space starry/cosmic background layer */}
-      <CosmicStarfieldBackground />
-
-      {/* 2. Fixed cinematic screen-space DOM typography layer */}
+      {/* 1. Fixed cinematic screen-space DOM typography layer */}
       <CinematicBackgroundTitle />
 
-      {/* 3. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
+      {/* 2. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
       <Canvas
         className="relative z-10 w-full h-full"
         shadows

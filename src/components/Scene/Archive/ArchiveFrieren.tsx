@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, Suspense } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF, Sparkles } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { createPartyPalette } from '../partyMaterials';
 import { ModelErrorBoundary } from '../ModelErrorBoundary';
@@ -143,17 +143,6 @@ const ArchiveFrierenModel: React.FC<ArchiveFrierenProps> = ({
       <group ref={magicRef}>
         <primitive object={magicScene} />
       </group>
-
-      {/* Soft Ambient Reading Motes */}
-      <Sparkles
-        position={[0, 0.85, 0.45]}
-        count={20}
-        scale={[1.2, 0.8, 1.2]}
-        size={1.6}
-        speed={0.35}
-        color="#38bdf8"
-        opacity={0.65}
-      />
     </group>
   );
 };

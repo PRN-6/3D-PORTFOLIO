@@ -1,7 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { Sparkles } from '@react-three/drei';
 
 export interface StaircaseTimingConfig {
   /**
@@ -97,7 +96,6 @@ export const MagicalFloatingStairs: React.FC<MagicalFloatingStairsProps> = ({
 
   const stepMeshRefs = useRef<(THREE.Group | null)[]>([]);
   const leadLightRef = useRef<THREE.PointLight>(null);
-  const sparklesGroupRef = useRef<THREE.Group>(null);
 
   // ---------------------------------------------------------------------------
   // 1. Compute the Elegant Curved 3D Spline Through Empty Sky
@@ -294,19 +292,6 @@ export const MagicalFloatingStairs: React.FC<MagicalFloatingStairsProps> = ({
       }
     }
 
-    if (sparklesGroupRef.current) {
-      if (leadingStep && lightActive) {
-        sparklesGroupRef.current.position.set(
-          leadingStep.position.x,
-          leadingStep.position.y,
-          leadingStep.position.z
-        );
-        sparklesGroupRef.current.visible = true;
-      } else {
-        sparklesGroupRef.current.visible = false;
-      }
-    }
-
     // Expose debug telemetry for automated acceptance testing and profiling
     if (typeof window !== 'undefined') {
       (window as any).__MAGICAL_STAIRS_DEBUG__ = {
@@ -340,26 +325,6 @@ export const MagicalFloatingStairs: React.FC<MagicalFloatingStairsProps> = ({
         distance={7.5}
         decay={2}
       />
-
-      {/* ------------------------------------------------------------------- */}
-      {/* MAGICAL PARTICLES AT ACTIVE LEADING STEP                            */}
-      {/* ------------------------------------------------------------------- */}
-      <group ref={sparklesGroupRef}>
-        <Sparkles
-          count={45}
-          scale={[3.0, 2.0, 3.0]}
-          size={3.5}
-          speed={1.4}
-          color="#67e8f9"
-        />
-        <Sparkles
-          count={30}
-          scale={[2.5, 1.8, 2.5]}
-          size={3.0}
-          speed={1.0}
-          color="#c084fc"
-        />
-      </group>
 
       {/* ------------------------------------------------------------------- */}
       {/* INDIVIDUAL FLOATING CRYSTAL STEPS                                    */}

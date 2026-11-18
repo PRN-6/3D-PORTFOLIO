@@ -1,5 +1,4 @@
 import React from 'react';
-import { Stars, Sparkles } from '@react-three/drei';
 import { ForestEnvironment } from './Forest/ForestEnvironment';
 import { ForestConnectors } from './Forest/ForestConnectors';
 import { ForestHeiter } from './Forest/ForestHeiter';
@@ -25,31 +24,6 @@ export const WorldD_WhisperingForest: React.FC<WorldDWhisperingForestProps> = ({
 }) => {
   return (
     <group name="WorldD_WhisperingForestRoot">
-      {/* Deep Enchanted Twilight Forest Atmosphere */}
-      <color attach="background" args={['#040a14']} />
-      <fog attach="fog" args={['#040a14', 25, 85]} />
-
-      <Stars
-        radius={220}
-        depth={50}
-        count={2500}
-        factor={4.5}
-        saturation={0.95}
-        fade
-        speed={1.2}
-      />
-
-      {/* Floating Emerald & Cyan Fireflies */}
-      <Sparkles
-        count={70}
-        scale={[26, 14, 26]}
-        position={[0, 4, 0]}
-        size={2.8}
-        speed={0.35}
-        color="#34d399"
-        opacity={0.65}
-      />
-
       {/* Verified Lighting Scheme from preview.js */}
       {/* 1. Celestial Moon Directional Light */}
       <directionalLight position={[6, 12, 9]} intensity={1.8} color="#c4d0ef" />
