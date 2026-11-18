@@ -26,11 +26,20 @@ export const CameraController: React.FC<CameraControllerProps> = ({
 
   useLayoutEffect(() => {
     if (camera instanceof THREE.PerspectiveCamera) {
-      const framingScale = Math.min(1, ((size.width / size.height) * 0.84));
+      const aspect = size.width / size.height;
+
+      // On mobile, frame the model to fill ~94-96% screen width exactly as in the reference pic
+      const framingScale = isMobile
+        ? Math.min(0.65, aspect * 1.20)
+        : isTablet
+        ? Math.min(0.85, aspect * 0.95)
+        : Math.min(1.0, aspect * 0.84);
+
       const halfFov = THREE.MathUtils.degToRad(SCENE_CONFIG.camera.fov / 2);
       camera.setFocalLength((camera.getFilmHeight() * framingScale) / (2 * Math.tan(halfFov)));
+      camera.updateProjectionMatrix();
     }
-  }, [camera, size.width, size.height]);
+  }, [camera, size.width, size.height, isMobile, isTablet]);
 
   // Target positions
   const islandPos = useRef(new THREE.Vector3(...SCENE_CONFIG.camera.initialPosition));

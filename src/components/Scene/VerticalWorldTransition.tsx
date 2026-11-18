@@ -37,7 +37,7 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
 
   // Island default camera pose
   const islandCamPos = useMemo(() => new THREE.Vector3(14, 10, 14), []);
-  const islandTarget = useMemo(() => new THREE.Vector3(0, 0, 0), []);
+  const islandTarget = useMemo(() => new THREE.Vector3(0, 0.5, 0), []);
 
   // Showcase default camera pose: closely framed for mobile and tablet to eliminate empty space
   const showcaseCamPos = useMemo(
