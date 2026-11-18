@@ -5,6 +5,8 @@ import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { CameraController } from './CameraController';
 import { EnvironmentLoader } from './EnvironmentLoader';
 import { FantasySky } from './FantasySky';
+import { CubeShowcase } from './CubeShowcase';
+import type { ProjectItem } from '../../data/projectsData';
 
 export interface SceneProps {
   resetSignal?: number;
@@ -12,6 +14,9 @@ export interface SceneProps {
   onSelectObject?: (name: string, point?: THREE.Vector3) => void;
   onHoverObject?: (name: string | null) => void;
   onStatusChange?: (status: 'checking' | 'loading' | 'loaded' | 'fallback') => void;
+  showcaseActive?: boolean;
+  selectedProject?: ProjectItem | null;
+  onSelectProject?: (project: ProjectItem) => void;
 }
 
 export const Scene: React.FC<SceneProps> = ({
@@ -20,6 +25,9 @@ export const Scene: React.FC<SceneProps> = ({
   onSelectObject,
   onHoverObject,
   onStatusChange,
+  showcaseActive = false,
+  selectedProject = null,
+  onSelectProject = () => {},
 }) => {
   return (
     <div className="relative w-full h-full bg-[#08090f] overflow-hidden">
@@ -40,7 +48,7 @@ export const Scene: React.FC<SceneProps> = ({
           far: SCENE_CONFIG.camera.far,
         }}
       >
-        {/* Dynamic Fog (interpolated between day and night by FantasySky) */}
+        {/* Dynamic Fog (locked to night) */}
         <fog
           attach="fog"
           args={[
@@ -97,17 +105,26 @@ export const Scene: React.FC<SceneProps> = ({
           ]}
         />
 
-        {/* Floating Island Model & Characters */}
+        {/* Floating Island Model & Chibi Characters (Preserved in Realm) */}
         <EnvironmentLoader
           onSelectObject={onSelectObject}
           onHoverObject={onHoverObject}
           onStatusChange={onStatusChange}
         />
 
+        {/* 3D Floating Project Cubes Constellation */}
+        <CubeShowcase
+          active={showcaseActive}
+          selectedProject={selectedProject}
+          onSelectProject={onSelectProject}
+        />
+
         {/* Orbit Camera and Navigation Controller */}
         <CameraController
           resetSignal={resetSignal}
           onResetComplete={onResetComplete}
+          showcaseActive={showcaseActive}
+          selectedProject={selectedProject}
         />
       </Canvas>
     </div>

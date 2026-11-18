@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "rootMotion": "External root translation. Clips animate the skeleton around an origin at the soles.",
+  "source": "/models/home-island.glb",
+  "characters": {
+    "frieren": {
+      "url": "/models/transition/frieren.glb",
+      "texture": "frieren-expressions.png",
+      "root": "Frieren",
+      "clips": {
+        "idle": {
+          "name": "frieren_idle",
+          "duration": 5.2,
+          "loop": true
+        },
+        "jump": {
+          "name": "frieren_jump",
+          "duration": 1.25,
+          "loop": false
+        },
+        "fall": {
+          "name": "frieren_fall",
+          "duration": 2.4,
+          "loop": true
+        },
+        "landing_prepare": {
+          "name": "frieren_landing_prepare",
+          "duration": 1.4,
+          "loop": false
+        },
+        "landing": {
+          "name": "frieren_landing",
+          "duration": 1.1,
+          "loop": false
+        },
+        "magic_land": {
+          "name": "frieren_magic_land",
+          "duration": 2.8,
+          "loop": false
+        }
+      }
+    },
+    "himmel": {
+      "url": "/models/transition/himmel.glb",
+      "texture": "himmel-expressions.png",
+      "root": "Himmel",
+      "clips": {
+        "idle": {
+          "name": "himmel_idle",
+          "duration": 5.2,
+          "loop": true
+        },
+        "jump": {
+          "name": "himmel_jump",
+          "duration": 1.25,
+          "loop": false
+        },
+        "fall": {
+          "name": "himmel_fall",
+          "duration": 2.4,
+          "loop": true
+        },
+        "landing_prepare": {
+          "name": "himmel_landing_prepare",
+          "duration": 1.4,
+          "loop": false
+        },
+        "landing": {
+          "name": "himmel_landing",
+          "duration": 1.1,
+          "loop": false
+        }
+      }
+    },
+    "heiter": {
+      "url": "/models/transition/heiter.glb",
+      "texture": "heiter-expressions.png",
+      "root": "Heiter",
+      "clips": {
+        "idle": {
+          "name": "heiter_idle",
+          "duration": 5.2,
+          "loop": true
+        },
+        "jump": {
+          "name": "heiter_jump",
+          "duration": 1.25,
+          "loop": false
+        },
+        "fall": {
+          "name": "heiter_fall",
+          "duration": 2.4,
+          "loop": true
+        },
+        "landing_prepare": {
+          "name": "heiter_landing_prepare",
+          "duration": 1.4,
+          "loop": false
+        },
+        "landing": {
+          "name": "heiter_landing",
+          "duration": 1.1,
+          "loop": false
+        }
+      }
+    },
+    "eisen": {
+      "url": "/models/transition/eisen.glb",
+      "texture": "eisen-expressions.png",
+      "root": "Eisen",
+      "clips": {
+        "idle": {
+          "name": "eisen_idle",
+          "duration": 5.2,
+          "loop": true
+        },
+        "jump": {
+          "name": "eisen_jump",
+          "duration": 1.25,
+          "loop": false
+        },
+        "fall": {
+          "name": "eisen_fall",
+          "duration": 2.4,
+          "loop": true
+        },
+        "landing_prepare": {
+          "name": "eisen_landing_prepare",
+          "duration": 1.4,
+          "loop": false
+        },
+        "landing": {
+          "name": "eisen_landing",
+          "duration": 1.1,
+          "loop": false
+        }
+      }
+    }
+  },
+  "effects": "/models/transition/frieren-magic.glb",
+  "showcase": "/models/transition/project-display.glb"
+}
