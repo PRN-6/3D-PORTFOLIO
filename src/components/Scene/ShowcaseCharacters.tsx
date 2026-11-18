@@ -8,29 +8,30 @@ import { createPartyPalette } from './partyMaterials';
 interface CharacterConfig {
   name: 'Frieren' | 'Himmel' | 'Heiter' | 'Eisen';
   groundPos: [number, number, number];
-  patrolBounds: { minX: number; maxX: number; minZ: number; maxZ: number };
+  facing: number;
 }
 
+// Fixed, stationary world positions and forward-facing angles for the 4 companions
 const CHARACTERS: CharacterConfig[] = [
+  {
+    name: 'Eisen',
+    groundPos: [-2.8, -1.7, 6.2],
+    facing: 0.12, // Gently angled toward center
+  },
   {
     name: 'Frieren',
     groundPos: [-0.9, -1.7, 6.0],
-    patrolBounds: { minX: -1.7, maxX: -0.2, minZ: 5.8, maxZ: 6.4 },
+    facing: 0.04,
   },
   {
     name: 'Himmel',
     groundPos: [0.9, -1.7, 6.0],
-    patrolBounds: { minX: 0.2, maxX: 1.7, minZ: 5.8, maxZ: 6.4 },
+    facing: -0.04,
   },
   {
     name: 'Heiter',
     groundPos: [2.8, -1.7, 6.2],
-    patrolBounds: { minX: 1.9, maxX: 3.8, minZ: 6.0, maxZ: 6.6 },
-  },
-  {
-    name: 'Eisen',
-    groundPos: [-2.8, -1.7, 6.2],
-    patrolBounds: { minX: -3.8, maxX: -1.9, minZ: 6.0, maxZ: 6.6 },
+    facing: -0.12, // Gently angled toward center
   },
 ];
 
@@ -40,20 +41,12 @@ interface ActorRuntime {
   mixer: THREE.AnimationMixer;
   palette: ReturnType<typeof createPartyPalette>;
   paint?: ReturnType<ReturnType<typeof createPartyPalette>['dress']>;
-  config: CharacterConfig;
-  currentPos: THREE.Vector3;
-  targetPos: THREE.Vector3;
-  facing: number;
-  targetFacing: number;
-  isWalking: boolean;
-  nextRoamTime: number;
 }
 
 export const ShowcaseCharacters: React.FC = () => {
   const { size } = useThree();
   const isMobile = size.width < 768;
-  // Scaled down to ~35% of previous 1.45 (1.45 * 0.35 = 0.5075)
-  // Responsive: 0.51 on desktop (~10-11% viewport height), 0.44 on mobile
+  // Scaled down to ~35% (0.51 desktop, 0.44 mobile)
   const characterScale = isMobile ? 0.44 : 0.51;
 
   const rootGroupRef = useRef<THREE.Group>(null);
@@ -75,7 +68,7 @@ export const ShowcaseCharacters: React.FC = () => {
     [frierenGltf, himmelGltf, heiterGltf, eisenGltf]
   );
 
-  // Initialize all 4 Characters in their grounded positions with idle animations
+  // Initialize all 4 Characters in their stationary grounded positions with idle animations
   useEffect(() => {
     if (!rootGroupRef.current) return;
     const group = rootGroupRef.current;
@@ -90,10 +83,11 @@ export const ShowcaseCharacters: React.FC = () => {
       const paint = palette.dress(root);
 
       clone.scale.set(characterScale, characterScale, characterScale);
-      const initialPos = new THREE.Vector3(...config.groundPos);
-      clone.position.copy(initialPos);
+      clone.position.set(...config.groundPos);
+      clone.rotation.set(0, config.facing, 0);
       clone.visible = true;
 
+      // Enable casting soft contact shadows onto the small land platform
       clone.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           child.castShadow = true;
@@ -117,13 +111,6 @@ export const ShowcaseCharacters: React.FC = () => {
         mixer,
         palette,
         paint,
-        config,
-        currentPos: initialPos.clone(),
-        targetPos: initialPos.clone(),
-        facing: 0,
-        targetFacing: (Math.random() - 0.5) * 0.3,
-        isWalking: false,
-        nextRoamTime: 4.0 + Math.random() * 6.0,
       });
     }
 
@@ -139,56 +126,18 @@ export const ShowcaseCharacters: React.FC = () => {
     };
   }, [gltfMap, characterScale]);
 
-  // Autonomous natural roaming & idle breathing
-  useFrame((state, delta) => {
-    const elapsed = state.clock.getElapsedTime();
+  // Keep characters strictly stationary in world space: only update idle animation mixers
+  useFrame((_, delta) => {
     const actors = actorsRef.current;
     if (actors.length === 0) return;
 
     for (const actor of actors) {
-      // Maintain responsive scale across window resizing
+      // Keep scale responsive on window resize without affecting stationary position
       actor.root.scale.set(characterScale, characterScale, characterScale);
-
-      const bounds = actor.config.patrolBounds;
-
-      // Roaming destination pick
-      if (elapsed > actor.nextRoamTime && !actor.isWalking) {
-        const targetX = THREE.MathUtils.lerp(bounds.minX, bounds.maxX, Math.random());
-        const targetZ = THREE.MathUtils.lerp(bounds.minZ, bounds.maxZ, Math.random());
-
-        actor.targetPos.set(targetX, actor.config.groundPos[1], targetZ);
-
-        const dx = targetX - actor.currentPos.x;
-        const dz = targetZ - actor.currentPos.z;
-        actor.targetFacing = Math.atan2(dx, dz);
-        actor.isWalking = true;
-      }
-
-      // Smooth strolling movement
-      if (actor.isWalking) {
-        actor.facing = THREE.MathUtils.damp(actor.facing, actor.targetFacing, 4.0, delta);
-        actor.root.rotation.set(0, actor.facing, 0);
-
-        const walkStep = 0.38 * delta;
-        actor.currentPos.lerp(actor.targetPos, THREE.MathUtils.clamp(walkStep, 0, 0.15));
-        actor.root.position.copy(actor.currentPos);
-
-        if (actor.currentPos.distanceTo(actor.targetPos) < 0.1) {
-          actor.isWalking = false;
-          // Next gentle stroll in 8 to 16 seconds
-          actor.nextRoamTime = elapsed + 8.0 + Math.random() * 8.0;
-          // Naturally face forward toward the floating project cubes
-          actor.targetFacing = (Math.random() - 0.5) * 0.35;
-        }
-      } else {
-        // Idle gentle orientation toward project cubes
-        actor.facing = THREE.MathUtils.damp(actor.facing, actor.targetFacing, 2.5, delta);
-        actor.root.rotation.set(0, actor.facing, 0);
-      }
-
+      // Advance idle animation (breathing, blinking, head motion)
       actor.mixer.update(delta);
     }
   });
 
-  return <group ref={rootGroupRef} name="ShowcaseCharactersContainer" />;
+  return <group ref={rootGroupRef} name="StationaryCharactersContainer" />;
 };

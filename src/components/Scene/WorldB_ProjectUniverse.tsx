@@ -12,6 +12,7 @@ interface WorldBProjectUniverseProps {
   onSelectProject: (project: ProjectItem) => void;
   resetSignal?: number;
   onResetComplete?: () => void;
+  cubeGroupOffsetY?: number;
 }
 
 export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
@@ -20,6 +21,7 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
   onSelectProject,
   resetSignal = 0,
   onResetComplete,
+  cubeGroupOffsetY = 0,
 }) => {
   return (
     <group name="WorldB_ProjectUniverseRoot">
@@ -70,18 +72,20 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
       {/* Electric Cyan Edge Bounce */}
       <directionalLight position={[14, -4, 8]} intensity={0.8} color="#38bdf8" />
 
-      {/* Floating Small Land / Pathway for Characters to Walk */}
-      <SmallLandPlatform />
+      {/* 1. INDEPENDENT STATIONARY CHARACTER GROUP - Never affected by cube motion */}
+      <group name="CharacterGroup" position={[0, 0, 0]}>
+        <SmallLandPlatform />
+        <ShowcaseCharacters />
+      </group>
 
-      {/* Four Chibi Characters with grounded idle animations & roaming */}
-      <ShowcaseCharacters />
-
-      {/* 3D Floating Project Cubes Constellation */}
-      <CubeShowcase
-        active={true}
-        selectedProject={selectedProject}
-        onSelectProject={onSelectProject}
-      />
+      {/* 2. INDEPENDENT PROJECT CUBE GROUP - Only cubes float and translate */}
+      <group name="ProjectCubeGroup" position={[0, cubeGroupOffsetY, 0]}>
+        <CubeShowcase
+          active={true}
+          selectedProject={selectedProject}
+          onSelectProject={onSelectProject}
+        />
+      </group>
 
       {/* Camera Controller for Project Universe */}
       {!disableCamera && (

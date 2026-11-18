@@ -26,9 +26,11 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
   const startTimeRef = useRef<number | null>(null);
   const completedRef = useRef(false);
 
-  // Group references for vertical translation
+  // Group reference for island translation only
   const islandGroupRef = useRef<THREE.Group>(null);
-  const universeGroupRef = useRef<THREE.Group>(null);
+  const [cubeOffsetY, setCubeOffsetY] = React.useState<number>(
+    direction === 'DOWN' ? -38 : 0
+  );
 
   const isMobile = size.width < 768;
 
@@ -69,13 +71,16 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
 
     if (direction === 'DOWN') {
       // -----------------------------------------------------------
-      // TRAVEL DOWNWARD: Island moves UP & out, Project Universe enters from BELOW
+      // TRAVEL DOWNWARD:
+      // Island moves UP & out of view
+      // Characters remain STATIONARY at their grounded positions
+      // ONLY the project cubes smoothly emerge upward from below
       // -----------------------------------------------------------
       const islandY = eased * VERTICAL_TRAVEL;
-      const universeY = (1 - eased) * -VERTICAL_TRAVEL;
+      const currentCubeOffset = (1 - eased) * -VERTICAL_TRAVEL;
 
       if (islandGroupRef.current) islandGroupRef.current.position.set(0, islandY, 0);
-      if (universeGroupRef.current) universeGroupRef.current.position.set(0, universeY, 0);
+      setCubeOffsetY(currentCubeOffset);
 
       // Camera smoothly descends from current island position to showcase position
       const plungeDip = Math.sin(eased * Math.PI) * 1.2;
@@ -91,13 +96,16 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
       camera.lookAt(curTargetX, curTargetY, curTargetZ);
     } else {
       // -----------------------------------------------------------
-      // TRAVEL UPWARD (RETURN): Universe moves DOWN & out, Island enters from ABOVE
+      // TRAVEL UPWARD (RETURN):
+      // ONLY the project cubes smoothly sink downward out of view
+      // Characters remain STATIONARY at their grounded positions
+      // Island smoothly descends into view from above
       // -----------------------------------------------------------
-      const universeY = eased * -VERTICAL_TRAVEL;
+      const currentCubeOffset = eased * -VERTICAL_TRAVEL;
       const islandY = (1 - eased) * VERTICAL_TRAVEL;
 
-      if (universeGroupRef.current) universeGroupRef.current.position.set(0, universeY, 0);
       if (islandGroupRef.current) islandGroupRef.current.position.set(0, islandY, 0);
+      setCubeOffsetY(currentCubeOffset);
 
       // Camera smoothly ascends from showcase back to island home
       const liftArc = Math.sin(eased * Math.PI) * 1.2;
@@ -121,19 +129,20 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
 
   return (
     <group name="VerticalWorldTransitionRoot">
-      {/* World A: Floating Island */}
+      {/* World A: Floating Island (Animates vertically during transition) */}
       <group ref={islandGroupRef} name="TransitionIslandGroup">
         <WorldA_HeroIsland disableCamera={true} />
       </group>
 
-      {/* World B: Project Universe */}
-      <group ref={universeGroupRef} name="TransitionUniverseGroup">
-        <WorldB_ProjectUniverse
-          disableCamera={true}
-          selectedProject={selectedProject}
-          onSelectProject={onSelectProject}
-        />
-      </group>
+      {/* World B: Project Universe
+          - Characters & Land remain STATIONARY in world space at Y=0
+          - Only ProjectCubeGroup translates with cubeGroupOffsetY */}
+      <WorldB_ProjectUniverse
+        disableCamera={true}
+        selectedProject={selectedProject}
+        onSelectProject={onSelectProject}
+        cubeGroupOffsetY={cubeOffsetY}
+      />
     </group>
   );
 };
