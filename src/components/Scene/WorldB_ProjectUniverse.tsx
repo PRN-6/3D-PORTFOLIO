@@ -2,6 +2,7 @@ import React from 'react';
 import { Stars, Sparkles } from '@react-three/drei';
 import { CubeShowcase } from './CubeShowcase';
 import { ShowcaseCharacters } from './ShowcaseCharacters';
+import { SmallLandPlatform } from './SmallLandPlatform';
 import { CameraController } from './CameraController';
 import type { ProjectItem } from '../../data/projectsData';
 
@@ -68,6 +69,9 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
 
       {/* Electric Cyan Edge Bounce */}
       <directionalLight position={[14, -4, 8]} intensity={0.8} color="#38bdf8" />
+
+      {/* Floating Small Land / Pathway for Characters to Walk */}
+      <SmallLandPlatform />
 
       {/* Four Chibi Characters with grounded idle animations & roaming */}
       <ShowcaseCharacters />

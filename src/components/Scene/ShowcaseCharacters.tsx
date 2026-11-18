@@ -94,6 +94,12 @@ export const ShowcaseCharacters: React.FC = () => {
       clone.position.copy(initialPos);
       clone.visible = true;
 
+      clone.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          child.castShadow = true;
+        }
+      });
+
       group.add(clone);
 
       const mixer = new THREE.AnimationMixer(clone);

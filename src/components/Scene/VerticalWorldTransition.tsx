@@ -137,3 +137,4 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
     </group>
   );
 };
+
