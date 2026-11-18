@@ -135,15 +135,12 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
       </group>
 
       {/* World B: Project Universe
-          - Characters & Land remain STATIONARY in world space at Y=0
-          - Only ProjectCubeGroup translates with cubeGroupOffsetY
-          - Characters are hidden during transition so they never appear under island */}
+          - Only ProjectCubeGroup translates with cubeGroupOffsetY */}
       <WorldB_ProjectUniverse
         disableCamera={true}
         selectedProject={selectedProject}
         onSelectProject={onSelectProject}
         cubeGroupOffsetY={cubeOffsetY}
-        showCharacters={false}
       />
     </group>
   );

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Stars, Sparkles } from '@react-three/drei';
 import { CubeShowcase } from './CubeShowcase';
-import { ShowcaseCharacters } from './ShowcaseCharacters';
 import { CameraController } from './CameraController';
 import type { ProjectItem } from '../../data/projectsData';
 
@@ -12,7 +11,6 @@ interface WorldBProjectUniverseProps {
   resetSignal?: number;
   onResetComplete?: () => void;
   cubeGroupOffsetY?: number;
-  showCharacters?: boolean;
 }
 
 export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
@@ -22,7 +20,6 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
   resetSignal = 0,
   onResetComplete,
   cubeGroupOffsetY = 0,
-  showCharacters = true,
 }) => {
   return (
     <group name="WorldB_ProjectUniverseRoot">
@@ -73,14 +70,7 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
       {/* Electric Cyan Edge Bounce */}
       <directionalLight position={[14, -4, 8]} intensity={0.8} color="#38bdf8" />
 
-      {/* 1. INDEPENDENT STATIONARY CHARACTER GROUP - Never affected by cube motion */}
-      {showCharacters && (
-        <group name="CharacterGroup" position={[0, 0, 0]}>
-          <ShowcaseCharacters />
-        </group>
-      )}
-
-      {/* 2. INDEPENDENT PROJECT CUBE GROUP - Only cubes float and translate */}
+      {/* Independent Project Cube Group - Only cubes float and translate */}
       <group name="ProjectCubeGroup" position={[0, cubeGroupOffsetY, 0]}>
         <CubeShowcase
           active={true}
