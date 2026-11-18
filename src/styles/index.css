@@ -151,6 +151,17 @@
   }
 }
 
+/* ========================================================================== */
+/* Mobile-Only PRINSON Typography Elevation (30–45px upward)                  */
+/* Exclusively targets mobile screen sizes (max-width: 767px)                 */
+/* Preserves existing desktop and tablet layouts exactly                      */
+/* ========================================================================== */
+@media (max-width: 767px) {
+  .prinson-title-mobile-lift {
+    transform: translateY(-38px);
+  }
+}
+
 /* Animated Music Equalizer Bars */
 @keyframes music-bar-1 {
   0%, 100% { height: 25%; }

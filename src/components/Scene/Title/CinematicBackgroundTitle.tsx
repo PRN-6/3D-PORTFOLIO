@@ -115,6 +115,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
         totalStyles: PRINSON_FONT_STYLES.length,
         styles: PRINSON_FONT_STYLES,
         isFixedToScreen: true,
+        mobileOffsetY: -38,
       };
       (window as any).__CINEMATIC_TITLE_STATE__ = {
         word: 'PRINSON',
@@ -124,6 +125,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
         letterSpacing: PRINSON_FONT_STYLES[activeStyleIndex].letterSpacing,
         fontSize: PRINSON_FONT_STYLES[activeStyleIndex].fontSize,
         isFixedToScreen: true,
+        mobileOffsetY: -38,
       };
       (window as any).__PRINSON_SET_FONT_INDEX__ = (idx: number) => {
         setActiveStyleIndex(((idx % PRINSON_FONT_STYLES.length) + PRINSON_FONT_STYLES.length) % PRINSON_FONT_STYLES.length);
@@ -137,7 +139,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
       aria-label="PRINSON"
       className="fixed inset-0 w-full h-full flex items-center justify-center pointer-events-none select-none z-[1] overflow-hidden"
     >
-      <div className="relative flex items-center justify-center w-full h-full max-w-full text-center">
+      <div className="prinson-title-mobile-lift relative flex items-center justify-center w-full h-full max-w-full text-center">
         {PRINSON_FONT_STYLES.map((style, index) => {
           const isActive = index === activeStyleIndex;
           return (
