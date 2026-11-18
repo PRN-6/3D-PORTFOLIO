@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { Scene, type WorldState } from '../components/Scene/Scene';
 import { Navigation } from '../components/UI/Navigation';
 import { Footer } from '../components/UI/Footer';
+import { MusicControls } from '../components/UI/MusicControls';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
 import type { NavTabId } from '../components/UI/DestinationSelector';
 import { audioManager } from '../services/audioManager';
@@ -240,6 +241,9 @@ export const Home: React.FC = () => {
         onTransitionFromForestToArchiveComplete={handleTransitionFromForestToArchiveComplete}
         onDestinationReached={handleDestinationReached}
       />
+
+      {/* Fixed Top-Left Minimalist Music Player Capsule (Desktop & Mobile) */}
+      <MusicControls />
 
       {/* Top-Right Navigation Header (Reset View + Responsive Mobile Hamburger Menu) */}
       <Navigation

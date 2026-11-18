@@ -193,3 +193,36 @@
   animation: music-bar-4 0.65s ease-in-out infinite;
 }
 
+/* Custom styling for compact music slider */
+input[type="range"].music-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #27272a;
+  height: 3px;
+  border-radius: 9999px;
+  outline: none;
+}
+input[type="range"].music-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+  transition: transform 0.1s ease;
+}
+input[type="range"].music-volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+input[type="range"].music-volume-slider::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+

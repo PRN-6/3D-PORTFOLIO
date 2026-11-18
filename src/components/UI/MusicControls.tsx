@@ -5,12 +5,13 @@ import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 /**
  * MusicControls
  *
- * Minimal, elegant audio control widget:
+ * Minimal, elegant audio control capsule fixed in the top-left corner:
  * - Animated soundbar equalizer indicator (animates when actively playing)
- * - Music ON / OFF / Play / Pause toggle
- * - Direct volume slider & mute button
- * - Displays active section soundtrack filename
- * - Discreet in bottom-right area on desktop, fully responsive on mobile
+ * - Active section soundtrack filename
+ * - Play / Pause toggle
+ * - Volume Mute / Unmute button
+ * - Smooth volume slider (compact on mobile, extended on desktop)
+ * - Fixed top-left positioning on BOTH mobile and desktop
  */
 export const MusicControls: React.FC = () => {
   const {
@@ -32,7 +33,7 @@ export const MusicControls: React.FC = () => {
       ref={containerRef}
       data-testid="music-controls"
       aria-label="Background Music Controls"
-      className="pointer-events-auto flex items-center gap-2 sm:gap-2.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full bg-black/85 hover:bg-black/95 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all text-white shadow-lg select-none"
+      className="fixed top-3.5 left-3.5 sm:top-5 sm:left-5 md:top-6 md:left-8 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-black/90 hover:bg-black/95 backdrop-blur-md border border-white/15 hover:border-white/25 transition-all text-white shadow-[0_4px_24px_rgba(0,0,0,0.85)] select-none"
     >
       {/* 1. Animated Equalizer Sound Bars */}
       <button
@@ -40,34 +41,34 @@ export const MusicControls: React.FC = () => {
         onClick={togglePlay}
         aria-label={isPlaying ? 'Pause music' : 'Play music'}
         title={isPlaying ? 'Pause music' : 'Play music'}
-        className="flex items-end gap-[2px] h-3.5 w-3.5 cursor-pointer focus:outline-none"
+        className="flex items-end gap-[1.5px] sm:gap-[2px] h-3 w-3 sm:h-3.5 sm:w-3.5 cursor-pointer focus:outline-none"
       >
         <span
-          className={`w-[2px] rounded-full transition-all duration-300 ${
+          className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
             isAudioActive ? 'bg-white animate-music-bar-1' : 'bg-zinc-600 h-[25%]'
           }`}
         />
         <span
-          className={`w-[2px] rounded-full transition-all duration-300 ${
+          className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
             isAudioActive ? 'bg-white animate-music-bar-2' : 'bg-zinc-600 h-[50%]'
           }`}
         />
         <span
-          className={`w-[2px] rounded-full transition-all duration-300 ${
+          className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
             isAudioActive ? 'bg-white animate-music-bar-3' : 'bg-zinc-600 h-[35%]'
           }`}
         />
         <span
-          className={`w-[2px] rounded-full transition-all duration-300 ${
+          className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
             isAudioActive ? 'bg-white animate-music-bar-4' : 'bg-zinc-600 h-[20%]'
           }`}
         />
       </button>
 
-      {/* 2. Current Track Filename Badge */}
+      {/* 2. Current Track Filename Badge (Compact on mobile, readable on desktop) */}
       <span
         data-testid="current-track-name"
-        className="font-mono text-[10px] text-zinc-400 lowercase tracking-wider whitespace-nowrap hidden sm:inline"
+        className="font-mono text-[9px] sm:text-[11px] text-zinc-300 lowercase tracking-wider whitespace-nowrap"
       >
         {currentTrack.filename}
       </span>
@@ -79,12 +80,12 @@ export const MusicControls: React.FC = () => {
         onClick={togglePlay}
         aria-label={isPlaying ? 'Pause background soundtrack' : 'Play background soundtrack'}
         title={isPlaying ? 'Pause' : 'Play'}
-        className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-0.5 focus:outline-none"
+        className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-0.5 sm:p-1 focus:outline-none flex items-center justify-center"
       >
         {isPlaying ? (
-          <Pause className="w-3.5 h-3.5" />
+          <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         ) : (
-          <Play className="w-3.5 h-3.5" />
+          <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         )}
       </button>
 
@@ -95,18 +96,18 @@ export const MusicControls: React.FC = () => {
         onClick={toggleMute}
         aria-label={isMuted ? 'Unmute soundtrack' : 'Mute soundtrack'}
         title={isMuted ? 'Unmute' : 'Mute'}
-        className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-0.5 focus:outline-none"
+        className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-0.5 sm:p-1 focus:outline-none flex items-center justify-center"
       >
         {isMuted || volume === 0 ? (
-          <VolumeX className="w-3.5 h-3.5 text-zinc-500" />
+          <VolumeX className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-500" />
         ) : volume < 0.5 ? (
-          <Volume1 className="w-3.5 h-3.5" />
+          <Volume1 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         ) : (
-          <Volume2 className="w-3.5 h-3.5" />
+          <Volume2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         )}
       </button>
 
-      {/* 5. Smooth Volume Slider (Compact & accessible) */}
+      {/* 5. Smooth Volume Slider (Compact on mobile, extended on desktop) */}
       <div className="flex items-center">
         <input
           type="range"
@@ -118,7 +119,7 @@ export const MusicControls: React.FC = () => {
           data-testid="audio-volume-slider"
           aria-label="Music volume slider"
           title={`Volume: ${Math.round((isMuted ? 0 : volume) * 100)}%`}
-          className="w-12 sm:w-16 h-1 accent-white bg-zinc-800 rounded-lg cursor-pointer"
+          className="w-8 sm:w-14 md:w-16 music-volume-slider cursor-pointer"
         />
       </div>
     </div>
