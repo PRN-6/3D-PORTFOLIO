@@ -1,16 +1,12 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { CameraController } from './CameraController';
 import { EnvironmentLoader } from './EnvironmentLoader';
 import { FantasySky } from './FantasySky';
-import { IslandTeleportSequence } from './IslandTeleportSequence';
 
 interface WorldAHeroIslandProps {
-  isTeleporting?: boolean;
-  onTeleportComplete?: () => void;
-  onFlashProgress?: (intensity: number) => void;
+  disableCamera?: boolean;
   resetSignal?: number;
   onResetComplete?: () => void;
   onSelectObject?: (name: string, point?: THREE.Vector3) => void;
@@ -19,37 +15,13 @@ interface WorldAHeroIslandProps {
 }
 
 export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
-  isTeleporting = false,
-  onTeleportComplete = () => {},
-  onFlashProgress,
+  disableCamera = false,
   resetSignal = 0,
   onResetComplete,
   onSelectObject,
   onHoverObject,
   onStatusChange,
 }) => {
-  const islandGroupRef = useRef<THREE.Group>(null);
-  const flashLevelRef = useRef(0);
-
-  const handleFlash = (val: number) => {
-    flashLevelRef.current = val;
-    onFlashProgress?.(val);
-  };
-
-  useFrame((_, delta) => {
-    if (isTeleporting && islandGroupRef.current) {
-      // Shimmer and dissolve island as flash peaks
-      if (flashLevelRef.current > 0.4) {
-        const factor = (flashLevelRef.current - 0.4) / 0.6;
-        const targetScale = Math.max(0.01, 1.0 - factor * 0.95);
-        islandGroupRef.current.scale.lerp(
-          new THREE.Vector3(targetScale, targetScale, targetScale),
-          delta * 5.0
-        );
-      }
-    }
-  });
-
   return (
     <group name="WorldA_HeroIslandRoot">
       {/* Dynamic Fog (locked to night) */}
@@ -110,24 +82,14 @@ export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
       />
 
       {/* Floating Island Model & Chibi Characters at Home */}
-      <group ref={islandGroupRef}>
-        <EnvironmentLoader
-          onSelectObject={onSelectObject}
-          onHoverObject={onHoverObject}
-          onStatusChange={onStatusChange}
-        />
-      </group>
+      <EnvironmentLoader
+        onSelectObject={onSelectObject}
+        onHoverObject={onHoverObject}
+        onStatusChange={onStatusChange}
+      />
 
-      {/* Teleportation sequence: Frieren raises staff, magic circle envelops island */}
-      {isTeleporting && (
-        <IslandTeleportSequence
-          onComplete={onTeleportComplete}
-          onFlashProgress={handleFlash}
-        />
-      )}
-
-      {/* Island Orbit Camera and Navigation Controller (active when not teleporting) */}
-      {!isTeleporting && (
+      {/* Island Orbit Camera and Navigation Controller */}
+      {!disableCamera && (
         <CameraController
           resetSignal={resetSignal}
           onResetComplete={onResetComplete}
@@ -137,4 +99,3 @@ export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
     </group>
   );
 };
-

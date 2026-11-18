@@ -4,13 +4,14 @@ import { Canvas } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { WorldA_HeroIsland } from './WorldA_HeroIsland';
 import { WorldB_ProjectUniverse } from './WorldB_ProjectUniverse';
+import { VerticalWorldTransition } from './VerticalWorldTransition';
 import type { ProjectItem } from '../../data/projectsData';
 
 export type WorldState =
   | 'HOME_IDLE'
-  | 'ISLAND_TELEPORTING'
+  | 'TRANSITIONING_DOWN'
   | 'PROJECT_WORLD'
-  | 'TRANSITIONING_TO_HOME';
+  | 'TRANSITIONING_UP';
 
 export interface SceneProps {
   worldState: WorldState;
@@ -22,7 +23,7 @@ export interface SceneProps {
   selectedProject?: ProjectItem | null;
   onSelectProject?: (project: ProjectItem) => void;
   onTransitionToProjectsComplete: () => void;
-  onFlashProgress?: (intensity: number) => void;
+  onTransitionToHomeComplete: () => void;
 }
 
 export const Scene: React.FC<SceneProps> = ({
@@ -35,7 +36,7 @@ export const Scene: React.FC<SceneProps> = ({
   selectedProject = null,
   onSelectProject = () => {},
   onTransitionToProjectsComplete,
-  onFlashProgress,
+  onTransitionToHomeComplete,
 }) => {
   return (
     <div className="relative w-full h-full bg-[#030408] overflow-hidden">
@@ -56,12 +57,9 @@ export const Scene: React.FC<SceneProps> = ({
           far: SCENE_CONFIG.camera.far,
         }}
       >
-        {/* WORLD A: Hero's Home Floating Island (Normal & Teleporting) */}
-        {(worldState === 'HOME_IDLE' || worldState === 'ISLAND_TELEPORTING') && (
+        {/* WORLD A: Hero's Home Floating Island */}
+        {worldState === 'HOME_IDLE' && (
           <WorldA_HeroIsland
-            isTeleporting={worldState === 'ISLAND_TELEPORTING'}
-            onTeleportComplete={onTransitionToProjectsComplete}
-            onFlashProgress={onFlashProgress}
             resetSignal={resetSignal}
             onResetComplete={onResetComplete}
             onSelectObject={onSelectObject}
@@ -70,7 +68,21 @@ export const Scene: React.FC<SceneProps> = ({
           />
         )}
 
-        {/* WORLD B: Deep Space Project Universe (Zero Island, Pure Cubes & Characters) */}
+        {/* CINEMATIC VERTICAL TRANSITION (DOWN to Projects or UP to Island) */}
+        {(worldState === 'TRANSITIONING_DOWN' || worldState === 'TRANSITIONING_UP') && (
+          <VerticalWorldTransition
+            direction={worldState === 'TRANSITIONING_DOWN' ? 'DOWN' : 'UP'}
+            onComplete={
+              worldState === 'TRANSITIONING_DOWN'
+                ? onTransitionToProjectsComplete
+                : onTransitionToHomeComplete
+            }
+            selectedProject={selectedProject}
+            onSelectProject={onSelectProject}
+          />
+        )}
+
+        {/* WORLD B: Deep Space Project Universe (Floating Cubes & Grounded Chibi Companions) */}
         {worldState === 'PROJECT_WORLD' && (
           <WorldB_ProjectUniverse
             selectedProject={selectedProject}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Stars, Sparkles } from '@react-three/drei';
 import { CubeShowcase } from './CubeShowcase';
 import { ShowcaseCharacters } from './ShowcaseCharacters';
@@ -6,6 +6,7 @@ import { CameraController } from './CameraController';
 import type { ProjectItem } from '../../data/projectsData';
 
 interface WorldBProjectUniverseProps {
+  disableCamera?: boolean;
   selectedProject: ProjectItem | null;
   onSelectProject: (project: ProjectItem) => void;
   resetSignal?: number;
@@ -13,13 +14,12 @@ interface WorldBProjectUniverseProps {
 }
 
 export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
+  disableCamera = false,
   selectedProject,
   onSelectProject,
   resetSignal = 0,
   onResetComplete,
 }) => {
-  const [occupiedCubes, setOccupiedCubes] = useState<number[]>([1, 2, 5, 6]);
-
   return (
     <group name="WorldB_ProjectUniverseRoot">
       {/* Deep Celestial Black/Midnight Atmospheric Background */}
@@ -69,24 +69,25 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
       {/* Electric Cyan Edge Bounce */}
       <directionalLight position={[14, -4, 8]} intensity={0.8} color="#38bdf8" />
 
-      {/* Four Chibi Characters with Materialization on Cubes, Frieren Magic & Landing */}
-      <ShowcaseCharacters onOccupiedCubesChange={setOccupiedCubes} />
+      {/* Four Chibi Characters with grounded idle animations & roaming */}
+      <ShowcaseCharacters />
 
       {/* 3D Floating Project Cubes Constellation */}
       <CubeShowcase
         active={true}
         selectedProject={selectedProject}
         onSelectProject={onSelectProject}
-        occupiedIndices={occupiedCubes}
       />
 
       {/* Camera Controller for Project Universe */}
-      <CameraController
-        showcaseActive={true}
-        selectedProject={selectedProject}
-        resetSignal={resetSignal}
-        onResetComplete={onResetComplete}
-      />
+      {!disableCamera && (
+        <CameraController
+          showcaseActive={true}
+          selectedProject={selectedProject}
+          resetSignal={resetSignal}
+          onResetComplete={onResetComplete}
+        />
+      )}
     </group>
   );
 };

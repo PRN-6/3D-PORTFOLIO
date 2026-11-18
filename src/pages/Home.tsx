@@ -6,7 +6,7 @@ import { StartAdventureButton } from '../components/UI/StartAdventureButton';
 import { ProjectDetailModal } from '../components/UI/ProjectDetailModal';
 import { useModelInteraction } from '../hooks/useModelInteraction';
 import type { ProjectItem } from '../data/projectsData';
-import { ArrowLeft, FastForward, Compass } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export const Home: React.FC = () => {
   const [resetSignal, setResetSignal] = useState(0);
@@ -17,7 +17,6 @@ export const Home: React.FC = () => {
   // Application World State
   const [worldState, setWorldState] = useState<WorldState>('HOME_IDLE');
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-  const [flashIntensity, setFlashIntensity] = useState(0);
 
   const {
     handleHover,
@@ -35,39 +34,27 @@ export const Home: React.FC = () => {
     []
   );
 
-  // START ADVENTURE: Begin Frieren Island Teleportation spell
+  // START ADVENTURE: Begin cinematic vertical downward transition
   const handleStartAdventure = useCallback(() => {
     if (worldState !== 'HOME_IDLE') return;
-    setWorldState('ISLAND_TELEPORTING');
+    setWorldState('TRANSITIONING_DOWN');
   }, [worldState]);
 
-  // Transition sequence completed -> enter Project World
+  // Downward transition completed -> enter Project World
   const handleTransitionToProjectsComplete = useCallback(() => {
     setWorldState('PROJECT_WORLD');
-    // Flash smoothly fades out, revealing Project Universe
-    setTimeout(() => {
-      setFlashIntensity(0);
-    }, 60);
   }, []);
 
-  // Skip cinematic transition if user clicks Skip
-  const handleSkipTransition = useCallback(() => {
-    setFlashIntensity(0);
-    setWorldState('PROJECT_WORLD');
-  }, []);
-
-  const handleFlashProgress = useCallback((val: number) => {
-    setFlashIntensity(val);
-  }, []);
-
-  // RETURN TO ISLAND: Smooth reverse transition from World B to World A
+  // RETURN TO ISLAND: Smooth vertical upward transition back to Island
   const handleReturnToIsland = useCallback(() => {
     setSelectedProject(null);
-    setWorldState('TRANSITIONING_TO_HOME');
-    setTimeout(() => {
-      setWorldState('HOME_IDLE');
-      setResetSignal((prev) => prev + 1);
-    }, 1100);
+    setWorldState('TRANSITIONING_UP');
+  }, []);
+
+  // Upward transition completed -> arrive at Island Home
+  const handleTransitionToHomeComplete = useCallback(() => {
+    setWorldState('HOME_IDLE');
+    setResetSignal((prev) => prev + 1);
   }, []);
 
   const handleSelectProject = useCallback((project: ProjectItem) => {
@@ -78,9 +65,12 @@ export const Home: React.FC = () => {
     setSelectedProject(null);
   }, []);
 
+  const isTransitioning =
+    worldState === 'TRANSITIONING_DOWN' || worldState === 'TRANSITIONING_UP';
+
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#030408]">
-      {/* 3D Canvas Scene Hosting Separate Worlds */}
+      {/* 3D Canvas Scene Hosting Vertical World Transitions */}
       <Scene
         worldState={worldState}
         resetSignal={resetSignal}
@@ -90,53 +80,17 @@ export const Home: React.FC = () => {
         selectedProject={selectedProject}
         onSelectProject={handleSelectProject}
         onTransitionToProjectsComplete={handleTransitionToProjectsComplete}
-        onFlashProgress={handleFlashProgress}
+        onTransitionToHomeComplete={handleTransitionToHomeComplete}
       />
 
       {/* Top-Right Discreet Camera Reset Control */}
-      {worldState !== 'ISLAND_TELEPORTING' && worldState !== 'TRANSITIONING_TO_HOME' && (
+      {!isTransitioning && (
         <Navigation onResetCamera={handleResetCamera} />
       )}
 
       {/* WORLD A (HERO'S HOME): START ADVENTURE Call-to-Action */}
       {worldState === 'HOME_IDLE' && (
         <StartAdventureButton onStartAdventure={handleStartAdventure} />
-      )}
-
-      {/* CINEMATIC TELEPORTATION FLASH OVERLAY */}
-      <div
-        className="fixed inset-0 z-50 pointer-events-none transition-opacity duration-600 ease-out"
-        style={{
-          opacity: flashIntensity,
-          background: 'radial-gradient(circle at 50% 50%, #ffffff 0%, #f5eeff 45%, #c084fc 100%)',
-        }}
-      />
-
-      {/* CINEMATIC TRANSITION OVERLAY CONTROLS */}
-      {worldState === 'ISLAND_TELEPORTING' && (
-        <div className="fixed bottom-6 right-6 z-40 pointer-events-auto animate-in fade-in duration-500">
-          <button
-            onClick={handleSkipTransition}
-            type="button"
-            aria-label="Skip transition sequence"
-            className="group flex items-center gap-2 bg-black/75 hover:bg-white text-slate-300 hover:text-black border border-white/20 hover:border-white px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-colors duration-200 cursor-pointer backdrop-blur-md shadow-xl"
-          >
-            <span>Skip Cinematic</span>
-            <FastForward className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-          </button>
-        </div>
-      )}
-
-      {/* RETURN TRANSITION STARRY DISSOLVE EFFECT */}
-      {worldState === 'TRANSITIONING_TO_HOME' && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#04050a] transition-opacity duration-700 pointer-events-none animate-in fade-in">
-          <div className="flex flex-col items-center gap-3">
-            <Compass className="w-7 h-7 text-indigo-400 animate-spin" style={{ animationDuration: '4s' }} />
-            <span className="font-fantasy text-xs text-slate-300 tracking-[0.2em] uppercase">
-              Returning to Hero's Home...
-            </span>
-          </div>
-        </div>
       )}
 
       {/* WORLD B (PROJECT UNIVERSE): Minimal Return to Island Navigation */}
