@@ -15,6 +15,37 @@ export interface ExplodedComponentConfig {
 
 export type DestinationId = 'HOME' | 'ARCHIVE' | 'FOREST' | 'WORKSHOP';
 
+export interface IslandDisplayTransform {
+  scale: [number, number, number];
+  position: [number, number, number];
+}
+
+/**
+ * Standardized visual scale and vertical framing offsets across all 4 islands.
+ * Calibrated against Hero's Home island as the exact 1.0 visual size reference:
+ * - Products (Rune Creation Workshop): scale 0.59, matched apparent screen footprint
+ * - Projects (Grand Mage's Archive): scale 0.70, matched apparent screen footprint
+ * - About Me (Whispering Forest): scale 0.61, matched apparent screen footprint
+ */
+export const ISLAND_DISPLAY_TRANSFORMS: Record<DestinationId, IslandDisplayTransform> = {
+  HOME: {
+    scale: [1, 1, 1],
+    position: [0, 0, 0],
+  },
+  ARCHIVE: {
+    scale: [0.70, 0.70, 0.70],
+    position: [-0.85, -0.45, -0.2],
+  },
+  FOREST: {
+    scale: [0.61, 0.61, 0.61],
+    position: [-0.70, 0.05, 0.0],
+  },
+  WORKSHOP: {
+    scale: [0.59, 0.59, 0.59],
+    position: [-0.48, 0.65, 0.35],
+  },
+};
+
 export interface IslandExplodedProfile {
   islandId: DestinationId;
   displayName: string;

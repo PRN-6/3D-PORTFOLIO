@@ -11,6 +11,7 @@ import {
   ARCHIVE_EXPLODED_PROFILE,
   FOREST_EXPLODED_PROFILE,
   WORKSHOP_EXPLODED_PROFILE,
+  ISLAND_DISPLAY_TRANSFORMS,
   getIslandExplodedProfile,
   snapshotOriginalTransforms,
   restoreOriginalTransforms,
@@ -498,6 +499,8 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         <group
           ref={homeGroupRef}
           name="ExplodedHomeGroup"
+          position={ISLAND_DISPLAY_TRANSFORMS.HOME.position}
+          scale={ISLAND_DISPLAY_TRANSFORMS.HOME.scale}
           visible={worldState === 'HOME_IDLE'}
         >
           <WorldA_HeroIsland
@@ -514,6 +517,8 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         <group
           ref={archiveGroupRef}
           name="ExplodedArchiveGroup"
+          position={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.position}
+          scale={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.scale}
           visible={worldState === 'ARCHIVE_WORLD'}
         >
           <WorldC_ArchiveIsland
@@ -529,6 +534,8 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         <group
           ref={forestGroupRef}
           name="ExplodedForestGroup"
+          position={ISLAND_DISPLAY_TRANSFORMS.FOREST.position}
+          scale={ISLAND_DISPLAY_TRANSFORMS.FOREST.scale}
           visible={worldState === 'FOREST_WORLD'}
         >
           <WorldD_WhisperingForest
@@ -545,6 +552,8 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         <group
           ref={workshopGroupRef}
           name="ExplodedWorkshopGroup"
+          position={ISLAND_DISPLAY_TRANSFORMS.WORKSHOP.position}
+          scale={ISLAND_DISPLAY_TRANSFORMS.WORKSHOP.scale}
           visible={worldState === 'WORKSHOP_WORLD'}
         >
           <WorldE_RuneWorkshop

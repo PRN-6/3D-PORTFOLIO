@@ -48,9 +48,10 @@ export interface SceneProps {
 }
 
 const PerformanceProfiler: React.FC = () => {
-  const { gl, camera } = useThree();
+  const { gl, camera, scene } = useThree();
   useFrame(() => {
     (window as any).__THREE_CAMERA__ = camera;
+    (window as any).__THREE_SCENE__ = scene;
     (window as any).__THREE_STATS__ = {
       calls: gl.info.render.calls,
       triangles: gl.info.render.triangles,
