@@ -35,8 +35,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/PRIVACY68',
     accentColor: '#38bdf8', // Electric Sky
-    position: [-4.2, 2.8, 1.8],
-    size: 1.55,
+    position: [-7.8, 3.2, 0.4],
+    size: 2.3,
     rotationSpeed: [0.12, 0.22, 0.08],
   },
   {
@@ -58,8 +58,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/cube68',
     accentColor: '#10b981', // Emerald
-    position: [-1.8, 4.4, -1.2],
-    size: 1.6,
+    position: [-2.9, 4.4, -1.8],
+    size: 2.4,
     rotationSpeed: [0.15, -0.18, 0.1],
   },
   {
@@ -81,8 +81,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/code68',
     accentColor: '#f43f5e', // Crimson Rose
-    position: [1.8, 4.6, -1.5],
-    size: 1.5,
+    position: [2.9, 4.5, -1.8],
+    size: 2.35,
     rotationSpeed: [-0.14, 0.2, 0.12],
   },
   {
@@ -103,8 +103,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/swarm66',
     accentColor: '#a855f7', // Cosmic Purple
-    position: [4.4, 2.6, 1.4],
-    size: 1.55,
+    position: [7.8, 3.4, 0.2],
+    size: 2.3,
     rotationSpeed: [0.18, 0.14, -0.09],
   },
   {
@@ -125,8 +125,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/harry-potter-3D-website',
     accentColor: '#eab308', // Amber Gold
-    position: [-3.6, 0.2, 3.2],
-    size: 1.4,
+    position: [-6.4, -0.3, 1.8],
+    size: 2.15,
     rotationSpeed: [-0.1, 0.16, 0.14],
   },
   {
@@ -147,8 +147,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/programmer66',
     accentColor: '#06b6d4', // Cyan
-    position: [0.2, -0.4, 3.8],
-    size: 1.45,
+    position: [-2.2, 0.9, 1.2],
+    size: 2.2,
     rotationSpeed: [0.16, -0.12, 0.15],
   },
   {
@@ -169,8 +169,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/web66',
     accentColor: '#6366f1', // Indigo
-    position: [3.8, 0.4, 3.0],
-    size: 1.35,
+    position: [2.2, 1.0, 1.1],
+    size: 2.15,
     rotationSpeed: [0.11, 0.19, -0.13],
   },
   {
@@ -191,9 +191,8 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     githubUrl: 'https://github.com/PRN-6/phone-space66',
     accentColor: '#f97316', // Orange
-    position: [0.0, 2.0, -3.2],
-    size: 1.3,
+    position: [6.4, -0.2, 1.9],
+    size: 2.1,
     rotationSpeed: [-0.15, 0.15, 0.08],
   },
 ];
-

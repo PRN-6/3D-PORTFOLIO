@@ -15,6 +15,7 @@ export const TransitionExperience: React.FC<TransitionExperienceProps> = ({
   const { camera } = useThree();
   const groupRef = useRef<THREE.Group>(null);
   const sequenceRef = useRef<ReturnType<typeof createTransitionSequence>>(undefined);
+  const completedRef = useRef(false);
 
   // Load transition GLBs
   const frierenGltf = useGLTF('/models/transition/frieren.glb') as unknown as GLTF;
@@ -46,54 +47,43 @@ export const TransitionExperience: React.FC<TransitionExperienceProps> = ({
 
   useFrame((_, delta) => {
     const seq = sequenceRef.current;
-    if (!seq) return;
+    if (!seq || completedRef.current) return;
 
-    seq.update(delta);
+    seq.update(delta * 1.1);
     const t = seq.time;
 
-    // Cinematic camera choreography matching the characters' leap
-    if (t < 1.4) {
-      // Leap preparation & push off island
-      const u = t / 1.4;
-      camera.position.lerp(new THREE.Vector3(2.8, 6.2, 4.0), u * 0.1);
-      camera.lookAt(new THREE.Vector3(0, 4.8, 1.2));
-    } else if (t < 5.2) {
-      // Airborne freefall following them through the night sky
-      const targetCam = new THREE.Vector3(2.2, 3.8, 8.5);
-      camera.position.lerp(targetCam, Math.min(delta * 2.5, 0.2));
-      camera.lookAt(new THREE.Vector3(0, 2.5, 3.5));
-    } else if (t < 8.0) {
-      // Frieren magic glyph deployment & deceleration
-      const targetCam = new THREE.Vector3(0.5, 2.2, 11.2);
-      camera.position.lerp(targetCam, Math.min(delta * 3.2, 0.25));
-      camera.lookAt(new THREE.Vector3(0, 1.5, 5.5));
-    } else if (t < 9.1) {
-      // Soft landing & glide to Project Universe viewpoint
-      const finalCam = new THREE.Vector3(0, 2.8, 14.0);
-      camera.position.lerp(finalCam, Math.min(delta * 4.0, 0.25));
-      camera.lookAt(new THREE.Vector3(0, 2.0, 0));
+    // Follow the characters as they leap off the island into the sky
+    if (t < 0.6) {
+      // Crouch and push off
+      camera.position.lerp(new THREE.Vector3(2.5, 6.2, 4.2), delta * 3.0);
+      camera.lookAt(new THREE.Vector3(0, 5.0, 1.2));
+    } else if (t < 1.7) {
+      // Leap forward and upward into the night sky
+      camera.position.lerp(new THREE.Vector3(1.8, 4.8, 6.5), delta * 4.0);
+      camera.lookAt(new THREE.Vector3(0, 3.8, 3.5));
     } else {
-      // Transition finished
+      // Transition smoothly into Project Universe where they enter from above!
+      completedRef.current = true;
       onComplete();
     }
   });
 
   return (
     <group ref={groupRef} name="CinematicTransitionRoot">
-      {/* Deep Space Background Atmosphere */}
+      {/* Night Sky Background */}
       <color attach="background" args={['#04050a']} />
       <fog attach="fog" args={['#04050a', 20, 80]} />
 
-      {/* Brilliant Cosmic Starfield */}
+      {/* Cosmic Stars */}
       <Stars radius={250} depth={60} count={1800} factor={4.5} saturation={0.9} fade speed={1.5} />
 
-      {/* Floating Magic Dust Particles */}
-      <Sparkles count={60} scale={[20, 14, 20]} size={3.0} speed={0.4} color="#cdb8ff" opacity={0.65} />
+      {/* Bursting Starlight Particles */}
+      <Sparkles count={55} scale={[18, 12, 18]} size={3.0} speed={0.5} color="#cdb8ff" opacity={0.7} />
 
-      {/* Night Key Light */}
-      <directionalLight position={[8, 16, 10]} intensity={1.2} color="#a6c5ff" />
+      {/* Lighting */}
+      <directionalLight position={[8, 16, 10]} intensity={1.3} color="#a6c5ff" />
       <ambientLight intensity={0.5} color="#1e2540" />
-      <directionalLight position={[-8, 6, -8]} intensity={1.0} color="#818cf8" />
+      <directionalLight position={[-8, 6, -8]} intensity={1.1} color="#818cf8" />
     </group>
   );
 };
