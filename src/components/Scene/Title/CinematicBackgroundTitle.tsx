@@ -115,7 +115,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
         totalStyles: PRINSON_FONT_STYLES.length,
         styles: PRINSON_FONT_STYLES,
         isFixedToScreen: true,
-        mobileOffsetY: -38,
+        mobileOffsetY: -115,
       };
       (window as any).__CINEMATIC_TITLE_STATE__ = {
         word: 'PRINSON',
@@ -125,7 +125,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
         letterSpacing: PRINSON_FONT_STYLES[activeStyleIndex].letterSpacing,
         fontSize: PRINSON_FONT_STYLES[activeStyleIndex].fontSize,
         isFixedToScreen: true,
-        mobileOffsetY: -38,
+        mobileOffsetY: -115,
       };
       (window as any).__PRINSON_SET_FONT_INDEX__ = (idx: number) => {
         setActiveStyleIndex(((idx % PRINSON_FONT_STYLES.length) + PRINSON_FONT_STYLES.length) % PRINSON_FONT_STYLES.length);
