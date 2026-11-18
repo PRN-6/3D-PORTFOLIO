@@ -28,8 +28,11 @@ export const CameraController: React.FC<CameraControllerProps> = ({
     if (camera instanceof THREE.PerspectiveCamera) {
       const aspect = size.width / size.height;
 
-      // On mobile, frame the model to fill ~94-96% screen width exactly as in the reference pic
-      const framingScale = isMobile
+      // On mobile Island Home, frame the model to fill ~94-96% screen width as in reference pic.
+      // In Project Showcase, keep standard 45° FOV so cubes remain clean, undistorted, and widely separated.
+      const framingScale = showcaseActive
+        ? 1.0
+        : isMobile
         ? Math.min(0.65, aspect * 1.20)
         : isTablet
         ? Math.min(0.85, aspect * 0.95)
@@ -39,7 +42,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({
       camera.setFocalLength((camera.getFilmHeight() * framingScale) / (2 * Math.tan(halfFov)));
       camera.updateProjectionMatrix();
     }
-  }, [camera, size.width, size.height, isMobile, isTablet]);
+  }, [camera, size.width, size.height, isMobile, isTablet, showcaseActive]);
 
   // Target positions
   const islandPos = useRef(new THREE.Vector3(...SCENE_CONFIG.camera.initialPosition));
@@ -64,26 +67,26 @@ export const CameraController: React.FC<CameraControllerProps> = ({
     } else if (selectedProject) {
       // Offset slightly to left on widescreen so right-hand modal doesn't occlude cube
       targetCamPos = isMobile
-        ? new THREE.Vector3(0, 1.8, 10.5)
+        ? new THREE.Vector3(0, 1.65, 11.5)
         : isTablet
-        ? new THREE.Vector3(-0.8, 1.8, 10.8)
+        ? new THREE.Vector3(-0.6, 1.65, 11.5)
         : new THREE.Vector3(-1.4, 1.6, 11.2);
       targetLookAt = isMobile
-        ? new THREE.Vector3(0, 1.6, 7.8)
+        ? new THREE.Vector3(0, 1.65, 7.8)
         : isTablet
-        ? new THREE.Vector3(-0.2, 1.6, 7.8)
+        ? new THREE.Vector3(-0.2, 1.65, 7.8)
         : new THREE.Vector3(-0.4, 1.4, 7.8);
     } else {
-      // Showcase overview: Dedicated, close framing for mobile and tablet to eliminate empty space
+      // Showcase overview: Balanced framing with clear breathing space for all cubes
       targetCamPos = isMobile
-        ? new THREE.Vector3(0, 2.4, 13.5)
+        ? new THREE.Vector3(0, 1.65, 17.5)
         : isTablet
-        ? new THREE.Vector3(0, 2.4, 15.2)
+        ? new THREE.Vector3(0, 1.65, 16.0)
         : new THREE.Vector3(0, 2.2, 14.8);
       targetLookAt = isMobile
-        ? new THREE.Vector3(0, 2.0, 0)
+        ? new THREE.Vector3(0, 1.65, 0)
         : isTablet
-        ? new THREE.Vector3(0, 1.8, 0)
+        ? new THREE.Vector3(0, 1.65, 0)
         : new THREE.Vector3(0, 1.5, 0);
     }
 
@@ -120,7 +123,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({
       zoomSpeed={1.0}
       panSpeed={0.8}
       enabled={!selectedProject} // Lock orbit while inspecting a selected project cube
-      target={showcaseActive ? (isMobile ? [0, 2.0, 0] : isTablet ? [0, 1.8, 0] : [0, 1.5, 0]) : SCENE_CONFIG.camera.target}
+      target={showcaseActive ? (isMobile || isTablet ? [0, 1.65, 0] : [0, 1.5, 0]) : SCENE_CONFIG.camera.target}
     />
   );
 };

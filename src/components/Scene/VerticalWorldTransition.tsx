@@ -43,18 +43,16 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
   const showcaseCamPos = useMemo(
     () =>
       isMobile
-        ? new THREE.Vector3(0, 2.4, 13.5)
+        ? new THREE.Vector3(0, 1.65, 17.5)
         : isTablet
-        ? new THREE.Vector3(0, 2.4, 15.2)
+        ? new THREE.Vector3(0, 1.65, 16.0)
         : new THREE.Vector3(0, 2.2, 14.8),
     [isMobile, isTablet]
   );
   const showcaseTarget = useMemo(
     () =>
-      isMobile
-        ? new THREE.Vector3(0, 2.0, 0)
-        : isTablet
-        ? new THREE.Vector3(0, 1.8, 0)
+      isMobile || isTablet
+        ? new THREE.Vector3(0, 1.65, 0)
         : new THREE.Vector3(0, 1.5, 0),
     [isMobile, isTablet]
   );

@@ -4,32 +4,32 @@ import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { RoundedBox, Text } from '@react-three/drei';
 import type { ProjectItem } from '../../data/projectsData';
 
-// Mobile layout: 2 boxes per row, scaled & positioned to occupy 70-80% screen width
+// Mobile layout: 2 boxes per row with generous 3D spacing to prevent sticking together
 const MOBILE_POSITIONS: [number, number, number][] = [
   // Row 1 (Top)
-  [-1.05, 3.6, -0.4], // 0: Privacy68
-  [1.05, 3.6, -0.4],  // 1: Cubix68
+  [-1.65, 4.2, -0.6], // 0: Privacy68
+  [ 1.65, 4.2,  0.5], // 1: Cubix68
   // Row 2 (Upper-mid)
-  [-1.05, 1.9, 0.2],  // 2: Code68
-  [1.05, 1.9, 0.2],   // 3: Swarm66
+  [-1.65, 1.7,  0.5], // 2: Code68
+  [ 1.65, 1.7, -0.6], // 3: Swarm66
   // Row 3 (Lower-mid)
-  [-1.05, 0.2, -0.3], // 4: Harry Potter 3D
-  [1.05, 0.2, -0.3],  // 5: Programmer66
-  // Row 4 (Lower)
-  [-1.05, -1.5, 0.3], // 6: Web68
-  [1.05, -1.5, 0.3],  // 7: Phone-space66
+  [-1.65, -0.8, -0.6], // 4: Harry Potter 3D
+  [ 1.65, -0.8,  0.5], // 5: Programmer66
+  // Row 4 (Bottom)
+  [-1.65, -3.3,  0.5], // 6: Web68
+  [ 1.65, -3.3, -0.6], // 7: Phone-space66
 ];
 
 // Tablet layout: intermediate 2-column spacing
 const TABLET_POSITIONS: [number, number, number][] = [
-  [-1.75, 3.6, -0.4],
-  [1.75, 3.6, -0.4],
-  [-1.75, 1.9, 0.2],
-  [1.75, 1.9, 0.2],
-  [-1.75, 0.2, -0.3],
-  [1.75, 0.2, -0.3],
-  [-1.75, -1.5, 0.3],
-  [1.75, -1.5, 0.3],
+  [-2.2, 3.8, -0.5],
+  [ 2.2, 3.8,  0.5],
+  [-2.2, 1.6,  0.5],
+  [ 2.2, 1.6, -0.5],
+  [-2.2, -0.6, -0.5],
+  [ 2.2, -0.6,  0.5],
+  [-2.2, -2.8,  0.5],
+  [ 2.2, -2.8, -0.5],
 ];
 
 function getLayoutPosition(
@@ -40,15 +40,15 @@ function getLayoutPosition(
 ): [number, number, number] {
   if (isMobile) {
     if (index < MOBILE_POSITIONS.length) return MOBILE_POSITIONS[index];
-    const col = index % 2 === 0 ? -1.05 : 1.05;
+    const col = index % 2 === 0 ? -1.65 : 1.65;
     const row = Math.floor(index / 2);
-    return [col, 3.6 - row * 1.7, row % 2 === 0 ? -0.4 : 0.2];
+    return [col, 4.2 - row * 2.5, row % 2 === 0 ? -0.6 : 0.5];
   }
   if (isTablet) {
     if (index < TABLET_POSITIONS.length) return TABLET_POSITIONS[index];
-    const col = index % 2 === 0 ? -1.75 : 1.75;
+    const col = index % 2 === 0 ? -2.2 : 2.2;
     const row = Math.floor(index / 2);
-    return [col, 3.6 - row * 1.7, row % 2 === 0 ? -0.4 : 0.2];
+    return [col, 3.8 - row * 2.2, row % 2 === 0 ? -0.5 : 0.5];
   }
   return defaultPos;
 }
@@ -108,16 +108,16 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
     const t = state.clock.getElapsedTime();
     const group = meshGroupRef.current;
     
-    // Prominent, readable cube sizing across screen sizes
-    const sizeMultiplier = isMobile ? 0.85 : isTablet ? 0.92 : 1.0;
+    // Prominent, readable cube sizing across screen sizes with safe 3D clearance
+    const sizeMultiplier = isMobile ? 0.60 : isTablet ? 0.75 : 1.0;
     const baseSize = project.size * sizeMultiplier;
 
     if (isSelected) {
       // Smoothly fly towards camera center for inspection
       const targetPos = isMobile
-        ? new THREE.Vector3(0, 0.4, 7.8)
+        ? new THREE.Vector3(0, 0.45, 7.8)
         : isTablet
-        ? new THREE.Vector3(-0.2, 0.4, 7.8)
+        ? new THREE.Vector3(-0.2, 0.45, 7.8)
         : new THREE.Vector3(0, 1.3, 7.8);
       currentPos.current.lerp(targetPos, Math.min(delta * 4.5, 0.25));
       group.position.copy(currentPos.current);
@@ -144,8 +144,8 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
       group.scale.lerp(new THREE.Vector3(dimScale, dimScale, dimScale), Math.min(delta * 4, 0.2));
     } else {
       // Normal floating state with gentle bobbing
-      const bobY = Math.sin(t * 0.8 + phase) * (isMobile ? 0.12 : isTablet ? 0.16 : 0.22);
-      const bobX = Math.cos(t * 0.6 + phase) * (isMobile ? 0.05 : isTablet ? 0.08 : 0.12);
+      const bobY = Math.sin(t * 0.8 + phase) * (isMobile ? 0.08 : isTablet ? 0.12 : 0.22);
+      const bobX = Math.cos(t * 0.6 + phase) * (isMobile ? 0.04 : isTablet ? 0.06 : 0.12);
       const targetPos = basePosition.clone().add(new THREE.Vector3(bobX, bobY, 0));
 
       currentPos.current.lerp(targetPos, Math.min(delta * 3.5, 0.2));
