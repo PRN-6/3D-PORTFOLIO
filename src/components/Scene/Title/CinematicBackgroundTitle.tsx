@@ -97,10 +97,10 @@ export const CinematicBackgroundTitle: React.FC = () => {
   const [activeStyleIndex, setActiveStyleIndex] = useState(0);
 
   useEffect(() => {
-    // Fast animated typography cycle: 1.3s hold + 0.5s smooth crossfade = 1.8s interval
+    // Ultra-fast kinetic typography cycle: 600ms hold + 300ms smooth crossfade = 900ms interval
     const interval = setInterval(() => {
       setActiveStyleIndex((prev) => (prev + 1) % PRINSON_FONT_STYLES.length);
-    }, 1800);
+    }, 900);
 
     return () => clearInterval(interval);
   }, []);
@@ -146,7 +146,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
               data-style-id={style.id}
               data-active={isActive ? 'true' : 'false'}
               aria-hidden={!isActive}
-              className={`absolute inset-0 flex items-center justify-center leading-none select-none font-black text-center transition-all duration-500 ease-in-out ${
+              className={`absolute inset-0 flex items-center justify-center leading-none select-none font-black text-center transition-all duration-300 ease-in-out ${
                 isActive
                   ? 'opacity-100 scale-100 blur-none pointer-events-auto'
                   : 'opacity-0 scale-[0.985] blur-[2px] pointer-events-none'
