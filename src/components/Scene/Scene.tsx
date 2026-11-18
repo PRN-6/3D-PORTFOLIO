@@ -2,35 +2,42 @@ import React from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
-import { CameraController } from './CameraController';
-import { EnvironmentLoader } from './EnvironmentLoader';
-import { FantasySky } from './FantasySky';
-import { CubeShowcase } from './CubeShowcase';
+import { WorldA_HeroIsland } from './WorldA_HeroIsland';
+import { WorldB_ProjectUniverse } from './WorldB_ProjectUniverse';
+import { TransitionExperience } from './TransitionExperience';
 import type { ProjectItem } from '../../data/projectsData';
 
+export type WorldState =
+  | 'HOME_IDLE'
+  | 'TRANSITIONING_TO_PROJECTS'
+  | 'PROJECT_WORLD'
+  | 'TRANSITIONING_TO_HOME';
+
 export interface SceneProps {
+  worldState: WorldState;
   resetSignal?: number;
   onResetComplete?: () => void;
   onSelectObject?: (name: string, point?: THREE.Vector3) => void;
   onHoverObject?: (name: string | null) => void;
   onStatusChange?: (status: 'checking' | 'loading' | 'loaded' | 'fallback') => void;
-  showcaseActive?: boolean;
   selectedProject?: ProjectItem | null;
   onSelectProject?: (project: ProjectItem) => void;
+  onTransitionToProjectsComplete: () => void;
 }
 
 export const Scene: React.FC<SceneProps> = ({
+  worldState,
   resetSignal = 0,
   onResetComplete,
   onSelectObject,
   onHoverObject,
   onStatusChange,
-  showcaseActive = false,
   selectedProject = null,
   onSelectProject = () => {},
+  onTransitionToProjectsComplete,
 }) => {
   return (
-    <div className="relative w-full h-full bg-[#08090f] overflow-hidden">
+    <div className="relative w-full h-full bg-[#030408] overflow-hidden">
       <Canvas
         shadows
         dpr={[1, 2]}
@@ -48,84 +55,31 @@ export const Scene: React.FC<SceneProps> = ({
           far: SCENE_CONFIG.camera.far,
         }}
       >
-        {/* Dynamic Fog (locked to night) */}
-        <fog
-          attach="fog"
-          args={[
-            SCENE_CONFIG.fog.color,
-            SCENE_CONFIG.fog.near,
-            SCENE_CONFIG.fog.far,
-          ]}
-        />
+        {/* WORLD A: Hero's Home Floating Island */}
+        {worldState === 'HOME_IDLE' && (
+          <WorldA_HeroIsland
+            resetSignal={resetSignal}
+            onResetComplete={onResetComplete}
+            onSelectObject={onSelectObject}
+            onHoverObject={onHoverObject}
+            onStatusChange={onStatusChange}
+          />
+        )}
 
-        {/* Dynamic Fantasy Sky Dome, Clouds, Stars & Ambient Particles */}
-        <FantasySky />
+        {/* TRANSITION: Cinematic Leap & Magic Deceleration */}
+        {worldState === 'TRANSITIONING_TO_PROJECTS' && (
+          <TransitionExperience onComplete={onTransitionToProjectsComplete} />
+        )}
 
-        {/* Ambient Fill Light */}
-        <ambientLight
-          name="HomeAmbient"
-          color={SCENE_CONFIG.lighting.ambient.color}
-          intensity={SCENE_CONFIG.lighting.ambient.intensity}
-        />
-
-        {/* Sun / Moon Directional Light with Soft Shadows */}
-        <directionalLight
-          name="HomeSun"
-          castShadow
-          position={SCENE_CONFIG.lighting.directional.position}
-          intensity={SCENE_CONFIG.lighting.directional.intensity}
-          color={SCENE_CONFIG.lighting.directional.color}
-          shadow-bias={SCENE_CONFIG.lighting.directional.shadowBias}
-          shadow-normalBias={0.015}
-          shadow-mapSize-width={SCENE_CONFIG.lighting.directional.shadowMapSize}
-          shadow-mapSize-height={SCENE_CONFIG.lighting.directional.shadowMapSize}
-          shadow-camera-near={0.5}
-          shadow-camera-far={45}
-          shadow-camera-left={-11}
-          shadow-camera-right={11}
-          shadow-camera-top={11}
-          shadow-camera-bottom={-11}
-        />
-
-        {/* Rim Light for Beautiful Edge Highlights */}
-        <directionalLight
-          name="HomeRim"
-          position={SCENE_CONFIG.lighting.rim.position}
-          intensity={SCENE_CONFIG.lighting.rim.intensity}
-          color={SCENE_CONFIG.lighting.rim.color}
-        />
-
-        {/* Hemisphere Sky / Ground Fill Bounce */}
-        <hemisphereLight
-          name="HomeSky"
-          args={[
-            SCENE_CONFIG.lighting.hemisphere.skyColor,
-            SCENE_CONFIG.lighting.hemisphere.groundColor,
-            SCENE_CONFIG.lighting.hemisphere.intensity,
-          ]}
-        />
-
-        {/* Floating Island Model & Chibi Characters (Preserved in Realm) */}
-        <EnvironmentLoader
-          onSelectObject={onSelectObject}
-          onHoverObject={onHoverObject}
-          onStatusChange={onStatusChange}
-        />
-
-        {/* 3D Floating Project Cubes Constellation */}
-        <CubeShowcase
-          active={showcaseActive}
-          selectedProject={selectedProject}
-          onSelectProject={onSelectProject}
-        />
-
-        {/* Orbit Camera and Navigation Controller */}
-        <CameraController
-          resetSignal={resetSignal}
-          onResetComplete={onResetComplete}
-          showcaseActive={showcaseActive}
-          selectedProject={selectedProject}
-        />
+        {/* WORLD B: Deep Space Project Universe (Zero Island, Pure Cubes & Characters) */}
+        {worldState === 'PROJECT_WORLD' && (
+          <WorldB_ProjectUniverse
+            selectedProject={selectedProject}
+            onSelectProject={onSelectProject}
+            resetSignal={resetSignal}
+            onResetComplete={onResetComplete}
+          />
+        )}
       </Canvas>
     </div>
   );
