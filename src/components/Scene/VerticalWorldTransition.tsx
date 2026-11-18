@@ -33,17 +33,31 @@ export const VerticalWorldTransition: React.FC<VerticalWorldTransitionProps> = (
   );
 
   const isMobile = size.width < 768;
+  const isTablet = size.width >= 768 && size.width < 1024;
 
   // Island default camera pose
   const islandCamPos = useMemo(() => new THREE.Vector3(14, 10, 14), []);
   const islandTarget = useMemo(() => new THREE.Vector3(0, 0, 0), []);
 
-  // Showcase default camera pose
+  // Showcase default camera pose: closely framed for mobile and tablet to eliminate empty space
   const showcaseCamPos = useMemo(
-    () => (isMobile ? new THREE.Vector3(0, 2.8, 18.2) : new THREE.Vector3(0, 2.2, 14.8)),
-    [isMobile]
+    () =>
+      isMobile
+        ? new THREE.Vector3(0, 2.4, 13.5)
+        : isTablet
+        ? new THREE.Vector3(0, 2.4, 15.2)
+        : new THREE.Vector3(0, 2.2, 14.8),
+    [isMobile, isTablet]
   );
-  const showcaseTarget = useMemo(() => new THREE.Vector3(0, 1.5, 0), []);
+  const showcaseTarget = useMemo(
+    () =>
+      isMobile
+        ? new THREE.Vector3(0, 2.0, 0)
+        : isTablet
+        ? new THREE.Vector3(0, 1.8, 0)
+        : new THREE.Vector3(0, 1.5, 0),
+    [isMobile, isTablet]
+  );
 
   // Snapshot the camera position and look direction at the start of transition
   const startCamPos = useMemo(() => camera.position.clone(), [camera]);
