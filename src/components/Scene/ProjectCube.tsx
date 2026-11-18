@@ -1,8 +1,33 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
-import { useFrame, type ThreeEvent } from '@react-three/fiber';
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { RoundedBox, Text } from '@react-three/drei';
 import type { ProjectItem } from '../../data/projectsData';
+
+// Mobile layout: 2 boxes per row, stacked vertically in 2 columns
+const MOBILE_POSITIONS: [number, number, number][] = [
+  // Row 1 (Top)
+  [-1.45, 3.6, -0.5], // 0: Privacy68
+  [1.45, 3.6, -0.5],  // 1: Cubix68
+  // Row 2 (Upper-mid)
+  [-1.45, 1.9, 0.2],  // 2: Code68
+  [1.45, 1.9, 0.2],   // 3: Swarm66
+  // Row 3 (Lower-mid)
+  [-1.45, 0.2, -0.4], // 4: Harry Potter 3D
+  [1.45, 0.2, -0.4],  // 5: Programmer66
+  // Row 4 (Lower, above Chibi characters)
+  [-1.45, -1.5, 0.3], // 6: Web68
+  [1.45, -1.5, 0.3],  // 7: Phone-space66
+];
+
+function getMobilePosition(index: number): [number, number, number] {
+  if (index < MOBILE_POSITIONS.length) return MOBILE_POSITIONS[index];
+  const col = index % 2 === 0 ? -1.45 : 1.45;
+  const row = Math.floor(index / 2);
+  const y = 3.6 - row * 1.7;
+  const z = row % 2 === 0 ? -0.5 : 0.2;
+  return [col, y, z];
+}
 
 interface ProjectCubeProps {
   project: ProjectItem;
@@ -21,13 +46,29 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
   index,
   isOccupied = false,
 }) => {
+  const { size } = useThree();
+  const isMobile = size.width < 768;
+
   const meshGroupRef = useRef<THREE.Group>(null);
   const cubeMeshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Target positions & rotations
-  const basePosition = useMemo(() => new THREE.Vector3(...project.position), [project.position]);
+  // Target positions & rotations (Mobile: 2 boxes per row, Desktop: 4 columns)
+  const basePosition = useMemo(() => {
+    if (isMobile) {
+      return new THREE.Vector3(...getMobilePosition(index));
+    }
+    return new THREE.Vector3(...project.position);
+  }, [project.position, isMobile, index]);
+
   const currentPos = useRef(basePosition.clone());
+
+  // Keep position synchronized if screen orientation or viewport width changes
+  useEffect(() => {
+    if (!isSelected) {
+      currentPos.current.copy(basePosition);
+    }
+  }, [basePosition, isSelected]);
   
   // Independent floating phase and rotation speeds
   const phase = useMemo(() => index * 1.35, [index]);
@@ -44,10 +85,14 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
 
     const t = state.clock.getElapsedTime();
     const group = meshGroupRef.current;
+    // Responsive cube scale for mobile 2-column layout
+    const baseSize = isMobile ? project.size * 0.68 : project.size;
 
     if (isSelected) {
       // Smoothly fly towards camera center for inspection
-      const targetPos = new THREE.Vector3(0, 1.3, 7.8);
+      const targetPos = isMobile
+        ? new THREE.Vector3(0, 0.2, 7.8)
+        : new THREE.Vector3(0, 1.3, 7.8);
       currentPos.current.lerp(targetPos, Math.min(delta * 4.5, 0.25));
       group.position.copy(currentPos.current);
 
@@ -57,7 +102,7 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
       group.rotation.z = THREE.MathUtils.damp(group.rotation.z, 0, 8, delta);
 
       // Scale up when inspected
-      const targetScale = project.size * 1.35;
+      const targetScale = baseSize * 1.35;
       group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), Math.min(delta * 5, 0.25));
     } else if (isAnySelected) {
       // Other cubes smoothly retreat into background and dim
@@ -69,12 +114,12 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
       group.rotation.y += rotSpeed[1] * delta * 0.4;
       group.rotation.x += rotSpeed[0] * delta * 0.4;
 
-      const dimScale = project.size * 0.85;
+      const dimScale = baseSize * 0.85;
       group.scale.lerp(new THREE.Vector3(dimScale, dimScale, dimScale), Math.min(delta * 4, 0.2));
     } else {
-      // Normal floating state
-      const bobY = Math.sin(t * 0.8 + phase) * 0.22;
-      const bobX = Math.cos(t * 0.6 + phase) * 0.12;
+      // Normal floating state with gentle bobbing
+      const bobY = Math.sin(t * 0.8 + phase) * (isMobile ? 0.12 : 0.22);
+      const bobX = Math.cos(t * 0.6 + phase) * (isMobile ? 0.06 : 0.12);
       const targetPos = basePosition.clone().add(new THREE.Vector3(bobX, bobY, 0));
 
       currentPos.current.lerp(targetPos, Math.min(delta * 3.5, 0.2));
@@ -94,7 +139,7 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
 
       // Hover scale feedback
       const hoverScaleMultiplier = hovered ? 1.1 : 1.0;
-      const targetScale = project.size * hoverScaleMultiplier;
+      const targetScale = baseSize * hoverScaleMultiplier;
       group.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), Math.min(delta * 6, 0.3));
     }
   });
@@ -118,7 +163,7 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
   return (
     <group
       ref={meshGroupRef}
-      position={project.position}
+      position={basePosition}
       onPointerOver={(e) => {
         e.stopPropagation();
         setHovered(true);
