@@ -98,8 +98,8 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   const incomingProfileRef = useRef<IslandExplodedProfile | null>(null);
   const outgoingGroupRef = useRef<THREE.Group | null>(null);
   const incomingGroupRef = useRef<THREE.Group | null>(null);
-  const targetDestinationRef = useRef<DestinationId>('HOME');
-  const currentActiveIslandRef = useRef<DestinationId>('HOME');
+  const targetDestinationRef = useRef<DestinationId>(activeDestination || 'HOME');
+  const currentActiveIslandRef = useRef<DestinationId>(activeDestination || 'HOME');
 
   // Fixed camera frozen pose snapshot to guarantee 100% stationary camera
   const frozenCamPos = useRef<THREE.Vector3>(new THREE.Vector3());

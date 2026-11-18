@@ -18,15 +18,16 @@ export interface DestinationSelectorProps {
 export interface NavItem {
   id: NavTabId;
   label: string;
+  path: string;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: 'HOME', label: 'home' },
-  { id: 'PRODUCTS', label: 'products' },
-  { id: 'PROJECTS', label: 'projects' },
-  { id: 'ABOUT', label: 'about me' },
-  { id: 'CONTACT', label: 'contact' },
-  { id: 'FUN', label: 'fun' },
+  { id: 'HOME', label: 'home', path: '/' },
+  { id: 'PRODUCTS', label: 'products', path: '/products' },
+  { id: 'PROJECTS', label: 'projects', path: '/projects' },
+  { id: 'ABOUT', label: 'about me', path: '/about' },
+  { id: 'CONTACT', label: 'contact', path: '/contact' },
+  { id: 'FUN', label: 'fun', path: '/fun' },
 ];
 
 export const DestinationSelector: React.FC<DestinationSelectorProps> = ({

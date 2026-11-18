@@ -61,9 +61,12 @@ export const Navigation: React.FC<NavigationProps> = ({
                   &middot;
                 </span>
               )}
-              <button
-                type="button"
-                onClick={() => handleItemClick(item.id)}
+              <a
+                href={item.path}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleItemClick(item.id);
+                }}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
                 className={`transition-colors duration-200 cursor-pointer lowercase ${
@@ -73,7 +76,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 }`}
               >
                 {item.label}
-              </button>
+              </a>
             </React.Fragment>
           );
         })}
@@ -151,11 +154,14 @@ export const Navigation: React.FC<NavigationProps> = ({
                 {NAV_ITEMS.map((item) => {
                   const isActive = activeNav === item.id;
                   return (
-                    <button
+                    <a
                       key={item.id}
                       role="menuitem"
-                      type="button"
-                      onClick={() => handleItemClick(item.id)}
+                      href={item.path}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleItemClick(item.id);
+                      }}
                       className={`w-full flex items-center justify-between px-3.5 py-2 rounded-lg font-mono text-xs tracking-wider transition-all select-none cursor-pointer text-left active:scale-[0.98] ${
                         isActive
                           ? 'bg-white/15 text-white font-medium border border-white/20 shadow-sm'
@@ -166,7 +172,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                       {isActive && (
                         <span className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
                       )}
-                    </button>
+                    </a>
                   );
                 })}
               </div>

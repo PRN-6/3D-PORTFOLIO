@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Scene, type WorldState } from '../components/Scene/Scene';
 import { Navigation } from '../components/UI/Navigation';
 import { Footer } from '../components/UI/Footer';
@@ -6,6 +7,7 @@ import { MusicControls } from '../components/UI/MusicControls';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
 import type { NavTabId } from '../components/UI/DestinationSelector';
 import { audioManager } from '../services/audioManager';
+import { ROUTES, getRouteFromPath, updatePageSEO } from '../routes';
 import { HeroSubtitle } from '../components/UI/HeroSubtitle';
 import { FunModal } from '../components/UI/FunModal';
 import { ContactModal } from '../components/UI/ContactModal';
@@ -28,19 +30,37 @@ import {
 } from 'lucide-react';
 
 export const Home: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Current route resolved from browser location
+  const currentRoute = getRouteFromPath(location.pathname);
+
   const [resetSignal, setResetSignal] = useState(0);
   const [modelStatus, setModelStatus] = useState<
     'checking' | 'loading' | 'loaded' | 'fallback'
   >('checking');
 
-  // Application World State & Destination Tracking
-  const [worldState, setWorldState] = useState<WorldState>('HOME_IDLE');
-  const [activeDestination, setActiveDestination] = useState<DestinationId>('HOME');
+  // Application World State & Destination Tracking initialized from URL
+  const [worldState, setWorldState] = useState<WorldState>(() => {
+    const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
+    return r.worldState;
+  });
+  const [activeDestination, setActiveDestination] = useState<DestinationId>(() => {
+    const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
+    return r.destination;
+  });
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(() => {
+    const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
+    return r.tabId === 'CONTACT';
+  });
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
-  const [isFunOpen, setIsFunOpen] = useState(false);
+  const [isFunOpen, setIsFunOpen] = useState(() => {
+    const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
+    return r.tabId === 'FUN';
+  });
 
   // Archive World (Island 02) State
   const [selectedGrimoire, setSelectedGrimoire] = useState<GrimoireItem | null>(null);
@@ -149,69 +169,71 @@ export const Home: React.FC = () => {
   }, []);
 
   // =========================================================================
-  // SIMPLIFIED FIVE NAVIGATION ACTIONS
-  // 1. Home -> Hero's Home
-  // 2. Products -> Rune Creation Workshop (The 4th existing 3D model)
-  // 3. About Me -> Whispering Forest (The 3rd existing 3D model)
-  // 4. Projects -> Grand Mage's Archive (the existing magical library 3D model)
-  // 5. Contact -> Contact Modal (Keep existing Contact section/page)
+  // URL ROUTING SYNCHRONIZATION WITH 3D WORLD & ACTIVE SECTIONS
   // =========================================================================
   const handleSelectNav = useCallback(
     (tab: NavTabId) => {
-      if (tab === 'HOME') {
-        setIsProjectsOpen(false);
-        setIsProductsOpen(false);
-        setIsContactOpen(false);
-        setIsFunOpen(false);
-        handleSelectDestination('HOME');
-      } else if (tab === 'PRODUCTS') {
-        setIsProjectsOpen(false);
-        setIsProductsOpen(false);
-        setIsContactOpen(false);
-        setIsFunOpen(false);
-        handleSelectDestination('WORKSHOP');
-      } else if (tab === 'PROJECTS') {
-        setIsProjectsOpen(false);
-        setIsProductsOpen(false);
-        setIsContactOpen(false);
-        setIsFunOpen(false);
-        handleSelectDestination('ARCHIVE');
-      } else if (tab === 'ABOUT') {
-        setIsProjectsOpen(false);
-        setIsProductsOpen(false);
-        setIsContactOpen(false);
-        setIsFunOpen(false);
-        handleSelectDestination('FOREST');
-      } else if (tab === 'CONTACT') {
-        setIsProjectsOpen(false);
-        setIsProductsOpen(false);
-        setIsFunOpen(false);
-        setIsContactOpen(true);
-      } else if (tab === 'FUN') {
-        setIsProjectsOpen(false);
-        setIsProductsOpen(false);
-        setIsContactOpen(false);
-        setIsFunOpen(true);
+      const targetRoute = ROUTES[tab];
+      if (!targetRoute) return;
+
+      if (location.pathname === targetRoute.path) {
+        handleResetCamera();
+        return;
       }
+
+      navigate(targetRoute.path);
     },
-    [handleSelectDestination]
+    [location.pathname, navigate, handleResetCamera]
   );
 
-  const activeNavTab: NavTabId = isFunOpen
-    ? 'FUN'
-    : isContactOpen
-    ? 'CONTACT'
-    : isProjectsOpen
-    ? 'PROJECTS'
-    : isProductsOpen
-    ? 'PRODUCTS'
-    : activeDestination === 'WORKSHOP'
-    ? 'PRODUCTS'
-    : activeDestination === 'FOREST'
-    ? 'ABOUT'
-    : activeDestination === 'ARCHIVE'
-    ? 'PROJECTS'
-    : 'HOME';
+  const handleCloseContact = useCallback(() => {
+    setIsContactOpen(false);
+    const targetPath =
+      activeDestination === 'WORKSHOP'
+        ? '/products'
+        : activeDestination === 'ARCHIVE'
+        ? '/projects'
+        : activeDestination === 'FOREST'
+        ? '/about'
+        : '/';
+    navigate(targetPath);
+  }, [activeDestination, navigate]);
+
+  const handleCloseFun = useCallback(() => {
+    setIsFunOpen(false);
+    const targetPath =
+      activeDestination === 'WORKSHOP'
+        ? '/products'
+        : activeDestination === 'ARCHIVE'
+        ? '/projects'
+        : activeDestination === 'FOREST'
+        ? '/about'
+        : '/';
+    navigate(targetPath);
+  }, [activeDestination, navigate]);
+
+  // Synchronize route changes (via URL bar, links, back/forward buttons) with 3D worlds and modals
+  useEffect(() => {
+    const route = getRouteFromPath(location.pathname);
+    updatePageSEO(route);
+
+    if (route.tabId === 'CONTACT') {
+      setIsContactOpen(true);
+      setIsFunOpen(false);
+    } else if (route.tabId === 'FUN') {
+      setIsContactOpen(false);
+      setIsFunOpen(true);
+    } else {
+      setIsContactOpen(false);
+      setIsFunOpen(false);
+
+      if (route.destination !== activeDestination) {
+        handleSelectDestination(route.destination);
+      }
+    }
+  }, [location.pathname, activeDestination, handleSelectDestination]);
+
+  const activeNavTab: NavTabId = currentRoute.tabId;
 
   // Synchronize Website-Wide Background Music with Active Section
   useEffect(() => {
@@ -357,7 +379,7 @@ export const Home: React.FC = () => {
         onClose={() => setIsProjectsOpen(false)}
         onNavigateToWorkshop={() => {
           setIsProjectsOpen(false);
-          handleSelectDestination('WORKSHOP');
+          navigate('/products');
         }}
       />
 
@@ -367,7 +389,7 @@ export const Home: React.FC = () => {
         onClose={() => setIsProductsOpen(false)}
         onOpenContact={() => {
           setIsProductsOpen(false);
-          setIsContactOpen(true);
+          navigate('/contact');
         }}
       />
 
@@ -388,13 +410,13 @@ export const Home: React.FC = () => {
       {/* Contact & Inquiries Modal */}
       <ContactModal
         isOpen={isContactOpen}
-        onClose={() => setIsContactOpen(false)}
+        onClose={handleCloseContact}
       />
 
       {/* Fun & Experiments Playground Modal */}
       <FunModal
         isOpen={isFunOpen}
-        onClose={() => setIsFunOpen(false)}
+        onClose={handleCloseFun}
         onTriggerOrbit={handleResetCamera}
       />
 
