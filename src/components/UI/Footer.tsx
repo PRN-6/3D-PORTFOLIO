@@ -35,21 +35,6 @@ const LinkedinIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' 
   </svg>
 );
 
-/**
- * Spotify SVG Icon
- */
-const SpotifyIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
-  <svg
-    role="img"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className={className}
-    aria-hidden="true"
-  >
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.496 17.306c-.215.353-.675.466-1.028.25-2.825-1.727-6.381-2.116-10.57-1.159-.404.093-.808-.16-.9-.564-.093-.404.16-.807.564-.9 4.584-1.047 8.513-.604 11.685 1.345.353.216.465.675.249 1.028zm1.468-3.262c-.27.44-.848.58-1.288.31-3.235-1.988-8.167-2.56-11.993-1.398-.49.148-1.011-.132-1.16-.622-.148-.49.133-1.011.623-1.16 4.381-1.33 9.813-.69 13.508 1.582.44.27.58.848.31 1.288zm.126-3.414c-3.878-2.302-10.28-2.515-13.987-1.39-.595.181-1.226-.156-1.407-.751-.181-.595.156-1.226.751-1.407 4.257-1.292 11.31-1.043 15.777 1.61.536.318.71 1.015.392 1.551-.318.536-1.015.71-1.526.387z" />
-  </svg>
-);
-
 interface SocialLink {
   name: string;
   href: string;
@@ -75,12 +60,6 @@ const SOCIAL_LINKS: SocialLink[] = [
     href: 'mailto:prins.engineering@outlook.com',
     icon: <Mail className="w-4 h-4 sm:w-4.5 sm:h-4.5" />,
     isExternal: false,
-  },
-  {
-    name: 'Spotify',
-    href: 'https://open.spotify.com',
-    icon: <SpotifyIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />,
-    isExternal: true,
   },
 ];
 
@@ -119,7 +98,7 @@ function useVisitorCounter(): number {
  * Footer
  *
  * Minimal, elegant fixed bottom footer:
- * - Bottom-Left: GitHub, LinkedIn, Email, Music/Spotify
+ * - Bottom-Left: GitHub, LinkedIn, Email
  * - Bottom-Right: © {year}  •  vis: {visitCount}
  * - pointer-events: none on wrapper, pointer-events: auto on interactive links
  * - 100% stationary during 3D scene interaction and rotation

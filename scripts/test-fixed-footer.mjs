@@ -93,11 +93,10 @@ async function run() {
     { name: 'GitHub', href: 'https://github.com/PRN-6' },
     { name: 'LinkedIn', href: 'https://linkedin.com/in/prins' },
     { name: 'Email', href: 'mailto:prins.engineering@outlook.com' },
-    { name: 'Spotify', href: 'https://open.spotify.com' },
   ];
 
-  if (footerData.links.length !== 4) {
-    throw new Error(`FAIL: Expected 4 social links, found ${footerData.links.length}`);
+  if (footerData.links.length !== 3) {
+    throw new Error(`FAIL: Expected 3 social links, found ${footerData.links.length}`);
   }
 
   expectedLinks.forEach((exp, idx) => {
@@ -106,7 +105,7 @@ async function run() {
       throw new Error(`FAIL: Link ${idx} mismatch. Expected ${JSON.stringify(exp)}, got ${JSON.stringify(act)}`);
     }
   });
-  console.log('PASS: All 4 social links present with exact URLs.');
+  console.log('PASS: All 3 social links present with exact URLs.');
 
   // Validate Copyright and Visitor Text
   console.log(`Copyright & Counter string: "${footerData.counterText}"`);
