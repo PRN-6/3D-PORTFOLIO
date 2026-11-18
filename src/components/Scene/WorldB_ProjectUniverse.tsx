@@ -2,7 +2,6 @@ import React from 'react';
 import { Stars, Sparkles } from '@react-three/drei';
 import { CubeShowcase } from './CubeShowcase';
 import { ShowcaseCharacters } from './ShowcaseCharacters';
-import { SmallLandPlatform } from './SmallLandPlatform';
 import { CameraController } from './CameraController';
 import type { ProjectItem } from '../../data/projectsData';
 
@@ -74,7 +73,6 @@ export const WorldB_ProjectUniverse: React.FC<WorldBProjectUniverseProps> = ({
 
       {/* 1. INDEPENDENT STATIONARY CHARACTER GROUP - Never affected by cube motion */}
       <group name="CharacterGroup" position={[0, 0, 0]}>
-        <SmallLandPlatform />
         <ShowcaseCharacters />
       </group>
 
