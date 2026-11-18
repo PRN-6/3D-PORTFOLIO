@@ -251,3 +251,4 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
     </group>
   );
 };
+

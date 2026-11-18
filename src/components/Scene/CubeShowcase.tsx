@@ -30,3 +30,4 @@ export const CubeShowcase: React.FC<CubeShowcaseProps> = ({
     </group>
   );
 };
+

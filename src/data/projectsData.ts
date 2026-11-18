@@ -196,3 +196,4 @@ export const PROJECTS_DATA: ProjectItem[] = [
     rotationSpeed: [-0.15, 0.15, 0.08],
   },
 ];
+
