@@ -4,12 +4,11 @@ import { Canvas } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { WorldA_HeroIsland } from './WorldA_HeroIsland';
 import { WorldB_ProjectUniverse } from './WorldB_ProjectUniverse';
-import { TransitionExperience } from './TransitionExperience';
 import type { ProjectItem } from '../../data/projectsData';
 
 export type WorldState =
   | 'HOME_IDLE'
-  | 'TRANSITIONING_TO_PROJECTS'
+  | 'ISLAND_TELEPORTING'
   | 'PROJECT_WORLD'
   | 'TRANSITIONING_TO_HOME';
 
@@ -23,6 +22,7 @@ export interface SceneProps {
   selectedProject?: ProjectItem | null;
   onSelectProject?: (project: ProjectItem) => void;
   onTransitionToProjectsComplete: () => void;
+  onFlashProgress?: (intensity: number) => void;
 }
 
 export const Scene: React.FC<SceneProps> = ({
@@ -35,6 +35,7 @@ export const Scene: React.FC<SceneProps> = ({
   selectedProject = null,
   onSelectProject = () => {},
   onTransitionToProjectsComplete,
+  onFlashProgress,
 }) => {
   return (
     <div className="relative w-full h-full bg-[#030408] overflow-hidden">
@@ -55,20 +56,18 @@ export const Scene: React.FC<SceneProps> = ({
           far: SCENE_CONFIG.camera.far,
         }}
       >
-        {/* WORLD A: Hero's Home Floating Island */}
-        {worldState === 'HOME_IDLE' && (
+        {/* WORLD A: Hero's Home Floating Island (Normal & Teleporting) */}
+        {(worldState === 'HOME_IDLE' || worldState === 'ISLAND_TELEPORTING') && (
           <WorldA_HeroIsland
+            isTeleporting={worldState === 'ISLAND_TELEPORTING'}
+            onTeleportComplete={onTransitionToProjectsComplete}
+            onFlashProgress={onFlashProgress}
             resetSignal={resetSignal}
             onResetComplete={onResetComplete}
             onSelectObject={onSelectObject}
             onHoverObject={onHoverObject}
             onStatusChange={onStatusChange}
           />
-        )}
-
-        {/* TRANSITION: Cinematic Leap & Magic Deceleration */}
-        {worldState === 'TRANSITIONING_TO_PROJECTS' && (
-          <TransitionExperience onComplete={onTransitionToProjectsComplete} />
         )}
 
         {/* WORLD B: Deep Space Project Universe (Zero Island, Pure Cubes & Characters) */}

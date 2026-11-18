@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { CameraController } from './CameraController';
 import { EnvironmentLoader } from './EnvironmentLoader';
 import { FantasySky } from './FantasySky';
+import { IslandTeleportSequence } from './IslandTeleportSequence';
 
 interface WorldAHeroIslandProps {
+  isTeleporting?: boolean;
+  onTeleportComplete?: () => void;
+  onFlashProgress?: (intensity: number) => void;
   resetSignal?: number;
   onResetComplete?: () => void;
   onSelectObject?: (name: string, point?: THREE.Vector3) => void;
@@ -14,12 +19,37 @@ interface WorldAHeroIslandProps {
 }
 
 export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
+  isTeleporting = false,
+  onTeleportComplete = () => {},
+  onFlashProgress,
   resetSignal = 0,
   onResetComplete,
   onSelectObject,
   onHoverObject,
   onStatusChange,
 }) => {
+  const islandGroupRef = useRef<THREE.Group>(null);
+  const flashLevelRef = useRef(0);
+
+  const handleFlash = (val: number) => {
+    flashLevelRef.current = val;
+    onFlashProgress?.(val);
+  };
+
+  useFrame((_, delta) => {
+    if (isTeleporting && islandGroupRef.current) {
+      // Shimmer and dissolve island as flash peaks
+      if (flashLevelRef.current > 0.4) {
+        const factor = (flashLevelRef.current - 0.4) / 0.6;
+        const targetScale = Math.max(0.01, 1.0 - factor * 0.95);
+        islandGroupRef.current.scale.lerp(
+          new THREE.Vector3(targetScale, targetScale, targetScale),
+          delta * 5.0
+        );
+      }
+    }
+  });
+
   return (
     <group name="WorldA_HeroIslandRoot">
       {/* Dynamic Fog (locked to night) */}
@@ -80,18 +110,30 @@ export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
       />
 
       {/* Floating Island Model & Chibi Characters at Home */}
-      <EnvironmentLoader
-        onSelectObject={onSelectObject}
-        onHoverObject={onHoverObject}
-        onStatusChange={onStatusChange}
-      />
+      <group ref={islandGroupRef}>
+        <EnvironmentLoader
+          onSelectObject={onSelectObject}
+          onHoverObject={onHoverObject}
+          onStatusChange={onStatusChange}
+        />
+      </group>
 
-      {/* Island Orbit Camera and Navigation Controller */}
-      <CameraController
-        resetSignal={resetSignal}
-        onResetComplete={onResetComplete}
-        showcaseActive={false}
-      />
+      {/* Teleportation sequence: Frieren raises staff, magic circle envelops island */}
+      {isTeleporting && (
+        <IslandTeleportSequence
+          onComplete={onTeleportComplete}
+          onFlashProgress={handleFlash}
+        />
+      )}
+
+      {/* Island Orbit Camera and Navigation Controller (active when not teleporting) */}
+      {!isTeleporting && (
+        <CameraController
+          resetSignal={resetSignal}
+          onResetComplete={onResetComplete}
+          showcaseActive={false}
+        />
+      )}
     </group>
   );
 };

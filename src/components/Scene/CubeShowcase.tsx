@@ -6,12 +6,14 @@ interface CubeShowcaseProps {
   active: boolean;
   selectedProject: ProjectItem | null;
   onSelectProject: (project: ProjectItem) => void;
+  occupiedIndices?: number[];
 }
 
 export const CubeShowcase: React.FC<CubeShowcaseProps> = ({
   active,
   selectedProject,
   onSelectProject,
+  occupiedIndices = [],
 }) => {
   if (!active) return null;
 
@@ -24,6 +26,7 @@ export const CubeShowcase: React.FC<CubeShowcaseProps> = ({
           index={index}
           isSelected={selectedProject?.id === project.id}
           isAnySelected={selectedProject !== null}
+          isOccupied={occupiedIndices.includes(index)}
           onSelect={onSelectProject}
         />
       ))}

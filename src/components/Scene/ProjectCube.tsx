@@ -10,6 +10,7 @@ interface ProjectCubeProps {
   isAnySelected: boolean;
   onSelect: (project: ProjectItem) => void;
   index: number;
+  isOccupied?: boolean;
 }
 
 export const ProjectCube: React.FC<ProjectCubeProps> = ({
@@ -18,6 +19,7 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
   isAnySelected,
   onSelect,
   index,
+  isOccupied = false,
 }) => {
   const meshGroupRef = useRef<THREE.Group>(null);
   const cubeMeshRef = useRef<THREE.Mesh>(null);
@@ -78,10 +80,17 @@ export const ProjectCube: React.FC<ProjectCubeProps> = ({
       currentPos.current.lerp(targetPos, Math.min(delta * 3.5, 0.2));
       group.position.copy(currentPos.current);
 
-      // Gentle continuous rotation
-      group.rotation.y += rotSpeed[1] * delta;
-      group.rotation.x += rotSpeed[0] * delta;
-      group.rotation.z += rotSpeed[2] * delta * 0.5;
+      if (isOccupied) {
+        // While character is standing on top, keep top face perfectly flat horizontal
+        group.rotation.x = THREE.MathUtils.damp(group.rotation.x, 0, 6, delta);
+        group.rotation.z = THREE.MathUtils.damp(group.rotation.z, 0, 6, delta);
+        group.rotation.y += rotSpeed[1] * delta * 0.4;
+      } else {
+        // Gentle continuous rotation
+        group.rotation.y += rotSpeed[1] * delta;
+        group.rotation.x += rotSpeed[0] * delta;
+        group.rotation.z += rotSpeed[2] * delta * 0.5;
+      }
 
       // Hover scale feedback
       const hoverScaleMultiplier = hovered ? 1.1 : 1.0;

@@ -17,6 +17,7 @@ export const Home: React.FC = () => {
   // Application World State
   const [worldState, setWorldState] = useState<WorldState>('HOME_IDLE');
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const [flashIntensity, setFlashIntensity] = useState(0);
 
   const {
     handleHover,
@@ -34,20 +35,29 @@ export const Home: React.FC = () => {
     []
   );
 
-  // START ADVENTURE: Begin cinematic transition from World A to World B
+  // START ADVENTURE: Begin Frieren Island Teleportation spell
   const handleStartAdventure = useCallback(() => {
     if (worldState !== 'HOME_IDLE') return;
-    setWorldState('TRANSITIONING_TO_PROJECTS');
+    setWorldState('ISLAND_TELEPORTING');
   }, [worldState]);
 
-  // Transition sequence completed
+  // Transition sequence completed -> enter Project World
   const handleTransitionToProjectsComplete = useCallback(() => {
     setWorldState('PROJECT_WORLD');
+    // Flash smoothly fades out, revealing Project Universe
+    setTimeout(() => {
+      setFlashIntensity(0);
+    }, 60);
   }, []);
 
   // Skip cinematic transition if user clicks Skip
   const handleSkipTransition = useCallback(() => {
+    setFlashIntensity(0);
     setWorldState('PROJECT_WORLD');
+  }, []);
+
+  const handleFlashProgress = useCallback((val: number) => {
+    setFlashIntensity(val);
   }, []);
 
   // RETURN TO ISLAND: Smooth reverse transition from World B to World A
@@ -80,10 +90,11 @@ export const Home: React.FC = () => {
         selectedProject={selectedProject}
         onSelectProject={handleSelectProject}
         onTransitionToProjectsComplete={handleTransitionToProjectsComplete}
+        onFlashProgress={handleFlashProgress}
       />
 
       {/* Top-Right Discreet Camera Reset Control */}
-      {worldState !== 'TRANSITIONING_TO_PROJECTS' && worldState !== 'TRANSITIONING_TO_HOME' && (
+      {worldState !== 'ISLAND_TELEPORTING' && worldState !== 'TRANSITIONING_TO_HOME' && (
         <Navigation onResetCamera={handleResetCamera} />
       )}
 
@@ -92,8 +103,17 @@ export const Home: React.FC = () => {
         <StartAdventureButton onStartAdventure={handleStartAdventure} />
       )}
 
+      {/* CINEMATIC TELEPORTATION FLASH OVERLAY */}
+      <div
+        className="fixed inset-0 z-50 pointer-events-none transition-opacity duration-600 ease-out"
+        style={{
+          opacity: flashIntensity,
+          background: 'radial-gradient(circle at 50% 50%, #ffffff 0%, #f5eeff 45%, #c084fc 100%)',
+        }}
+      />
+
       {/* CINEMATIC TRANSITION OVERLAY CONTROLS */}
-      {worldState === 'TRANSITIONING_TO_PROJECTS' && (
+      {worldState === 'ISLAND_TELEPORTING' && (
         <div className="fixed bottom-6 right-6 z-40 pointer-events-auto animate-in fade-in duration-500">
           <button
             onClick={handleSkipTransition}
