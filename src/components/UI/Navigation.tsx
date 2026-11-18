@@ -6,14 +6,12 @@ export interface NavigationProps {
   onResetCamera: () => void;
   activeNav?: NavTabId;
   onSelectNav?: (tab: NavTabId) => void;
-  isTransitioning?: boolean;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({
   onResetCamera,
   activeNav = 'HOME',
   onSelectNav,
-  isTransitioning = false,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -40,7 +38,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   const handleItemClick = (tabId: NavTabId) => {
     setIsMenuOpen(false);
-    if (!isTransitioning && onSelectNav) {
+    if (onSelectNav) {
       onSelectNav(tabId);
     }
   };
@@ -51,7 +49,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       <nav
         data-testid="top-center-navigation"
         aria-label="Main Navigation"
-        className="hidden md:flex fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-40 pointer-events-auto items-center font-mono text-xs sm:text-[13px] tracking-wider select-none"
+        className="hidden md:flex fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-auto items-center font-mono text-xs sm:text-[13px] tracking-wider select-none"
       >
         {NAV_ITEMS.map((item, index) => {
           const isActive = activeNav === item.id;
@@ -65,14 +63,13 @@ export const Navigation: React.FC<NavigationProps> = ({
               <button
                 type="button"
                 onClick={() => handleItemClick(item.id)}
-                disabled={isTransitioning}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
                 className={`transition-colors duration-200 cursor-pointer lowercase ${
                   isActive
                     ? 'text-white font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
                     : 'text-zinc-500 hover:text-white'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                }`}
               >
                 {item.label}
               </button>
@@ -82,7 +79,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       </nav>
 
       {/* 2. TOP RIGHT DESKTOP RESET VIEW BUTTON */}
-      <div className="hidden md:flex fixed top-6 sm:top-8 right-6 sm:right-8 z-40 pointer-events-auto">
+      <div className="hidden md:flex fixed top-6 sm:top-8 right-6 sm:right-8 z-50 pointer-events-auto">
         <button
           onClick={onResetCamera}
           type="button"
@@ -105,7 +102,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       <header
         aria-label="Mobile Navigation Controls"
-        className="md:hidden fixed top-0 right-0 z-40 p-4 pointer-events-none pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))]"
+        className="md:hidden fixed top-0 right-0 z-50 p-4 pointer-events-none pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))]"
       >
         <div className="relative flex items-center gap-2">
           {/* Mobile Camera Reset Button */}
@@ -147,7 +144,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               id="mobile-nav-panel"
               role="menu"
               aria-label="Mobile Navigation"
-              className="flex flex-col pointer-events-auto absolute top-full right-0 mt-2.5 w-48 rounded-xl bg-black/95 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.9)] p-2 z-40 animate-in fade-in slide-in-from-top-2 duration-200"
+              className="flex flex-col pointer-events-auto absolute top-full right-0 mt-2.5 w-48 rounded-xl bg-black/95 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.9)] p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200"
             >
               <div className="flex flex-col gap-1">
                 {NAV_ITEMS.map((item) => {
@@ -158,12 +155,11 @@ export const Navigation: React.FC<NavigationProps> = ({
                       role="menuitem"
                       type="button"
                       onClick={() => handleItemClick(item.id)}
-                      disabled={isTransitioning}
                       className={`w-full flex items-center justify-between px-3.5 py-2 rounded-lg font-mono text-xs tracking-wider transition-all select-none cursor-pointer text-left active:scale-[0.98] ${
                         isActive
                           ? 'bg-white/15 text-white font-medium border border-white/20 shadow-sm'
                           : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      }`}
                     >
                       <span className="lowercase">{item.label}</span>
                       {isActive && (
