@@ -18,18 +18,6 @@ export const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const { isLight, isDark } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [timeStr, setTimeStr] = useState(() => {
-    const now = new Date();
-    return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      setTimeStr(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
-    }, 30000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Close menu on Escape key
   useEffect(() => {
@@ -61,26 +49,6 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <>
-      {/* 0. HEADER DATE & TIME INDICATOR: © 2026 - HH:MM (Desktop & Mobile) */}
-      <div
-        data-testid="header-time-badge"
-        aria-label="Current Year and Time"
-        className={`hidden lg:flex fixed top-6 sm:top-8 left-56 sm:left-64 md:left-72 z-40 font-mono text-xs tracking-wider select-none pointer-events-none items-center ${
-          isLight ? 'text-[#3c3832] font-semibold' : 'text-zinc-400'
-        }`}
-      >
-        <span>&copy; {new Date().getFullYear()} &mdash; {timeStr}</span>
-      </div>
-
-      <div
-        aria-hidden="true"
-        className={`hidden sm:inline md:hidden fixed top-4 left-1/2 -translate-x-1/2 z-35 font-mono text-[10px] tracking-wider select-none pointer-events-none whitespace-nowrap pt-[max(0.15rem,env(safe-area-inset-top))] ${
-          isLight ? 'text-[#3c3832] font-semibold' : 'text-zinc-400/80'
-        }`}
-      >
-        <span>&copy; {new Date().getFullYear()} &mdash; {timeStr}</span>
-      </div>
-
       {/* 1. TOP CENTRE DESKTOP NAVIGATION */}
       {/* Dark Mode: Minimal seamless text links | Light Mode: Dark rounded pill with cream text matching reference */}
       <nav
