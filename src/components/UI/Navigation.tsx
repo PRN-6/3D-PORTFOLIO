@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { RotateCcw, Menu, X } from 'lucide-react';
 import { NAV_ITEMS, type NavTabId } from './DestinationSelector';
+import { useTheme } from '../../context/ThemeContext';
+import { ThemeToggle } from './ThemeToggle';
 
 export interface NavigationProps {
   onResetCamera: () => void;
@@ -14,6 +16,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   activeNav = 'HOME',
   onSelectNav,
 }) => {
+  const { isLight, isDark } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [timeStr, setTimeStr] = useState(() => {
     const now = new Date();
@@ -62,30 +65,43 @@ export const Navigation: React.FC<NavigationProps> = ({
       <div
         data-testid="header-time-badge"
         aria-label="Current Year and Time"
-        className="hidden lg:flex fixed top-6 sm:top-8 left-56 sm:left-64 md:left-72 z-40 font-mono text-xs text-zinc-400 tracking-wider select-none pointer-events-none items-center"
+        className={`hidden lg:flex fixed top-6 sm:top-8 left-56 sm:left-64 md:left-72 z-40 font-mono text-xs tracking-wider select-none pointer-events-none items-center ${
+          isLight ? 'text-[#3c3832] font-semibold' : 'text-zinc-400'
+        }`}
       >
         <span>&copy; {new Date().getFullYear()} &mdash; {timeStr}</span>
       </div>
 
       <div
         aria-hidden="true"
-        className="hidden sm:inline md:hidden fixed top-4 left-1/2 -translate-x-1/2 z-35 font-mono text-[10px] text-zinc-400/80 tracking-wider select-none pointer-events-none whitespace-nowrap pt-[max(0.15rem,env(safe-area-inset-top))]"
+        className={`hidden sm:inline md:hidden fixed top-4 left-1/2 -translate-x-1/2 z-35 font-mono text-[10px] tracking-wider select-none pointer-events-none whitespace-nowrap pt-[max(0.15rem,env(safe-area-inset-top))] ${
+          isLight ? 'text-[#3c3832] font-semibold' : 'text-zinc-400/80'
+        }`}
       >
         <span>&copy; {new Date().getFullYear()} &mdash; {timeStr}</span>
       </div>
 
-      {/* 1. TOP CENTRE MINIMAL DESKTOP NAVIGATION: home · products · projects · about me · contact · fun */}
+      {/* 1. TOP CENTRE DESKTOP NAVIGATION */}
+      {/* Dark Mode: Minimal seamless text links | Light Mode: Dark rounded pill with cream text matching reference */}
       <nav
         data-testid="top-center-navigation"
         aria-label="Main Navigation"
-        className="hidden md:flex fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-40 pointer-events-auto items-center font-mono text-xs sm:text-[13px] tracking-wider select-none"
+        className={`hidden md:flex fixed left-1/2 -translate-x-1/2 z-40 pointer-events-auto items-center font-mono text-xs sm:text-[13px] tracking-wider select-none transition-all duration-300 ${
+          isLight
+            ? 'top-5 sm:top-6 bg-[#1c1a17] text-[#f4eee0] border border-[#38332c] px-5 sm:px-6 py-2 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-md'
+            : 'top-6 sm:top-8'
+        }`}
       >
         {NAV_ITEMS.map((item, index) => {
           const isActive = activeNav === item.id;
           return (
             <React.Fragment key={item.id}>
               {index > 0 && (
-                <span className="text-zinc-600 select-none px-2 sm:px-3 text-[11px]">
+                <span
+                  className={`select-none px-2 sm:px-3 text-[11px] ${
+                    isLight ? 'text-[#5a5245]' : 'text-zinc-600'
+                  }`}
+                >
                   &middot;
                 </span>
               )}
@@ -100,6 +116,8 @@ export const Navigation: React.FC<NavigationProps> = ({
                 className={`transition-colors duration-200 cursor-pointer lowercase ${
                   isActive
                     ? 'text-white font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
+                    : isLight
+                    ? 'text-[#a89d8c] hover:text-[#f4eee0]'
                     : 'text-zinc-500 hover:text-white'
                 }`}
               >
@@ -110,20 +128,30 @@ export const Navigation: React.FC<NavigationProps> = ({
         })}
       </nav>
 
-      {/* 2. TOP RIGHT DESKTOP RESET VIEW BUTTON */}
-      <div className="hidden md:flex fixed top-6 sm:top-8 right-6 sm:right-8 z-40 pointer-events-auto">
+      {/* 2. TOP RIGHT DESKTOP CONTROLS: THEME TOGGLE + RESET VIEW BUTTON */}
+      <div className="hidden md:flex fixed top-6 sm:top-8 right-6 sm:right-8 z-40 pointer-events-auto items-center gap-3.5 sm:gap-4">
+        {/* Theme Switcher Toggle (Sun / Moon) */}
+        <ThemeToggle variant="desktop" />
+
+        <span className={isDark ? 'text-zinc-700 select-none text-xs' : 'text-[#b8ad99] select-none text-xs'}>
+          &middot;
+        </span>
+
+        {/* Reset Camera View Button */}
         <button
           onClick={onResetCamera}
           type="button"
           aria-label="Reset camera view"
-          className="group flex items-center gap-1.5 text-zinc-500 hover:text-white transition-colors duration-200 font-mono text-xs cursor-pointer select-none"
+          className={`group flex items-center gap-1.5 transition-colors duration-200 font-mono text-xs cursor-pointer select-none ${
+            isDark ? 'text-zinc-500 hover:text-white' : 'text-[#5c5446] hover:text-[#1c1a17]'
+          }`}
         >
           <RotateCcw className="w-3.5 h-3.5 transition-transform group-hover:-rotate-90 duration-300" />
           <span className="lowercase">reset view</span>
         </button>
       </div>
 
-      {/* 3. MOBILE BACKDROP & TOP-RIGHT CONTROLS (HAMBURGER + RESET VIEW) */}
+      {/* 3. MOBILE BACKDROP & TOP-RIGHT CONTROLS (THEME TOGGLE + RESET VIEW + HAMBURGER) */}
       {isMenuOpen && (
         <div
           onClick={() => setIsMenuOpen(false)}
@@ -137,12 +165,19 @@ export const Navigation: React.FC<NavigationProps> = ({
         className="md:hidden fixed top-0 right-0 z-40 p-4 pointer-events-none pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))]"
       >
         <div className="relative flex items-center gap-2">
+          {/* Mobile Theme Toggle Button */}
+          <ThemeToggle variant="mobile" />
+
           {/* Mobile Camera Reset Button */}
           <button
             onClick={onResetCamera}
             type="button"
             aria-label="Reset camera view"
-            className="pointer-events-auto group flex items-center justify-center bg-black/80 text-zinc-400 hover:text-white border border-white/10 active:scale-95 w-9 h-9 rounded-xl transition-all cursor-pointer shadow-lg select-none"
+            className={`pointer-events-auto group flex items-center justify-center active:scale-95 w-9 h-9 rounded-xl transition-all cursor-pointer shadow-lg select-none ${
+              isDark
+                ? 'bg-black/80 text-zinc-400 hover:text-white border border-white/10'
+                : 'bg-[#e6decb]/95 text-[#2b2723] hover:text-black border border-[#c8bc9f]'
+            }`}
           >
             <RotateCcw className="w-4 h-4 transition-transform group-hover:-rotate-90 duration-300" />
           </button>
@@ -154,7 +189,11 @@ export const Navigation: React.FC<NavigationProps> = ({
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-nav-panel"
-            className="pointer-events-auto group flex items-center justify-center bg-black/80 text-zinc-400 hover:text-white border border-white/10 active:scale-95 w-9 h-9 rounded-xl transition-all cursor-pointer shadow-lg select-none relative"
+            className={`pointer-events-auto group flex items-center justify-center active:scale-95 w-9 h-9 rounded-xl transition-all cursor-pointer shadow-lg select-none relative ${
+              isDark
+                ? 'bg-black/80 text-zinc-400 hover:text-white border border-white/10'
+                : 'bg-[#e6decb]/95 text-[#2b2723] hover:text-black border border-[#c8bc9f]'
+            }`}
           >
             <div className="relative w-4 h-4 flex items-center justify-center">
               <Menu
@@ -176,7 +215,11 @@ export const Navigation: React.FC<NavigationProps> = ({
               id="mobile-nav-panel"
               role="menu"
               aria-label="Mobile Navigation"
-              className="flex flex-col pointer-events-auto absolute top-full right-0 mt-2.5 w-48 rounded-xl bg-black/95 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.9)] p-2 z-40 animate-in fade-in slide-in-from-top-2 duration-200"
+              className={`flex flex-col pointer-events-auto absolute top-full right-0 mt-2.5 w-48 rounded-xl backdrop-blur-xl p-2 z-40 animate-in fade-in slide-in-from-top-2 duration-200 ${
+                isDark
+                  ? 'bg-black/95 border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.9)]'
+                  : 'bg-[#1c1a17] border border-[#38332c] shadow-[0_16px_40px_rgba(0,0,0,0.5)]'
+              }`}
             >
               <div className="flex flex-col gap-1">
                 {NAV_ITEMS.map((item) => {
@@ -193,7 +236,9 @@ export const Navigation: React.FC<NavigationProps> = ({
                       className={`w-full flex items-center justify-between px-3.5 py-2 rounded-lg font-mono text-xs tracking-wider transition-all select-none cursor-pointer text-left active:scale-[0.98] ${
                         isActive
                           ? 'bg-white/15 text-white font-medium border border-white/20 shadow-sm'
-                          : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
+                          : isDark
+                          ? 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
+                          : 'text-[#a89d8c] hover:text-[#f4eee0] hover:bg-white/5 border border-transparent'
                       }`}
                     >
                       <span className="lowercase">{item.label}</span>

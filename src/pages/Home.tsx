@@ -17,6 +17,7 @@ import { ProjectDetailModal } from '../components/UI/ProjectDetailModal';
 import { GrimoireDetailModal } from '../components/UI/GrimoireDetailModal';
 import { ArchiveScrollModal } from '../components/UI/ArchiveScrollModal';
 import { useModelInteraction } from '../hooks/useModelInteraction';
+import { useTheme } from '../context/ThemeContext';
 import type { ProjectItem } from '../data/projectsData';
 import type { GrimoireItem } from '../data/archiveData';
 import type { ForestLandmark } from '../components/Scene/Forest/ForestCameraController';
@@ -32,6 +33,7 @@ import {
 export const Home: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLight } = useTheme();
 
   // Current route resolved from browser location
   const currentRoute = getRouteFromPath(location.pathname);
@@ -241,7 +243,11 @@ export const Home: React.FC = () => {
   }, [activeNavTab]);
 
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-[#000000]">
+    <main
+      className={`relative w-screen h-screen overflow-hidden transition-colors duration-500 ${
+        isLight ? 'bg-[#f4eee0]' : 'bg-[#000000]'
+      }`}
+    >
       {/* 3D Canvas Scene Hosting All Worlds & Transitions */}
       <Scene
         worldState={worldState}

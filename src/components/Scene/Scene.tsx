@@ -2,6 +2,7 @@ import React from 'react';
 import * as THREE from 'three';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
+import { useTheme } from '../../context/ThemeContext';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
 import { ModularExplodedTransition } from './Transitions/ModularExplodedTransition';
 import { CinematicBackgroundTitle } from './Title/CinematicBackgroundTitle';
@@ -100,9 +101,13 @@ export const Scene: React.FC<SceneProps> = ({
     worldState === 'WORKSHOP_WORLD' ||
     worldState === 'TRANSITIONING_ISLAND';
 
+  const { isLight } = useTheme();
+
   return (
     <div
-      className="relative w-full h-full bg-[#000000] overflow-hidden select-none"
+      className={`relative w-full h-full overflow-hidden select-none transition-colors duration-500 ${
+        isLight ? 'bg-[#f4eee0]' : 'bg-[#000000]'
+      }`}
       onWheel={(e) => e.preventDefault()}
     >
       {/* 1. Fixed cinematic screen-space DOM typography layer */}

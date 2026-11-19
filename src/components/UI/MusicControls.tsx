@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Play, Pause, Volume2, Volume1, VolumeX } from 'lucide-react';
 import { useAudioPlayer } from '../../hooks/useAudioPlayer';
+import { useTheme } from '../../context/ThemeContext';
 
 /**
  * MusicControls
@@ -12,8 +13,10 @@ import { useAudioPlayer } from '../../hooks/useAudioPlayer';
  * - Volume Mute / Unmute button
  * - Smooth volume slider (compact on mobile, extended on desktop)
  * - Fixed top-left positioning on BOTH mobile and desktop
+ * - Theme-aware styling: Dark mode black capsule / Light mode warm parchment capsule
  */
 export const MusicControls: React.FC = () => {
+  const { isLight } = useTheme();
   const {
     currentTrack,
     isPlaying,
@@ -33,7 +36,11 @@ export const MusicControls: React.FC = () => {
       ref={containerRef}
       data-testid="music-controls"
       aria-label="Background Music Controls"
-      className="fixed top-3.5 left-3.5 sm:top-5 sm:left-5 md:top-6 md:left-8 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-black/90 hover:bg-black/95 backdrop-blur-md border border-white/15 hover:border-white/25 transition-all text-white shadow-[0_4px_24px_rgba(0,0,0,0.85)] select-none"
+      className={`fixed top-3.5 left-3.5 sm:top-5 sm:left-5 md:top-6 md:left-8 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-md transition-all select-none ${
+        isLight
+          ? 'bg-[#e8decb]/90 hover:bg-[#e2d6c0] border border-[#c4b79b] text-[#22201d] shadow-[0_4px_20px_rgba(180,160,130,0.45)]'
+          : 'bg-black/90 hover:bg-black/95 border border-white/15 hover:border-white/25 text-white shadow-[0_4px_24px_rgba(0,0,0,0.85)]'
+      }`}
     >
       {/* 1. Animated Equalizer Sound Bars */}
       <button
@@ -45,22 +52,46 @@ export const MusicControls: React.FC = () => {
       >
         <span
           className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
-            isAudioActive ? 'bg-white animate-music-bar-1' : 'bg-zinc-600 h-[25%]'
+            isAudioActive
+              ? isLight
+                ? 'bg-[#22201d] animate-music-bar-1'
+                : 'bg-white animate-music-bar-1'
+              : isLight
+              ? 'bg-[#968b74] h-[25%]'
+              : 'bg-zinc-600 h-[25%]'
           }`}
         />
         <span
           className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
-            isAudioActive ? 'bg-white animate-music-bar-2' : 'bg-zinc-600 h-[50%]'
+            isAudioActive
+              ? isLight
+                ? 'bg-[#22201d] animate-music-bar-2'
+                : 'bg-white animate-music-bar-2'
+              : isLight
+              ? 'bg-[#968b74] h-[50%]'
+              : 'bg-zinc-600 h-[50%]'
           }`}
         />
         <span
           className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
-            isAudioActive ? 'bg-white animate-music-bar-3' : 'bg-zinc-600 h-[35%]'
+            isAudioActive
+              ? isLight
+                ? 'bg-[#22201d] animate-music-bar-3'
+                : 'bg-white animate-music-bar-3'
+              : isLight
+              ? 'bg-[#968b74] h-[35%]'
+              : 'bg-zinc-600 h-[35%]'
           }`}
         />
         <span
           className={`w-[1.5px] sm:w-[2px] rounded-full transition-all duration-300 ${
-            isAudioActive ? 'bg-white animate-music-bar-4' : 'bg-zinc-600 h-[20%]'
+            isAudioActive
+              ? isLight
+                ? 'bg-[#22201d] animate-music-bar-4'
+                : 'bg-white animate-music-bar-4'
+              : isLight
+              ? 'bg-[#968b74] h-[20%]'
+              : 'bg-zinc-600 h-[20%]'
           }`}
         />
       </button>
@@ -68,7 +99,9 @@ export const MusicControls: React.FC = () => {
       {/* 2. Current Track Filename Badge (Compact on mobile, readable on desktop) */}
       <span
         data-testid="current-track-name"
-        className="font-mono text-[9px] sm:text-[11px] text-zinc-300 lowercase tracking-wider whitespace-nowrap"
+        className={`font-mono text-[9px] sm:text-[11px] lowercase tracking-wider whitespace-nowrap ${
+          isLight ? 'text-[#22201d] font-medium' : 'text-zinc-300'
+        }`}
       >
         {currentTrack.filename}
       </span>
@@ -80,7 +113,9 @@ export const MusicControls: React.FC = () => {
         onClick={togglePlay}
         aria-label={isPlaying ? 'Pause background soundtrack' : 'Play background soundtrack'}
         title={isPlaying ? 'Pause' : 'Play'}
-        className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-0.5 sm:p-1 focus:outline-none flex items-center justify-center"
+        className={`transition-colors cursor-pointer p-0.5 sm:p-1 focus:outline-none flex items-center justify-center ${
+          isLight ? 'text-[#4a4336] hover:text-[#110f0c]' : 'text-zinc-400 hover:text-white'
+        }`}
       >
         {isPlaying ? (
           <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -96,10 +131,12 @@ export const MusicControls: React.FC = () => {
         onClick={toggleMute}
         aria-label={isMuted ? 'Unmute soundtrack' : 'Mute soundtrack'}
         title={isMuted ? 'Unmute' : 'Mute'}
-        className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-0.5 sm:p-1 focus:outline-none flex items-center justify-center"
+        className={`transition-colors cursor-pointer p-0.5 sm:p-1 focus:outline-none flex items-center justify-center ${
+          isLight ? 'text-[#4a4336] hover:text-[#110f0c]' : 'text-zinc-400 hover:text-white'
+        }`}
       >
         {isMuted || volume === 0 ? (
-          <VolumeX className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-500" />
+          <VolumeX className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isLight ? 'text-[#968b74]' : 'text-zinc-500'}`} />
         ) : volume < 0.5 ? (
           <Volume1 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         ) : (

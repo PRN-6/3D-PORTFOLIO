@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTheme } from '../../../context/ThemeContext';
 
 /**
  * Pre-defined deterministic atmospheric campfire ember particles.
@@ -24,30 +25,108 @@ const ATMOSPHERIC_EMBERS = [
 ];
 
 /**
+ * Japanese Vintage Poster Decorative Accents (Light Mode)
+ * - Concentric red orbital arcs looping behind the 3D model
+ * - Traditional Japanese Hanko seals (red stamps)
+ * - Fine vertical calligraphy / editorial glyphs
+ */
+const JapanesePosterDecorations: React.FC = () => {
+  return (
+    <div aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-[4] overflow-hidden">
+      {/* 1. Red Concentric Orbital Circles & Curving Lines */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        viewBox="0 0 1920 1080"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        {/* Center Concentric Circles behind the 3D Island */}
+        <circle
+          cx="960"
+          cy="530"
+          r="320"
+          fill="none"
+          stroke="#b91c1c"
+          strokeWidth="1.5"
+          strokeOpacity="0.55"
+        />
+        <circle
+          cx="950"
+          cy="540"
+          r="275"
+          fill="none"
+          stroke="#c53030"
+          strokeWidth="1.0"
+          strokeOpacity="0.40"
+        />
+        <circle
+          cx="965"
+          cy="525"
+          r="355"
+          fill="none"
+          stroke="#991b1b"
+          strokeWidth="0.75"
+          strokeDasharray="6 4"
+          strokeOpacity="0.30"
+        />
+
+        {/* Dynamic Sweeping Orbital Arc Lines */}
+        <path
+          d="M 240,410 C 390,210 780,250 990,390 C 1200,530 1480,740 1700,630"
+          fill="none"
+          stroke="#b91c1c"
+          strokeWidth="1.4"
+          strokeOpacity="0.48"
+        />
+        <path
+          d="M 210,460 C 360,260 740,300 960,450 C 1170,610 1440,790 1660,690"
+          fill="none"
+          stroke="#c53030"
+          strokeWidth="0.85"
+          strokeOpacity="0.32"
+        />
+      </svg>
+
+      {/* 2. Top-Left Japanese Hanko Seal Stamp (印) */}
+      <div className="hidden md:flex flex-col items-center absolute top-20 sm:top-24 left-[14.2%] lg:left-[14.8%] pointer-events-none select-none opacity-90">
+        <div className="w-6 h-6 border-[1.5px] border-[#b91c1c] bg-[#b91c1c]/15 p-0.5 flex items-center justify-center rounded-[2px] shadow-sm">
+          <div className="w-full h-full border border-[#b91c1c] flex items-center justify-center text-[10px] font-serif font-bold text-[#b91c1c] leading-none">
+            印
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Mid-Left Japanese Vertical Calligraphy (若嵐香) & Hanko Stamp (吉) */}
+      <div className="hidden md:flex flex-col items-center absolute top-[44%] left-[13.2%] lg:left-[13.8%] pointer-events-none select-none opacity-85">
+        <span className="font-serif text-[#a3927d] text-[12px] sm:text-[13px] tracking-[0.42em] [writing-mode:vertical-rl] leading-tight select-none font-medium mb-1.5">
+          若嵐香
+        </span>
+        <div className="w-5 h-5 bg-[#b91c1c] text-white flex items-center justify-center rounded-[1px] text-[9px] font-serif font-bold shadow-sm">
+          吉
+        </div>
+      </div>
+
+      {/* 4. Top-Right Vertical Japanese Editorial Text (日本を揃エ) */}
+      <div className="hidden md:flex flex-col items-center absolute top-20 sm:top-24 right-[16.2%] lg:right-[17%] pointer-events-none select-none opacity-85">
+        <span className="font-serif text-[#a3927d] text-xs sm:text-[13px] tracking-[0.45em] [writing-mode:vertical-rl] leading-tight select-none font-medium">
+          日本を揃エ
+        </span>
+      </div>
+    </div>
+  );
+};
+
+/**
  * CinematicBackgroundTitle
  *
- * Implements the new monumental editorial background typography:
+ * Implements the monumental editorial background typography:
  *
- * Desktop Layout:
- * - Upper/Middle: "PRINSON" in massive, condensed bold uppercase spanning edge-to-edge
- * - Lower: "ROYAL" on left and "NAZARETH" on right with centered space for the 3D island
- * - Island is centered between the two typography sections, overlapping naturally
- *
- * Mobile Layout:
- * - Arranged vertically in 3 tiers:
- *   - Tier 1 (Top): "PRINSON"
- *   - Tier 2 (Middle): "ROYAL" (directly behind the island center)
- *   - Tier 3 (Bottom): "NAZARETH" (behind lower island base)
- *
- * Atmosphere:
- * - Pure deep dark black background (#000000)
- * - Subtle editorial film grain texture overlay
- * - Very subtle warm campfire amber embers / glowing particles
- * - Soft depth shadow behind the 3D island for authentic physical layering
- * - Fixed relative to the viewport: never shifts, rotates, or moves with 3D controls
- * - Independent HTML/CSS layering at z-[1] strictly behind 3D WebGL Canvas (z-10)
+ * - Dark Mode: Pure deep dark black background (#000000), crisp white typography, amber embers.
+ * - Light Mode: Warm cream vintage parchment background (#f4eee0), Japanese vintage poster aesthetic,
+ *   deep charcoal typography, red concentric orbital lines, and Hanko stamps.
  */
 export const CinematicBackgroundTitle: React.FC = () => {
+  const { isLight, theme } = useTheme();
+
   useEffect(() => {
     // Publish diagnostics for automated testing & verification
     if (typeof window !== 'undefined') {
@@ -57,6 +136,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
         fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
         isFixedToScreen: true,
         design: 'PRINSON_ROYAL_NAZARETH_EDITORIAL',
+        theme,
       };
       (window as any).__PRINSON_DESIGN__ = {
         desktop: {
@@ -69,55 +149,72 @@ export const CinematicBackgroundTitle: React.FC = () => {
           tier2: 'ROYAL',
           tier3: 'NAZARETH',
         },
-        atmosphere: {
-          grain: true,
-          embers: true,
-          depthShadow: true,
-        },
+        theme,
       };
     }
-  }, []);
+  }, [theme]);
+
+  // Color assignments based on theme
+  const textColorPrimary = isLight ? '#1c1a17' : '#ffffff';
+  const textColorSecondary = isLight ? '#24211d' : '#ececec';
+  const textShadowPrimary = isLight
+    ? 'drop-shadow(0 6px 25px rgba(180, 160, 130, 0.45))'
+    : 'drop-shadow(0 14px 55px rgba(0,0,0,0.98))';
+  const textShadowSecondary = isLight
+    ? 'drop-shadow(0 6px 20px rgba(180, 160, 130, 0.40))'
+    : 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))';
 
   return (
     <div
       data-testid="cinematic-prinson-title"
+      data-theme={theme}
       aria-label="PRINSON - ROYAL NAZARETH"
-      className="fixed inset-0 w-full h-full flex flex-col pointer-events-none select-none z-[1] overflow-hidden bg-[#000000]"
+      className={`fixed inset-0 w-full h-full flex flex-col pointer-events-none select-none z-[1] overflow-hidden transition-colors duration-500 ${
+        isLight ? 'vintage-paper-bg' : 'bg-[#000000]'
+      }`}
     >
       {/* 1. Subtle Editorial Film Grain Texture Overlay */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full editorial-grain opacity-[0.045] pointer-events-none z-[1]"
+        className={`absolute inset-0 w-full h-full pointer-events-none z-[1] ${
+          isLight ? 'editorial-grain opacity-[0.06] mix-blend-multiply' : 'editorial-grain opacity-[0.045]'
+        }`}
       />
 
-      {/* 2. Delicate Campfire Amber Embers / Glowing Particles */}
-      <div aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-[2] overflow-hidden">
-        {ATMOSPHERIC_EMBERS.map((ember) => (
-          <span
-            key={ember.id}
-            className={`absolute rounded-full pointer-events-none ${ember.anim}`}
-            style={{
-              left: ember.left,
-              top: ember.top,
-              width: `${ember.size}px`,
-              height: `${ember.size}px`,
-              backgroundColor: ember.color,
-              boxShadow: `0 0 6px ${ember.color}, 0 0 14px rgba(245, 158, 11, 0.45)`,
-              animationDelay: ember.delay,
-            }}
-          />
-        ))}
-      </div>
+      {/* 2. Light Mode: Japanese Vintage Poster Red Circles & Stamps */}
+      {isLight && <JapanesePosterDecorations />}
 
-      {/* 3. Soft Ambient Depth Shadow directly behind the 3D Island */}
+      {/* 3. Dark Mode: Delicate Campfire Amber Embers / Glowing Particles */}
+      {!isLight && (
+        <div aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-[2] overflow-hidden">
+          {ATMOSPHERIC_EMBERS.map((ember) => (
+            <span
+              key={ember.id}
+              className={`absolute rounded-full pointer-events-none ${ember.anim}`}
+              style={{
+                left: ember.left,
+                top: ember.top,
+                width: `${ember.size}px`,
+                height: `${ember.size}px`,
+                backgroundColor: ember.color,
+                boxShadow: `0 0 6px ${ember.color}, 0 0 14px rgba(245, 158, 11, 0.45)`,
+                animationDelay: ember.delay,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 4. Soft Ambient Depth Shadow directly behind the 3D Island */}
       <div
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vh] max-w-[680px] max-h-[680px] rounded-full pointer-events-none z-[2]"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vh] max-w-[680px] max-h-[680px] rounded-full pointer-events-none z-[2] transition-opacity duration-500"
         style={{
-          background: 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0) 72%)',
+          background: isLight
+            ? 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(160, 135, 100, 0.38) 0%, rgba(190, 170, 140, 0.18) 50%, rgba(244, 238, 224, 0) 75%)'
+            : 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0) 72%)',
         }}
       />
-
 
       {/* ========================================================================= */}
       {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper, Dominant) + ROYAL NAZARETH (Lower) */}
@@ -140,8 +237,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="242"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#ffffff"
-              style={{ filter: 'drop-shadow(0 14px 55px rgba(0,0,0,0.98))' }}
+              fill={textColorPrimary}
+              style={{ filter: textShadowPrimary }}
             >
               PRINSON
             </text>
@@ -167,8 +264,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
                 fontSize="240"
                 fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
                 fontWeight="900"
-                fill="#ececec"
-                style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
+                fill={textColorSecondary}
+                style={{ filter: textShadowSecondary }}
               >
                 ROYAL
               </text>
@@ -192,8 +289,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
                 fontSize="240"
                 fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
                 fontWeight="900"
-                fill="#ececec"
-                style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
+                fill={textColorSecondary}
+                style={{ filter: textShadowSecondary }}
               >
                 NAZARETH
               </text>
@@ -223,8 +320,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="242"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#ffffff"
-              style={{ filter: 'drop-shadow(0 12px 45px rgba(0,0,0,0.98))' }}
+              fill={textColorPrimary}
+              style={{ filter: textShadowPrimary }}
             >
               PRINSON
             </text>
@@ -248,8 +345,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="240"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#ececec"
-              style={{ filter: 'drop-shadow(0 8px 30px rgba(0,0,0,0.98))' }}
+              fill={textColorSecondary}
+              style={{ filter: textShadowSecondary }}
             >
               ROYAL
             </text>
@@ -273,8 +370,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="240"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#ececec"
-              style={{ filter: 'drop-shadow(0 8px 30px rgba(0,0,0,0.98))' }}
+              fill={textColorSecondary}
+              style={{ filter: textShadowSecondary }}
             >
               NAZARETH
             </text>
