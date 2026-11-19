@@ -42,8 +42,8 @@ export const ROUTES: Record<NavTabId, RouteConfig> = {
     tabId: 'ABOUT',
     destination: 'FOREST',
     worldState: 'FOREST_WORLD',
-    title: "About Me — Whispering Forest | PRINSON",
-    description: "Discover the journey, skills, and background of Prinson in the Whispering Forest.",
+    title: "About Me — Blue Flower Garden | PRINSON",
+    description: "Explore the eternal blue flower meadow with Himmel & Frieren, celebrating memory, companionship, and craftsmanship.",
   },
   CONTACT: {
     path: '/contact',

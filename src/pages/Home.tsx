@@ -66,10 +66,7 @@ export const Home: React.FC = () => {
 
   // Archive World (Island 02) State
   const [selectedGrimoire, setSelectedGrimoire] = useState<GrimoireItem | null>(null);
-  const [isScrollOpen, setIsScrollOpen] = useState(() => {
-    const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
-    return r.tabId === 'ABOUT';
-  });
+  const [isScrollOpen, setIsScrollOpen] = useState(false);
 
   // Whispering Forest (Island 03) State
   const [focusedForestLandmark, setFocusedForestLandmark] = useState<ForestLandmark>('overview');
@@ -181,10 +178,6 @@ export const Home: React.FC = () => {
       const targetRoute = ROUTES[tab];
       if (!targetRoute) return;
 
-      if (tab === 'ABOUT') {
-        setIsScrollOpen(true);
-      }
-
       if (location.pathname === targetRoute.path) {
         handleResetCamera();
         return;
@@ -234,14 +227,6 @@ export const Home: React.FC = () => {
       setIsContactOpen(false);
       setIsFunOpen(true);
       setIsScrollOpen(false);
-    } else if (route.tabId === 'ABOUT') {
-      setIsContactOpen(false);
-      setIsFunOpen(false);
-      setIsScrollOpen(true);
-
-      if (route.destination !== activeDestination) {
-        handleSelectDestination(route.destination);
-      }
     } else {
       setIsContactOpen(false);
       setIsFunOpen(false);
@@ -305,15 +290,14 @@ export const Home: React.FC = () => {
 
 
 
-      {/* WORLD D (WHISPERING FOREST): Landmark Exploration & Biography Pedestal */}
+      {/* WORLD D (BLUE FLOWER GARDEN): Landmark Exploration & Biography Pedestal */}
       {worldState === 'FOREST_WORLD' && (
         <>
-
           {/* Bottom Center Landmark Navigation Toolbar (Elevated above global destination bar) */}
           <div className="fixed bottom-20 sm:bottom-22 left-1/2 -translate-x-1/2 z-30 pointer-events-auto max-w-[95vw] overflow-x-auto no-scrollbar py-1">
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl bg-black/75 backdrop-blur-md border border-emerald-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400/90 px-2 hidden md:inline">
-                Whispering Forest:
+            <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl bg-black/75 backdrop-blur-md border border-sky-500/30 shadow-[0_10px_30px_rgba(2,132,199,0.3)]">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-sky-400/90 px-2 hidden md:inline">
+                Blue Flower Garden:
               </span>
 
               <button
@@ -321,17 +305,33 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('overview')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'overview'
-                    ? 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 shadow-sm'
+                    ? 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Compass className="w-3.5 h-3.5 text-emerald-400" />
+                <Compass className="w-3.5 h-3.5 text-sky-400" />
                 <span>Overview</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setFocusedForestLandmark('biography')}
+                onClick={() => setFocusedForestLandmark('heiter')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                  focusedForestLandmark === 'heiter'
+                    ? 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-sky-300" />
+                <span>Himmel &amp; Frieren</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setFocusedForestLandmark('biography');
+                  setIsScrollOpen(true);
+                }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'biography'
                     ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50 shadow-sm'
@@ -344,28 +344,15 @@ export const Home: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => setFocusedForestLandmark('heiter')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                  focusedForestLandmark === 'heiter'
-                    ? 'bg-amber-500/30 text-amber-200 border border-amber-400/50 shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Heiter's Haven</span>
-              </button>
-
-              <button
-                type="button"
                 onClick={() => setFocusedForestLandmark('ancientTree')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'ancientTree'
-                    ? 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 shadow-sm'
+                    ? 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Trees className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Ancient Tree</span>
+                <Trees className="w-3.5 h-3.5 text-sky-400" />
+                <span>Flower Meadow</span>
               </button>
 
               <button
@@ -378,7 +365,7 @@ export const Home: React.FC = () => {
                 }`}
               >
                 <Droplets className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Enchanted Pond</span>
+                <span>Floating Rocks</span>
               </button>
             </div>
           </div>

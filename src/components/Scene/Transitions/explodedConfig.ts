@@ -37,8 +37,8 @@ export const ISLAND_DISPLAY_TRANSFORMS: Record<DestinationId, IslandDisplayTrans
     position: [-0.85, -0.45, -0.2],
   },
   FOREST: {
-    scale: [0.61, 0.61, 0.61],
-    position: [-0.70, 0.05, 0.0],
+    scale: [0.65, 0.65, 0.65],
+    position: [0.0, 0.0, 0.0],
   },
   WORKSHOP: {
     scale: [0.59, 0.59, 0.59],
@@ -209,10 +209,30 @@ export const ARCHIVE_EXPLODED_PROFILE: IslandExplodedProfile = {
  */
 export const FOREST_EXPLODED_PROFILE: IslandExplodedProfile = {
   islandId: 'FOREST',
-  displayName: 'Whispering Forest',
+  displayName: 'Blue Flower Garden',
   disassemblyDuration: 1.8,
   reassemblyDuration: 2.2,
   components: [
+    // --- Level 05: Blue Flower Garden Characters & Wreaths ---
+    { name: 'HimmelRoot', offset: [0, 3, 0], explodedScale: 0, timing: [0.0, 0.45] },
+    { name: 'FrierenRoot', offset: [0, 3, 0], explodedScale: 0, timing: [0.0, 0.45] },
+    { name: 'flower-wreath-himmel', offset: [0, 3.5, 0], explodedScale: 0, timing: [0.05, 0.5] },
+    { name: 'flower-wreath-frieren', offset: [0, 3.5, 0], explodedScale: 0, timing: [0.05, 0.5] },
+
+    // --- Floating Petals, Magical Motes & Satellite Rocks ---
+    { name: 'floating-petals', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
+    { name: 'magical-motes', offset: [0, 9, 0], explodedScale: 0, timing: [0.0, 0.5] },
+    { name: 'floating-rocks', offset: [0, -5, 0], explodedScale: 0.1, timing: [0.1, 0.6] },
+
+    // --- Garden Environment Nodes (Island, Meadow, Trees, Clouds) ---
+    { name: 'DreamyClouds', offset: [0, 10, 0], explodedScale: 0, timing: [0.05, 0.5] },
+    { name: 'FloweringTrees', offset: [5, 4, 3], explodedScale: 0, timing: [0.15, 0.65] },
+    { name: 'GardenShrubs', offset: [-4, 3, -3], explodedScale: 0, timing: [0.2, 0.7] },
+    { name: 'ForegroundFlowers', offset: [0, 2, 2], explodedScale: 0, timing: [0.1, 0.55] },
+    { name: 'DenseFlowerMeadow', offset: [0, 1.5, 0], explodedScale: 0.5, timing: [0.2, 0.75] },
+    { name: 'IslandTerrain', offset: [0, -6, 0], explodedScale: 0.2, timing: [0.25, 0.85] },
+    { name: 'BlueFlowerGarden_Complete', offset: [0, -4, 0], explodedScale: 0.2, timing: [0.2, 0.8] },
+
     // --- Character & Forest Effects (Gentle fade, atomic) ---
     { name: 'ForestHeiterContainer', offset: [0, 2.5, 0], explodedScale: 0, timing: [0.0, 0.45] },
     { name: 'forest-effects', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
