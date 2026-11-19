@@ -51,6 +51,9 @@ export const WorldD_WhisperingForest: React.FC<WorldDWhisperingForestProps> = ({
       {/* 5. Ethereal Cyan Floral Center Glow */}
       <pointLight position={[0, 1.2, 0.5]} color="#aee2ff" intensity={1.2} distance={8} decay={2} />
 
+      {/* 6. Dedicated Soft Warm Character Key Light (Himmel & Frieren) */}
+      <pointLight position={[0.0, 2.0, 1.8]} color="#fff7e6" intensity={1.6} distance={6} decay={2} />
+
       {/* MASTER BLUE FLOWER GARDEN ENVIRONMENT (Island, Dense Flowers, Trees, Clouds, Petals, Motes) */}
       <GardenEnvironment />
 

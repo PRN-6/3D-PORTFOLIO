@@ -31,6 +31,36 @@ const MasterGardenMesh: React.FC = () => {
         }
       }
     });
+
+    // 1. FIX: Cloud positioning & geometry
+    // Reduce oversized cloud geometry, move clouds away from camera foreground,
+    // and position them around island perimeter and behind the island.
+    const cloudsNode = clone.getObjectByName('DreamyClouds');
+    if (cloudsNode) {
+      cloudsNode.position.set(-3.8, -2.4, -6.8);
+      cloudsNode.scale.set(0.44, 0.35, 0.44);
+
+      cloudsNode.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          mesh.castShadow = false;
+          mesh.receiveShadow = false;
+          if (mesh.material) {
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            mats.forEach((m) => {
+              const mat = m.clone() as THREE.MeshStandardMaterial;
+              mat.transparent = true;
+              mat.opacity = 0.84;
+              mat.roughness = 0.98;
+              mat.metalness = 0.0;
+              mat.depthWrite = true;
+              mesh.material = mat;
+            });
+          }
+        }
+      });
+    }
+
     return clone;
   }, [gltf.scene]);
 
@@ -132,3 +162,4 @@ export const GardenEnvironment: React.FC = () => {
     </group>
   );
 };
+

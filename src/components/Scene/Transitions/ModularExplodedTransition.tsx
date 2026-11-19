@@ -487,11 +487,13 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   return (
     <>
       {/* UNIFIED PRESENTATION CAMERA CONTROLLER (Stationary During Transitions, Zero Zoom) */}
-      <UnifiedPresentationCameraController
-        isTransitioning={isTransitioning}
-        resetSignal={resetSignal}
-        onResetComplete={onResetComplete}
-      />
+      {(worldState !== 'FOREST_WORLD' || isTransitioning) && (
+        <UnifiedPresentationCameraController
+          isTransitioning={isTransitioning}
+          resetSignal={resetSignal}
+          onResetComplete={onResetComplete}
+        />
+      )}
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
       <group name="PresentationAnchorGroup" position={[0, 0, 0]}>
@@ -539,7 +541,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
           visible={worldState === 'FOREST_WORLD'}
         >
           <WorldD_WhisperingForest
-            disableCamera={true}
+            disableCamera={isTransitioning || worldState !== 'FOREST_WORLD'}
             onOpenAboutModal={onOpenAboutModal}
             isModalOpen={isAboutModalOpen}
             resetSignal={resetSignal}

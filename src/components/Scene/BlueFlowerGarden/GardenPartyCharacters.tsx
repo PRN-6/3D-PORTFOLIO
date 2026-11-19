@@ -133,3 +133,4 @@ export const GardenPartyCharacters: React.FC = () => {
     </ModelErrorBoundary>
   );
 };
+

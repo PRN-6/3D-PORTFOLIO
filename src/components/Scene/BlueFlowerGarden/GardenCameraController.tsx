@@ -27,11 +27,13 @@ export const GardenCameraController: React.FC<GardenCameraControllerProps> = ({
   // Responsive focal length adjustments
   useLayoutEffect(() => {
     if (camera instanceof THREE.PerspectiveCamera) {
+      camera.near = 0.1;
+      camera.far = 1000;
       const aspect = size.width / size.height;
       const framingScale = isMobile
-        ? Math.min(0.65, aspect * 1.20)
+        ? Math.min(0.68, aspect * 1.25)
         : isTablet
-        ? Math.min(0.85, aspect * 0.95)
+        ? Math.min(0.88, aspect * 0.95)
         : Math.min(1.0, aspect * 0.84);
       const halfFov = THREE.MathUtils.degToRad(42 / 2);
       camera.setFocalLength((camera.getFilmHeight() * framingScale) / (2 * Math.tan(halfFov)));
@@ -47,45 +49,49 @@ export const GardenCameraController: React.FC<GardenCameraControllerProps> = ({
     switch (focusedLandmark) {
       case 'biography':
         defaultCamPos = isMobile
-          ? new THREE.Vector3(1.4, 2.0, 3.2)
-          : new THREE.Vector3(1.4, 1.85, 2.6);
-        defaultTarget = new THREE.Vector3(1.4, 0.85, 0.8);
+          ? new THREE.Vector3(1.6, 1.8, 3.0)
+          : new THREE.Vector3(1.4, 1.6, 2.4);
+        defaultTarget = new THREE.Vector3(1.4, 0.75, 0.8);
         break;
 
       case 'heiter':
       case 'characters' as ForestLandmark:
         // Intimate frontal view of Himmel & Frieren
         defaultCamPos = isMobile
-          ? new THREE.Vector3(0, 1.45, 5.0)
-          : new THREE.Vector3(0, 1.35, 4.2);
-        defaultTarget = new THREE.Vector3(0, 0.85, 0.1);
+          ? new THREE.Vector3(0.0, 1.35, 4.2)
+          : new THREE.Vector3(0.0, 1.25, 3.6);
+        defaultTarget = new THREE.Vector3(0.0, 0.65, 0.1);
         break;
 
       case 'ancientTree':
       case 'flowers' as ForestLandmark:
-        // Flower meadow view
-        defaultCamPos = new THREE.Vector3(2.5, 1.2, 3.0);
-        defaultTarget = new THREE.Vector3(0, 0.42, 0.5);
+        // Sweeping cinematic flower meadow view
+        defaultCamPos = isMobile
+          ? new THREE.Vector3(2.8, 1.4, 3.4)
+          : new THREE.Vector3(2.4, 1.2, 2.8);
+        defaultTarget = new THREE.Vector3(0.0, 0.52, 0.3);
         break;
 
       case 'pond':
       case 'underside' as ForestLandmark:
-        // Underside view of crags & floating rocks
-        defaultCamPos = new THREE.Vector3(0, -6.5, 13.0);
-        defaultTarget = new THREE.Vector3(0, -2.5, 0);
+        // View of floating crystal rocks and crags
+        defaultCamPos = isMobile
+          ? new THREE.Vector3(2.8, -2.8, 11.5)
+          : new THREE.Vector3(2.5, -2.4, 9.5);
+        defaultTarget = new THREE.Vector3(0.0, -1.8, 0.0);
         break;
 
       case 'overview':
       default:
-        // Aerial meadow overview
+        // Aerial meadow overview (frames complete floating island including rocky underside)
         defaultCamPos = isMobile
-          ? new THREE.Vector3(16.0, 13.0, 20.0)
+          ? new THREE.Vector3(16.5, 11.5, 16.5)
           : isTablet
-          ? new THREE.Vector3(15.0, 12.0, 19.0)
-          : new THREE.Vector3(14.0, 11.0, 18.0);
+          ? new THREE.Vector3(14.8, 10.0, 14.8)
+          : new THREE.Vector3(13.8, 9.2, 13.8);
         defaultTarget = isMobile
-          ? new THREE.Vector3(0.0, 0.5, 0.0)
-          : new THREE.Vector3(0.0, 0.6, 0.0);
+          ? new THREE.Vector3(0.0, 0.70, 0.0)
+          : new THREE.Vector3(0.0, 0.65, 0.0);
         break;
     }
 
@@ -146,3 +152,4 @@ export const GardenCameraController: React.FC<GardenCameraControllerProps> = ({
     />
   );
 };
+

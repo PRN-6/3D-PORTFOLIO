@@ -90,3 +90,4 @@ export const GardenBiographyInteraction: React.FC<GardenBiographyInteractionProp
     </group>
   );
 };
+
