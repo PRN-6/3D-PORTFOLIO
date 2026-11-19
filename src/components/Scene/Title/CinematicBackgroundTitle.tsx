@@ -120,11 +120,11 @@ export const CinematicBackgroundTitle: React.FC = () => {
 
 
       {/* ========================================================================= */}
-      {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper) + ROYAL NAZARETH (Lower)       */}
+      {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper, Dominant) + ROYAL NAZARETH (Lower) */}
       {/* ========================================================================= */}
-      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[76px] pb-8 px-2 sm:px-3 relative z-[3] overflow-hidden">
-        {/* UPPER: PRINSON (Monumental, thick condensed editorial typography matching reference) */}
-        <div className="w-full h-[50vh] lg:h-[52vh] flex items-start justify-center overflow-hidden">
+      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[74px] pb-8 px-2 sm:px-3 relative z-[3] overflow-hidden">
+        {/* UPPER: PRINSON (Dominant primary typography, noticeably larger than Royal Nazareth) */}
+        <div className="w-full h-[55vh] lg:h-[57vh] flex items-start justify-center overflow-hidden">
           <svg
             data-testid="prinson-text"
             viewBox="0 0 980 240"
@@ -140,18 +140,18 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="242"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#f4f4f4"
-              style={{ filter: 'drop-shadow(0 12px 50px rgba(0,0,0,0.98))' }}
+              fill="#ffffff"
+              style={{ filter: 'drop-shadow(0 14px 55px rgba(0,0,0,0.98))' }}
             >
               PRINSON
             </text>
           </svg>
         </div>
 
-        {/* LOWER: ROYAL (Left) + NAZARETH (Right) framing the 3D Island base */}
-        <div className="w-full h-[45vh] flex items-end justify-between overflow-hidden">
+        {/* LOWER: ROYAL (Left) + NAZARETH (Right) (Secondary typography, framed smaller under island) */}
+        <div className="w-full h-[33vh] lg:h-[35vh] flex items-end justify-between overflow-hidden">
           {/* ROYAL (Left side) */}
-          <div className="w-[37vw] h-full flex items-end">
+          <div className="w-[35vw] h-full flex items-end">
             <svg
               data-testid="royal-text"
               viewBox="0 0 720 240"
@@ -167,8 +167,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
                 fontSize="240"
                 fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
                 fontWeight="900"
-                fill="#f4f4f4"
-                style={{ filter: 'drop-shadow(0 12px 50px rgba(0,0,0,0.98))' }}
+                fill="#ececec"
+                style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
               >
                 ROYAL
               </text>
@@ -176,7 +176,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
           </div>
 
           {/* NAZARETH (Right side) */}
-          <div className="w-[55vw] h-full flex items-end">
+          <div className="w-[53vw] h-full flex items-end">
             <svg
               data-testid="nazareth-text"
               viewBox="0 0 1100 240"
@@ -192,8 +192,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
                 fontSize="240"
                 fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
                 fontWeight="900"
-                fill="#f4f4f4"
-                style={{ filter: 'drop-shadow(0 12px 50px rgba(0,0,0,0.98))' }}
+                fill="#ececec"
+                style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
               >
                 NAZARETH
               </text>
@@ -203,11 +203,11 @@ export const CinematicBackgroundTitle: React.FC = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* MOBILE LAYOUT (< 768px): PRINSON (Top) + ROYAL (Middle) + NAZARETH (Bottom) */}
+      {/* MOBILE LAYOUT (< 768px): PRINSON (Top, Dominant) + ROYAL (Middle) + NAZARETH (Bottom) */}
       {/* ========================================================================= */}
       <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-[54px] pb-10 px-1 relative z-[3] overflow-hidden">
-        {/* TIER 1 (Top): PRINSON (Towering, bold, edge-to-edge) */}
-        <div className="w-full h-[30vh] flex items-center justify-center overflow-hidden">
+        {/* TIER 1 (Top): PRINSON (Dominant primary tier, noticeably larger than tiers below) */}
+        <div className="w-full h-[36vh] flex items-center justify-center overflow-hidden">
           <svg
             data-testid="prinson-mobile-text"
             viewBox="0 0 980 240"
@@ -223,16 +223,16 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="242"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#f4f4f4"
-              style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
+              fill="#ffffff"
+              style={{ filter: 'drop-shadow(0 12px 45px rgba(0,0,0,0.98))' }}
             >
               PRINSON
             </text>
           </svg>
         </div>
 
-        {/* TIER 2 (Middle): ROYAL (positioned directly behind the 3D island center) */}
-        <div className="w-full h-[30vh] flex items-center justify-center overflow-hidden">
+        {/* TIER 2 (Middle): ROYAL (Secondary tier, positioned behind the 3D island center) */}
+        <div className="w-full h-[23vh] flex items-center justify-center overflow-hidden">
           <svg
             data-testid="royal-mobile-text"
             viewBox="0 0 720 240"
@@ -248,16 +248,16 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="240"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#f4f4f4"
-              style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
+              fill="#ececec"
+              style={{ filter: 'drop-shadow(0 8px 30px rgba(0,0,0,0.98))' }}
             >
               ROYAL
             </text>
           </svg>
         </div>
 
-        {/* TIER 3 (Bottom): NAZARETH (behind lower island rock cliff and campfire) */}
-        <div className="w-full h-[32vh] flex items-center justify-center overflow-hidden">
+        {/* TIER 3 (Bottom): NAZARETH (Secondary tier behind lower island rock cliff and campfire) */}
+        <div className="w-full h-[24vh] flex items-center justify-center overflow-hidden">
           <svg
             data-testid="nazareth-mobile-text"
             viewBox="0 0 1100 240"
@@ -273,8 +273,8 @@ export const CinematicBackgroundTitle: React.FC = () => {
               fontSize="240"
               fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
               fontWeight="900"
-              fill="#f4f4f4"
-              style={{ filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.98))' }}
+              fill="#ececec"
+              style={{ filter: 'drop-shadow(0 8px 30px rgba(0,0,0,0.98))' }}
             >
               NAZARETH
             </text>
