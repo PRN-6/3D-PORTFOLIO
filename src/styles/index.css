@@ -17,6 +17,54 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* Monumental Editorial Typography: Bebas Neue / Anton / Oswald               */
+/* -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/BebasNeue-Regular.ttf') format('truetype');
+}
+
+.font-bebas {
+  font-family: 'Bebas Neue', 'Anton', 'Oswald', system-ui, sans-serif;
+  text-transform: uppercase;
+}
+
+/* Editorial subtle film grain texture */
+.editorial-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Atmospheric subtle campfire ember drifting animations */
+@keyframes ember-float-1 {
+  0%, 100% { transform: translate(0px, 0px) scale(0.9); opacity: 0.25; }
+  50% { transform: translate(6px, -22px) scale(1.15); opacity: 0.75; }
+}
+
+@keyframes ember-float-2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1.1); opacity: 0.3; }
+  50% { transform: translate(-8px, -28px) scale(0.85); opacity: 0.85; }
+}
+
+@keyframes ember-float-3 {
+  0%, 100% { transform: translate(0px, 0px) scale(0.85); opacity: 0.2; }
+  50% { transform: translate(10px, -35px) scale(1.2); opacity: 0.9; }
+}
+
+.animate-ember-1 {
+  animation: ember-float-1 4.5s ease-in-out infinite;
+}
+.animate-ember-2 {
+  animation: ember-float-2 6.0s ease-in-out infinite;
+}
+.animate-ember-3 {
+  animation: ember-float-3 5.2s ease-in-out infinite;
+}
+
+/* -------------------------------------------------------------------------- */
 /* Four Distinct Artistic Typography Styles for PRINSON Title                */
 /* 1. Pixel Block (8-bit arcade)                                              */
 /* 2. Gothic Blackletter (ornamental medieval)                                */

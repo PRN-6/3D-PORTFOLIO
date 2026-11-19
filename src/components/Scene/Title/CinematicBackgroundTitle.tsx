@@ -1,173 +1,285 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 /**
- * Six Distinct English Artistic Typography Styles for PRINSON
- *
- * 1. Pixel / 8-bit block font ('Press Start 2P')
- * 2. Elegant luxury serif ('Bodoni Moda' / Didot)
- * 3. Gothic / blackletter font ('UnifrakturCook')
- * 4. Modern minimalist serif ('Cinzel')
- * 5. Retro editorial serif ('Playfair Display')
- * 6. Monospace / typewriter font ('Courier Prime')
+ * Pre-defined deterministic atmospheric campfire ember particles.
+ * Subtle, warm amber motes floating gently in the dark space around the island.
  */
-export interface TypographyStyle {
-  id: string;
-  name: string;
-  fontFamily: string;
-  fontWeight: number;
-  letterSpacing: string;
-  fontSize: string;
-  textTransform?: 'uppercase';
-}
-
-export const PRINSON_FONT_STYLES: TypographyStyle[] = [
-  {
-    id: 'pixel-8bit',
-    name: 'Pixel / 8-Bit Block',
-    fontFamily: "'Press Start 2P', monospace",
-    fontWeight: 400,
-    letterSpacing: '0.06em',
-    fontSize: 'clamp(1.65rem, 8.6vw, 8.2rem)',
-    textTransform: 'uppercase',
-  },
-  {
-    id: 'luxury-serif',
-    name: 'Elegant Luxury Serif',
-    fontFamily: "'Bodoni Moda', 'Didot', serif",
-    fontWeight: 900,
-    letterSpacing: '0.14em',
-    fontSize: 'clamp(2.15rem, 11.4vw, 10.85rem)',
-    textTransform: 'uppercase',
-  },
-  {
-    id: 'gothic-blackletter',
-    name: 'Gothic Blackletter',
-    fontFamily: "'UnifrakturCook', cursive, serif",
-    fontWeight: 700,
-    letterSpacing: '0.10em',
-    fontSize: 'clamp(2.2rem, 11.6vw, 11rem)',
-    textTransform: 'uppercase',
-  },
-  {
-    id: 'minimal-serif',
-    name: 'Modern Minimalist Serif',
-    fontFamily: "'Cinzel', serif",
-    fontWeight: 800,
-    letterSpacing: '0.15em',
-    fontSize: 'clamp(2.05rem, 10.8vw, 10.2rem)',
-    textTransform: 'uppercase',
-  },
-  {
-    id: 'retro-editorial',
-    name: 'Retro Editorial Serif',
-    fontFamily: "'Playfair Display', serif",
-    fontWeight: 900,
-    letterSpacing: '0.12em',
-    fontSize: 'clamp(2.05rem, 10.8vw, 10.2rem)',
-    textTransform: 'uppercase',
-  },
-  {
-    id: 'typewriter-mono',
-    name: 'Typewriter Monospace',
-    fontFamily: "'Courier Prime', 'Space Mono', monospace",
-    fontWeight: 700,
-    letterSpacing: '0.12em',
-    fontSize: 'clamp(2.15rem, 11.4vw, 10.8rem)',
-    textTransform: 'uppercase',
-  },
+const ATMOSPHERIC_EMBERS = [
+  { id: 1, left: '22%', top: '36%', size: 2.0, delay: '0.2s', anim: 'animate-ember-1', color: '#f59e0b' },
+  { id: 2, left: '28%', top: '56%', size: 2.5, delay: '1.4s', anim: 'animate-ember-2', color: '#f97316' },
+  { id: 3, left: '34%', top: '42%', size: 1.8, delay: '2.1s', anim: 'animate-ember-3', color: '#fbbf24' },
+  { id: 4, left: '42%', top: '64%', size: 3.0, delay: '0.8s', anim: 'animate-ember-1', color: '#f59e0b' },
+  { id: 5, left: '47%', top: '32%', size: 1.5, delay: '3.0s', anim: 'animate-ember-2', color: '#ea580c' },
+  { id: 6, left: '54%', top: '58%', size: 2.2, delay: '1.8s', anim: 'animate-ember-3', color: '#fbbf24' },
+  { id: 7, left: '62%', top: '46%', size: 2.8, delay: '0.5s', anim: 'animate-ember-1', color: '#f97316' },
+  { id: 8, left: '68%', top: '38%', size: 1.8, delay: '2.5s', anim: 'animate-ember-2', color: '#f59e0b' },
+  { id: 9, left: '74%', top: '54%', size: 2.0, delay: '1.1s', anim: 'animate-ember-3', color: '#fbbf24' },
+  { id: 10, left: '78%', top: '66%', size: 2.5, delay: '2.9s', anim: 'animate-ember-1', color: '#ea580c' },
+  { id: 11, left: '25%', top: '70%', size: 1.8, delay: '0.9s', anim: 'animate-ember-2', color: '#f59e0b' },
+  { id: 12, left: '38%', top: '76%', size: 2.2, delay: '2.0s', anim: 'animate-ember-3', color: '#f97316' },
+  { id: 13, left: '58%', top: '72%', size: 2.0, delay: '1.5s', anim: 'animate-ember-1', color: '#fbbf24' },
+  { id: 14, left: '66%', top: '80%', size: 1.6, delay: '3.2s', anim: 'animate-ember-2', color: '#f59e0b' },
+  { id: 15, left: '18%', top: '48%', size: 2.2, delay: '1.7s', anim: 'animate-ember-3', color: '#f97316' },
+  { id: 16, left: '82%', top: '44%', size: 2.0, delay: '0.3s', anim: 'animate-ember-1', color: '#fbbf24' },
 ];
 
 /**
  * CinematicBackgroundTitle
  *
- * Screen-space fixed typography layer displaying "PRINSON" in the exact center
- * of the viewport, behind the interactive 3D floating island.
+ * Implements the new monumental editorial background typography:
  *
- * Continuously cycles through six distinctive English font styles with a smooth,
- * subtle crossfade and hold interval.
+ * Desktop Layout:
+ * - Upper/Middle: "PRINSON" in massive, condensed bold uppercase spanning edge-to-edge
+ * - Lower: "ROYAL" on left and "NAZARETH" on right with centered space for the 3D island
+ * - Island is centered between the two typography sections, overlapping naturally
  *
- * Characteristics:
- * - Permanent display of "PRINSON"
+ * Mobile Layout:
+ * - Arranged vertically in 3 tiers:
+ *   - Tier 1 (Top): "PRINSON"
+ *   - Tier 2 (Middle): "ROYAL" (directly behind the island center)
+ *   - Tier 3 (Bottom): "NAZARETH" (behind lower island base)
+ *
+ * Atmosphere:
+ * - Pure deep dark black background (#000000)
+ * - Subtle editorial film grain texture overlay
+ * - Very subtle warm campfire amber embers / glowing particles
+ * - Soft depth shadow behind the 3D island for authentic physical layering
  * - Fixed relative to the viewport: never shifts, rotates, or moves with 3D controls
- * - Independent HTML/CSS layering at z-[1] behind 3D WebGL Canvas (z-10)
- * - Calibrated clamp sizes to ensure zero edge clipping across all viewports
- * - 100% pure English typography
+ * - Independent HTML/CSS layering at z-[1] strictly behind 3D WebGL Canvas (z-10)
  */
 export const CinematicBackgroundTitle: React.FC = () => {
-  const [activeStyleIndex, setActiveStyleIndex] = useState(0);
-
-  useEffect(() => {
-    // Ultra-fast kinetic typography cycle: rapid font shifts (~120ms per font)
-    const interval = setInterval(() => {
-      setActiveStyleIndex((prev) => (prev + 1) % PRINSON_FONT_STYLES.length);
-    }, 120);
-
-    return () => clearInterval(interval);
-  }, []);
-
   useEffect(() => {
     // Publish diagnostics for automated testing & verification
     if (typeof window !== 'undefined') {
-      (window as any).__PRINSON_FONT_LOOP__ = {
-        word: 'PRINSON',
-        activeStyleIndex,
-        activeStyle: PRINSON_FONT_STYLES[activeStyleIndex],
-        totalStyles: PRINSON_FONT_STYLES.length,
-        styles: PRINSON_FONT_STYLES,
-        isFixedToScreen: true,
-        mobileOffsetY: -115,
-      };
       (window as any).__CINEMATIC_TITLE_STATE__ = {
         word: 'PRINSON',
-        activeStyleIndex,
-        fontFamily: PRINSON_FONT_STYLES[activeStyleIndex].fontFamily,
-        fontWeight: PRINSON_FONT_STYLES[activeStyleIndex].fontWeight,
-        letterSpacing: PRINSON_FONT_STYLES[activeStyleIndex].letterSpacing,
-        fontSize: PRINSON_FONT_STYLES[activeStyleIndex].fontSize,
+        secondaryWords: ['ROYAL', 'NAZARETH'],
+        fontFamily: "'Bebas Neue', 'Anton', 'Oswald', sans-serif",
         isFixedToScreen: true,
-        mobileOffsetY: -115,
+        design: 'PRINSON_ROYAL_NAZARETH_EDITORIAL',
       };
-      (window as any).__PRINSON_SET_FONT_INDEX__ = (idx: number) => {
-        setActiveStyleIndex(((idx % PRINSON_FONT_STYLES.length) + PRINSON_FONT_STYLES.length) % PRINSON_FONT_STYLES.length);
+      (window as any).__PRINSON_DESIGN__ = {
+        desktop: {
+          topWord: 'PRINSON',
+          bottomLeft: 'ROYAL',
+          bottomRight: 'NAZARETH',
+        },
+        mobile: {
+          tier1: 'PRINSON',
+          tier2: 'ROYAL',
+          tier3: 'NAZARETH',
+        },
+        atmosphere: {
+          grain: true,
+          embers: true,
+          depthShadow: true,
+        },
       };
     }
-  }, [activeStyleIndex]);
+  }, []);
 
   return (
     <div
       data-testid="cinematic-prinson-title"
-      aria-label="PRINSON"
-      className="fixed inset-0 w-full h-full flex items-center justify-center pointer-events-none select-none z-[1] overflow-hidden"
+      aria-label="PRINSON - ROYAL NAZARETH"
+      className="fixed inset-0 w-full h-full flex flex-col pointer-events-none select-none z-[1] overflow-hidden bg-[#000000]"
     >
-      <div className="prinson-title-mobile-lift relative flex items-center justify-center w-full h-full max-w-full text-center">
-        {PRINSON_FONT_STYLES.map((style, index) => {
-          const isActive = index === activeStyleIndex;
-          return (
-            <h1
-              key={style.id}
-              data-style-id={style.id}
-              data-active={isActive ? 'true' : 'false'}
-              aria-hidden={!isActive}
-              className={`absolute inset-0 flex items-center justify-center leading-none select-none font-black text-center transition-opacity duration-75 ease-out ${
-                isActive
-                  ? 'opacity-100 pointer-events-auto'
-                  : 'opacity-0 pointer-events-none'
-              }`}
-              style={{
-                fontFamily: style.fontFamily,
-                fontWeight: style.fontWeight,
-                fontSize: style.fontSize,
-                letterSpacing: style.letterSpacing,
-                color: '#ffffff',
-                WebkitTextFillColor: '#ffffff',
-                textTransform: style.textTransform || 'uppercase',
-                filter: 'drop-shadow(0 4px 30px rgba(0, 0, 0, 0.95))',
-              }}
+      {/* 1. Subtle Editorial Film Grain Texture Overlay */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full editorial-grain opacity-[0.045] pointer-events-none z-[1]"
+      />
+
+      {/* 2. Delicate Campfire Amber Embers / Glowing Particles */}
+      <div aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-[2] overflow-hidden">
+        {ATMOSPHERIC_EMBERS.map((ember) => (
+          <span
+            key={ember.id}
+            className={`absolute rounded-full pointer-events-none ${ember.anim}`}
+            style={{
+              left: ember.left,
+              top: ember.top,
+              width: `${ember.size}px`,
+              height: `${ember.size}px`,
+              backgroundColor: ember.color,
+              boxShadow: `0 0 6px ${ember.color}, 0 0 14px rgba(245, 158, 11, 0.45)`,
+              animationDelay: ember.delay,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* 3. Soft Ambient Depth Shadow directly behind the 3D Island */}
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vh] max-w-[680px] max-h-[680px] rounded-full pointer-events-none z-[2]"
+        style={{
+          background: 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0) 72%)',
+        }}
+      />
+
+
+      {/* ========================================================================= */}
+      {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper) + ROYAL NAZARETH (Lower)       */}
+      {/* ========================================================================= */}
+      <div className="hidden md:flex flex-col justify-between w-full h-full pt-6 pb-10 px-2 sm:px-4 relative z-[3] overflow-hidden">
+        {/* UPPER: PRINSON (Extremely large, monumental condensed editorial typography) */}
+        <div className="w-full h-[47vh] flex items-start justify-center overflow-hidden">
+          <svg
+            data-testid="prinson-text"
+            viewBox="0 0 700 240"
+            className="w-full h-full select-none"
+            preserveAspectRatio="none"
+          >
+            <text
+              x="350"
+              y="205"
+              textAnchor="middle"
+              textLength="680"
+              lengthAdjust="spacing"
+              fontSize="210"
+              fontFamily="'Bebas Neue', 'Anton', 'Oswald', sans-serif"
+              fontWeight="900"
+              fill="#f4f4f4"
+              style={{ filter: 'drop-shadow(0 10px 45px rgba(0,0,0,0.98))' }}
             >
-              <span className="inline-block whitespace-nowrap text-center">PRINSON</span>
-            </h1>
-          );
-        })}
+              PRINSON
+            </text>
+          </svg>
+        </div>
+
+        {/* LOWER: ROYAL (Left) + NAZARETH (Right) framing the 3D Island base */}
+        <div className="w-full h-[45vh] flex items-end justify-between overflow-hidden">
+          {/* ROYAL (Left side) */}
+          <div className="w-[37vw] h-full flex items-end">
+            <svg
+              data-testid="royal-text"
+              viewBox="0 0 500 240"
+              className="w-full h-full select-none"
+              preserveAspectRatio="none"
+            >
+              <text
+                x="250"
+                y="205"
+                textAnchor="middle"
+                textLength="480"
+                lengthAdjust="spacing"
+                fontSize="210"
+                fontFamily="'Bebas Neue', 'Anton', 'Oswald', sans-serif"
+                fontWeight="900"
+                fill="#f4f4f4"
+                style={{ filter: 'drop-shadow(0 10px 45px rgba(0,0,0,0.98))' }}
+              >
+                ROYAL
+              </text>
+            </svg>
+          </div>
+
+          {/* NAZARETH (Right side) */}
+          <div className="w-[54vw] h-full flex items-end">
+            <svg
+              data-testid="nazareth-text"
+              viewBox="0 0 800 240"
+              className="w-full h-full select-none"
+              preserveAspectRatio="none"
+            >
+              <text
+                x="400"
+                y="205"
+                textAnchor="middle"
+                textLength="775"
+                lengthAdjust="spacing"
+                fontSize="210"
+                fontFamily="'Bebas Neue', 'Anton', 'Oswald', sans-serif"
+                fontWeight="900"
+                fill="#f4f4f4"
+                style={{ filter: 'drop-shadow(0 10px 45px rgba(0,0,0,0.98))' }}
+              >
+                NAZARETH
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* MOBILE LAYOUT (< 768px): PRINSON (Top) + ROYAL (Middle) + NAZARETH (Bottom) */}
+      {/* ========================================================================= */}
+      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-12 pb-14 px-1.5 relative z-[3] overflow-hidden">
+        {/* TIER 1 (Top): PRINSON */}
+        <div className="w-full h-[29vh] flex items-center justify-center overflow-hidden">
+          <svg
+            data-testid="prinson-mobile-text"
+            viewBox="0 0 700 240"
+            className="w-full h-full select-none"
+            preserveAspectRatio="none"
+          >
+            <text
+              x="350"
+              y="205"
+              textAnchor="middle"
+              textLength="680"
+              lengthAdjust="spacing"
+              fontSize="210"
+              fontFamily="'Bebas Neue', 'Anton', 'Oswald', sans-serif"
+              fontWeight="900"
+              fill="#f4f4f4"
+              style={{ filter: 'drop-shadow(0 8px 35px rgba(0,0,0,0.98))' }}
+            >
+              PRINSON
+            </text>
+          </svg>
+        </div>
+
+        {/* TIER 2 (Middle): ROYAL (positioned directly behind the 3D island center) */}
+        <div className="w-full h-[29vh] flex items-center justify-center overflow-hidden">
+          <svg
+            data-testid="royal-mobile-text"
+            viewBox="0 0 500 240"
+            className="w-full h-full select-none"
+            preserveAspectRatio="none"
+          >
+            <text
+              x="250"
+              y="205"
+              textAnchor="middle"
+              textLength="480"
+              lengthAdjust="spacing"
+              fontSize="210"
+              fontFamily="'Bebas Neue', 'Anton', 'Oswald', sans-serif"
+              fontWeight="900"
+              fill="#f4f4f4"
+              style={{ filter: 'drop-shadow(0 8px 35px rgba(0,0,0,0.98))' }}
+            >
+              ROYAL
+            </text>
+          </svg>
+        </div>
+
+        {/* TIER 3 (Bottom): NAZARETH (behind lower island rock cliff and campfire) */}
+        <div className="w-full h-[30vh] flex items-center justify-center overflow-hidden">
+          <svg
+            data-testid="nazareth-mobile-text"
+            viewBox="0 0 800 240"
+            className="w-full h-full select-none"
+            preserveAspectRatio="none"
+          >
+            <text
+              x="400"
+              y="205"
+              textAnchor="middle"
+              textLength="775"
+              lengthAdjust="spacing"
+              fontSize="210"
+              fontFamily="'Bebas Neue', 'Anton', 'Oswald', sans-serif"
+              fontWeight="900"
+              fill="#f4f4f4"
+              style={{ filter: 'drop-shadow(0 8px 35px rgba(0,0,0,0.98))' }}
+            >
+              NAZARETH
+            </text>
+          </svg>
+        </div>
       </div>
     </div>
   );

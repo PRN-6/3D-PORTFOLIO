@@ -133,13 +133,31 @@ export const Footer: React.FC = () => {
         ))}
       </nav>
 
-      {/* 2. Bottom-Right: Copyright & Persistent Visitor Counter */}
+      {/* 2. Bottom-Center: Fine Editorial Technical Metadata Caption (matches reference design) */}
+      <div className="hidden lg:flex flex-col items-center justify-center text-center pointer-events-none select-none opacity-45 px-4">
+        <span className="font-mono text-[8px] text-zinc-400 tracking-[0.24em] uppercase leading-tight whitespace-nowrap">
+          TEXT: VECTOR GRAPHICS, 3D WEB INFOGRAPHICS, CHARACTER DESIGN, VOXEL MODELS, WEB3, D.1000 DIALOGUES
+        </span>
+        <span className="font-mono text-[7.5px] text-zinc-500 tracking-[0.28em] uppercase leading-tight whitespace-nowrap mt-0.5">
+          CRAFTING IDEAS, 2011, R. GEOMETRY &mdash; SYSTEM &mdash; PRODUCED BY TECHNIQUANT
+        </span>
+      </div>
+
+      {/* 3. Bottom-Right: Four-Pointed Sparkle Star + Copyright & Visitor Counter */}
       <div
         data-testid="footer-copyright-counter"
-        className="pointer-events-auto flex items-center font-mono text-[10px] sm:text-[11px] md:text-xs text-slate-400/80 tracking-wider whitespace-nowrap"
+        className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 font-mono text-[10px] sm:text-[11px] md:text-xs text-slate-400/80 tracking-wider whitespace-nowrap"
       >
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-zinc-300 drop-shadow-[0_0_8px_rgba(255,255,255,0.45)]"
+          aria-hidden="true"
+        >
+          <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+        </svg>
         <span>&copy; {currentYear}</span>
-        <span className="mx-1.5 sm:mx-2 text-slate-600 select-none">•</span>
+        <span className="mx-1 sm:mx-1.5 text-slate-600 select-none">•</span>
         <span>vis: {visitorCount}</span>
       </div>
     </footer>

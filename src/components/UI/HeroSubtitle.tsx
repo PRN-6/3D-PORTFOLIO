@@ -11,9 +11,9 @@ export const HeroSubtitle: React.FC = () => {
     <div
       data-testid="hero-subtitle"
       aria-label="Just a Developer"
-      className="fixed bottom-18 sm:bottom-22 md:bottom-26 left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none text-center"
+      className="fixed bottom-[27vh] sm:bottom-[28vh] md:bottom-20 lg:bottom-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none text-center"
     >
-      <p className="font-mono text-[11px] sm:text-xs md:text-[13px] text-slate-400/90 tracking-[0.24em] uppercase whitespace-nowrap">
+      <p className="font-mono text-[10px] sm:text-[11px] md:text-xs text-zinc-400/90 tracking-[0.30em] uppercase whitespace-nowrap">
         Just a Developer
       </p>
     </div>
