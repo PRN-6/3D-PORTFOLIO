@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "level": 5,
+  "id": "blue-flower-garden",
+  "name": "Blue Flower Garden",
+  "subtitle": "Himmel & Frieren — The Eternal Meadow of Memory",
+  "inspiration": "Frieren: Beyond Journey's End",
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "islandOrigin": "Center of floating island at y=0.0; terrain crest at y=0.42m.",
+  "characters": {
+    "himmel": {
+      "file": "models/transition/himmel.glb",
+      "nodeName": "Himmel",
+      "position": [-0.48, 0.42, 0.12],
+      "rotation": [0, 0.15, 0],
+      "scale": [1.0, 1.0, 1.0],
+      "clip": "himmel_idle",
+      "wreathAttachment": {
+        "file": "models/blue-flower-garden/flowers/flower-wreath.glb",
+        "relativePosition": [0.18, 0.55, 0.22],
+        "scale": [0.85, 0.85, 0.85]
+      }
+    },
+    "frieren": {
+      "file": "models/transition/frieren.glb",
+      "nodeName": "Frieren",
+      "position": [0.48, 0.40, 0.08],
+      "rotation": [0, -0.15, 0],
+      "scale": [1.0, 1.0, 1.0],
+      "clip": "frieren_idle",
+      "wreathAttachment": {
+        "file": "models/blue-flower-garden/flowers/flower-wreath.glb",
+        "relativePosition": [-0.16, 0.52, 0.20],
+        "scale": [0.80, 0.80, 0.80]
+      }
+    }
+  },
+  "anchors": {
+    "entryStaircaseAnchor": {
+      "position": [0, 0.32, 7.8],
+      "yaw": 3.14,
+      "description": "Southern edge meadow landing where visitors and magical transition stairs arrive"
+    },
+    "centerHeroAnchor": {
+      "position": [0, 0.42, 0.1],
+      "yaw": 0,
+      "description": "Focal knoll between Himmel and Frieren amidst dense blue blossoms"
+    },
+    "exitScenicAnchor": {
+      "position": [0, 0.46, -7.2],
+      "yaw": 0,
+      "description": "Northern outlook cliff edge overlooking the endless pastel cloudscape"
+    }
+  },
+  "suggestedCameras": {
+    "heroFront": {
+      "name": "Reference Composition (Frontal View)",
+      "position": [0, 1.45, 4.8],
+      "target": [0, 0.85, 0],
+      "fov": 42,
+      "description": "Recreation of reference image 1: Himmel & Frieren together in the dense flower field under pastel clouds"
+    },
+    "overview": {
+      "name": "Island Aerial Overview",
+      "position": [0, 7.5, 16.5],
+      "target": [0, 0.5, 0],
+      "fov": 38,
+      "description": "Full view of floating island silhouette, dense blue carpet, surrounding clouds and trees"
+    },
+    "romanceCloseUp": {
+      "name": "Himmel & Frieren Intimate View",
+      "position": [0, 1.15, 2.3],
+      "target": [0, 0.95, 0.1],
+      "fov": 36,
+      "description": "Close-up showing the emotional bond, character expressions, and surrounding flowers"
+    },
+    "horizonDistant": {
+      "name": "Distant Sunset Angle",
+      "position": [9.5, 4.2, 12.0],
+      "target": [-0.5, 0.8, -1.0],
+      "fov": 35,
+      "description": "Sweeping diagonal view across flowering trees and fluffy cumulus cloud banks"
+    },
+    "undersideInspection": {
+      "name": "Underside & Floating Crystals",
+      "position": [0, -7.5, 14.0],
+      "target": [0, -3.0, 0],
+      "fov": 40,
+      "description": "Inspection of rocky underside, stalactite spires, and orbiting floating crystal rocks"
+    }
+  },
+  "suggestedLights": [
+    {
+      "type": "DirectionalLight",
+      "name": "WarmSunlight",
+      "color": "#fff2de",
+      "intensity": 2.2,
+      "position": [-7.5, 13.5, 9.5],
+      "castShadow": true
+    },
+    {
+      "type": "HemisphereLight",
+      "name": "PastelSkyGroundHemisphere",
+      "skyColor": "#cce2fb",
+      "groundColor": "#5d8a64",
+      "intensity": 1.35
+    },
+    {
+      "type": "DirectionalLight",
+      "name": "DreamyPinkRimLight",
+      "color": "#fad9ec",
+      "intensity": 1.5,
+      "position": [9.5, 7.5, -11.0]
+    },
+    {
+      "type": "DirectionalLight",
+      "name": "UndersideCyanBounce",
+      "color": "#8ec2fa",
+      "intensity": 0.65,
+      "position": [0, -6.5, 7.0]
+    },
+    {
+      "type": "PointLight",
+      "name": "CentralFlowerGlow",
+      "color": "#a8ddff",
+      "intensity": 1.2,
+      "distance": 8.0,
+      "position": [0, 1.2, 0.5]
+    }
+  ],
+  "assets": [
+    {
+      "id": "island-terrain",
+      "file": "island/flower-garden-island.glb",
+      "type": "terrain",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "floating-rocks",
+      "file": "island/floating-rocks.glb",
+      "type": "decoration",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "dense-flower-meadow",
+      "file": "flowers/dense-flower-meadow.glb",
+      "type": "meadow",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "foreground-flowers-detailed",
+      "file": "flowers/foreground-flowers-detailed.glb",
+      "type": "foreground",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "flowering-trees",
+      "file": "vegetation/flowering-trees.glb",
+      "type": "vegetation",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "garden-shrubs",
+      "file": "vegetation/garden-shrubs.glb",
+      "type": "vegetation",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "grass-patches",
+      "file": "vegetation/grass-patches.glb",
+      "type": "vegetation",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "dreamy-clouds",
+      "file": "environment/dreamy-clouds.glb",
+      "type": "environment",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "floating-petals",
+      "file": "effects/floating-petals.glb",
+      "type": "effect",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    {
+      "id": "magical-motes",
+      "file": "effects/magical-motes.glb",
+      "type": "effect",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    }
+  ],
+  "completeAssembly": {
+    "file": "blue-flower-garden-complete.glb",
+    "description": "Pre-assembled unified model containing island, meadow, foreground, trees, shrubs, clouds, and locators."
+  }
+}
