@@ -122,9 +122,9 @@ export const CinematicBackgroundTitle: React.FC = () => {
       {/* ========================================================================= */}
       {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper) + ROYAL NAZARETH (Lower)       */}
       {/* ========================================================================= */}
-      <div className="hidden md:flex flex-col justify-between w-full h-full pt-3 sm:pt-4 pb-8 px-2 sm:px-3 relative z-[3] overflow-hidden">
+      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[76px] pb-8 px-2 sm:px-3 relative z-[3] overflow-hidden">
         {/* UPPER: PRINSON (Monumental, thick condensed editorial typography matching reference) */}
-        <div className="w-full h-[53vh] lg:h-[55vh] flex items-start justify-center overflow-hidden">
+        <div className="w-full h-[50vh] lg:h-[52vh] flex items-start justify-center overflow-hidden">
           <svg
             data-testid="prinson-text"
             viewBox="0 0 980 240"
@@ -205,9 +205,9 @@ export const CinematicBackgroundTitle: React.FC = () => {
       {/* ========================================================================= */}
       {/* MOBILE LAYOUT (< 768px): PRINSON (Top) + ROYAL (Middle) + NAZARETH (Bottom) */}
       {/* ========================================================================= */}
-      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-10 pb-12 px-1 relative z-[3] overflow-hidden">
+      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-[54px] pb-10 px-1 relative z-[3] overflow-hidden">
         {/* TIER 1 (Top): PRINSON (Towering, bold, edge-to-edge) */}
-        <div className="w-full h-[32vh] flex items-center justify-center overflow-hidden">
+        <div className="w-full h-[30vh] flex items-center justify-center overflow-hidden">
           <svg
             data-testid="prinson-mobile-text"
             viewBox="0 0 980 240"
