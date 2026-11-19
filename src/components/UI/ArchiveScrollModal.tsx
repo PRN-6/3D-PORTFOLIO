@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Scroll, Award, GraduationCap, Briefcase, User, Sparkles } from 'lucide-react';
 import { MAGE_PROFILE_DATA } from '../../data/archiveData';
+import { BlueFlowerGardenViewer } from './BlueFlowerGardenViewer';
 
 export interface ArchiveScrollModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ export const ArchiveScrollModal: React.FC<ArchiveScrollModalProps> = ({
       />
 
       {/* Main Parchment Scroll Modal Container */}
-      <div className="relative z-50 w-full max-w-3xl max-h-[92vh] flex flex-col pointer-events-auto overflow-hidden rounded-2xl bg-[#0c0e1a]/95 text-slate-200 border border-amber-500/30 shadow-[0_24px_70px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-250">
+      <div className="relative z-50 w-full max-w-4xl max-h-[92vh] flex flex-col pointer-events-auto overflow-hidden rounded-2xl bg-[#0c0e1a]/95 text-slate-200 border border-amber-500/30 shadow-[0_24px_70px_rgba(0,0,0,0.85)] animate-in fade-in zoom-in-95 duration-250">
         {/* Ornate Gold Trim Header Banner */}
         <div className="relative bg-gradient-to-r from-amber-950/40 via-purple-950/40 to-amber-950/40 border-b border-amber-500/20 p-5 sm:p-6">
           <div className="flex items-start justify-between">
@@ -138,52 +139,53 @@ export const ArchiveScrollModal: React.FC<ArchiveScrollModalProps> = ({
         {/* Scrollable Parchment Content Body */}
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 md:p-8 space-y-6 custom-scrollbar bg-gradient-to-b from-transparent via-[#090b14]/50 to-[#07080f]/90">
           {/* TAB 1: BIOGRAPHY & LORE */}
-          {activeTab === 'bio' && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              {/* Quote */}
-              <div className="relative p-4 rounded-xl bg-amber-500/[0.04] border border-amber-500/15 italic text-sm text-amber-200/90 leading-relaxed">
-                <Sparkles className="w-4 h-4 text-amber-400 absolute top-3 right-3 opacity-60" />
-                {profile.quote}
-              </div>
-
-              {/* Character Attributes Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {profile.attributes.map((attr) => (
-                  <div
-                    key={attr.label}
-                    className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-amber-500/20 transition-colors"
-                  >
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
-                      {attr.label}
-                    </span>
-                    <span className="text-sm font-semibold text-white block mt-0.5">
-                      {attr.value}
-                    </span>
-                    {attr.hint && (
-                      <span className="text-[11px] text-slate-400 block mt-1">
-                        {attr.hint}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Biography Paragraphs */}
-              <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-400 font-mono">
-                  Biography & Craft Philosophy
-                </h3>
-                {profile.biography.map((paragraph, index) => (
-                  <p
-                    key={index}
-                    className="text-xs sm:text-sm text-slate-300 leading-relaxed"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+          <div className={activeTab === 'bio' ? 'space-y-6 animate-in fade-in duration-200' : 'hidden'}>
+            {/* Quote */}
+            <div className="relative p-4 rounded-xl bg-amber-500/[0.04] border border-amber-500/15 italic text-sm text-amber-200/90 leading-relaxed">
+              <Sparkles className="w-4 h-4 text-amber-400 absolute top-3 right-3 opacity-60" />
+              {profile.quote}
             </div>
-          )}
+
+            {/* Character Attributes Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {profile.attributes.map((attr) => (
+                <div
+                  key={attr.label}
+                  className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-amber-500/20 transition-colors"
+                >
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
+                    {attr.label}
+                  </span>
+                  <span className="text-sm font-semibold text-white block mt-0.5">
+                    {attr.value}
+                  </span>
+                  {attr.hint && (
+                    <span className="text-[11px] text-slate-400 block mt-1">
+                      {attr.hint}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Biography Paragraphs */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-400 font-mono">
+                Biography & Craft Philosophy
+              </h3>
+              {profile.biography.map((paragraph, index) => (
+                <p
+                  key={index}
+                  className="text-xs sm:text-sm text-slate-300 leading-relaxed"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            {/* LEVEL 05: BLUE FLOWER GARDEN (HIMMEL & FRIEREN) 3D CENTERPIECE */}
+            <BlueFlowerGardenViewer />
+          </div>
 
           {/* TAB 2: CHRONICLE & WORK HISTORY */}
           {activeTab === 'chronicle' && (

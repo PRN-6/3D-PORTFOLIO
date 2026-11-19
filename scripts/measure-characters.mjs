@@ -16,3 +16,4 @@ function getGlbBounds(file) {
 
 getGlbBounds('public/models/transition/himmel.glb');
 getGlbBounds('public/models/transition/frieren.glb');
+

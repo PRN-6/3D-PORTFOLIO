@@ -66,7 +66,10 @@ export const Home: React.FC = () => {
 
   // Archive World (Island 02) State
   const [selectedGrimoire, setSelectedGrimoire] = useState<GrimoireItem | null>(null);
-  const [isScrollOpen, setIsScrollOpen] = useState(false);
+  const [isScrollOpen, setIsScrollOpen] = useState(() => {
+    const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
+    return r.tabId === 'ABOUT';
+  });
 
   // Whispering Forest (Island 03) State
   const [focusedForestLandmark, setFocusedForestLandmark] = useState<ForestLandmark>('overview');
@@ -178,6 +181,10 @@ export const Home: React.FC = () => {
       const targetRoute = ROUTES[tab];
       if (!targetRoute) return;
 
+      if (tab === 'ABOUT') {
+        setIsScrollOpen(true);
+      }
+
       if (location.pathname === targetRoute.path) {
         handleResetCamera();
         return;
@@ -222,12 +229,23 @@ export const Home: React.FC = () => {
     if (route.tabId === 'CONTACT') {
       setIsContactOpen(true);
       setIsFunOpen(false);
+      setIsScrollOpen(false);
     } else if (route.tabId === 'FUN') {
       setIsContactOpen(false);
       setIsFunOpen(true);
+      setIsScrollOpen(false);
+    } else if (route.tabId === 'ABOUT') {
+      setIsContactOpen(false);
+      setIsFunOpen(false);
+      setIsScrollOpen(true);
+
+      if (route.destination !== activeDestination) {
+        handleSelectDestination(route.destination);
+      }
     } else {
       setIsContactOpen(false);
       setIsFunOpen(false);
+      setIsScrollOpen(false);
 
       if (route.destination !== activeDestination) {
         handleSelectDestination(route.destination);

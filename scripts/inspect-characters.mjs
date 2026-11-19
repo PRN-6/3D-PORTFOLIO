@@ -18,3 +18,4 @@ function inspectGlb(filePath) {
 
 inspectGlb('public/models/transition/himmel.glb');
 inspectGlb('public/models/transition/frieren.glb');
+
