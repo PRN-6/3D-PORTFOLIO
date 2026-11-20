@@ -6,6 +6,7 @@ import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
+import { VoxelEntranceConstruction } from './VoxelEntranceConstruction';
 import {
   HERO_HOME_EXPLODED_PROFILE,
   ARCHIVE_EXPLODED_PROFILE,
@@ -80,6 +81,20 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 }) => {
   const { camera, gl } = useThree();
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Initial Page-Load Voxel / Block-Build Entrance state
+  const [voxelEntranceDone, setVoxelEntranceDone] = useState(false);
+  const voxelEntranceDoneRef = useRef(false);
+
+  const initialActiveIsland: DestinationId =
+    activeDestination ||
+    (worldState === 'FOREST_WORLD' || worldState === 'TRANSITION_ARCHIVE_TO_FOREST'
+      ? 'FOREST'
+      : worldState === 'ARCHIVE_WORLD' || worldState === 'TRANSITION_HOME_TO_ARCHIVE'
+      ? 'ARCHIVE'
+      : worldState === 'WORKSHOP_WORLD'
+      ? 'WORKSHOP'
+      : 'HOME');
 
   const homeGroupRef = useRef<THREE.Group>(null);
   const archiveGroupRef = useRef<THREE.Group>(null);
@@ -229,8 +244,10 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'HOME';
       if (homeGroupRef.current) {
-        homeGroupRef.current.visible = true;
-        if (homeOriginalsRef.current) restoreOriginalTransforms(homeGroupRef.current, homeOriginalsRef.current);
+        if (voxelEntranceDoneRef.current) {
+          homeGroupRef.current.visible = true;
+          if (homeOriginalsRef.current) restoreOriginalTransforms(homeGroupRef.current, homeOriginalsRef.current);
+        }
       }
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
@@ -241,8 +258,10 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       currentActiveIslandRef.current = 'ARCHIVE';
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) {
-        archiveGroupRef.current.visible = true;
-        if (archiveOriginalsRef.current) restoreOriginalTransforms(archiveGroupRef.current, archiveOriginalsRef.current);
+        if (voxelEntranceDoneRef.current) {
+          archiveGroupRef.current.visible = true;
+          if (archiveOriginalsRef.current) restoreOriginalTransforms(archiveGroupRef.current, archiveOriginalsRef.current);
+        }
       }
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
@@ -253,8 +272,10 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) {
-        forestGroupRef.current.visible = true;
-        if (forestOriginalsRef.current) restoreOriginalTransforms(forestGroupRef.current, forestOriginalsRef.current);
+        if (voxelEntranceDoneRef.current) {
+          forestGroupRef.current.visible = true;
+          if (forestOriginalsRef.current) restoreOriginalTransforms(forestGroupRef.current, forestOriginalsRef.current);
+        }
       }
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
@@ -265,17 +286,27 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) {
-        workshopGroupRef.current.visible = true;
-        if (workshopOriginalsRef.current) restoreOriginalTransforms(workshopGroupRef.current, workshopOriginalsRef.current);
+        if (voxelEntranceDoneRef.current) {
+          workshopGroupRef.current.visible = true;
+          if (workshopOriginalsRef.current) restoreOriginalTransforms(workshopGroupRef.current, workshopOriginalsRef.current);
+        }
       }
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'TRANSITION_HOME_TO_ARCHIVE') {
+      voxelEntranceDoneRef.current = true;
+      setVoxelEntranceDone(true);
       initiateTransition('HOME', 'ARCHIVE');
     } else if (worldState === 'TRANSITION_ARCHIVE_TO_HOME') {
+      voxelEntranceDoneRef.current = true;
+      setVoxelEntranceDone(true);
       initiateTransition('ARCHIVE', 'HOME');
     } else if (worldState === 'TRANSITION_ARCHIVE_TO_FOREST') {
+      voxelEntranceDoneRef.current = true;
+      setVoxelEntranceDone(true);
       initiateTransition('ARCHIVE', 'FOREST');
     } else if (worldState === 'TRANSITION_FOREST_TO_ARCHIVE') {
+      voxelEntranceDoneRef.current = true;
+      setVoxelEntranceDone(true);
       initiateTransition('FOREST', 'ARCHIVE');
     }
 
@@ -497,6 +528,26 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
       <group name="PresentationAnchorGroup" position={[0, 0, 0]}>
+        {/* INITIAL PAGE-LOAD VOXEL / BLOCK-BUILD CONSTRUCTION ENTRANCE */}
+        {!voxelEntranceDone && (
+          <VoxelEntranceConstruction
+            activeIslandId={initialActiveIsland}
+            targetGroupRef={
+              initialActiveIsland === 'FOREST'
+                ? forestGroupRef
+                : initialActiveIsland === 'ARCHIVE'
+                ? archiveGroupRef
+                : initialActiveIsland === 'WORKSHOP'
+                ? workshopGroupRef
+                : homeGroupRef
+            }
+            onComplete={() => {
+              voxelEntranceDoneRef.current = true;
+              setVoxelEntranceDone(true);
+            }}
+          />
+        )}
+
         {/* DESTINATION 1: Hero's Home */}
         <group
           ref={homeGroupRef}
