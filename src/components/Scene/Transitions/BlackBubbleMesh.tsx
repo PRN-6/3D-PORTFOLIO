@@ -27,11 +27,11 @@ interface BlackBubbleMeshProps {
  * - Double-sided rendering so the interior cavity is visible while half-formed
  */
 export const BlackBubbleMesh: React.FC<BlackBubbleMeshProps> = ({
-  radius = 10.2,
+  radius = 7.8,
   progress,
   mode,
   wobbleIntensity = 0.035,
-  position = [0, 0.5, 0],
+  position = [0, 0.8, 0],
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const timeRef = useRef(0);
