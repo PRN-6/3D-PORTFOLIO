@@ -327,19 +327,19 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
           </div>
         </div>
 
-        {/* LOWER LINE: Full Name traveling LEFT in continuous loop */}
+        {/* LOWER LINE: Full Name traveling LEFT in continuous loop (Identical size to first line) */}
         <div
           data-testid="royal-text"
-          className="relative w-full h-[32vh] flex items-end overflow-hidden pointer-events-none select-none"
+          className="relative w-full h-[50vh] flex items-end overflow-hidden pointer-events-none select-none"
         >
           <div data-testid="nazareth-text" className="flex w-max will-change-transform">
             <div className="animate-marquee-left flex shrink-0 items-center">
               <span
-                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  fontSize: 'clamp(140px, 48vh, 520px)',
                   lineHeight: '0.82',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -349,11 +349,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 PRINSON ROYAL NAZARETH
               </span>
               <span
-                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  fontSize: 'clamp(140px, 48vh, 520px)',
                   lineHeight: '0.82',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -363,11 +363,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 PRINSON ROYAL NAZARETH
               </span>
               <span
-                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  fontSize: 'clamp(140px, 48vh, 520px)',
                   lineHeight: '0.82',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -379,11 +379,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
             </div>
             <div className="animate-marquee-left flex shrink-0 items-center" aria-hidden="true">
               <span
-                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  fontSize: 'clamp(140px, 48vh, 520px)',
                   lineHeight: '0.82',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -393,11 +393,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 PRINSON ROYAL NAZARETH
               </span>
               <span
-                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  fontSize: 'clamp(140px, 48vh, 520px)',
                   lineHeight: '0.82',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -407,11 +407,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 PRINSON ROYAL NAZARETH
               </span>
               <span
-                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  fontSize: 'clamp(140px, 48vh, 520px)',
                   lineHeight: '0.82',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -498,19 +498,19 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
           </div>
         </div>
 
-        {/* LOWER MOBILE TIER: Traveling LEFT */}
+        {/* LOWER MOBILE TIER: Traveling LEFT (Identical size to upper mobile tier) */}
         <div
           data-testid="royal-mobile-text"
-          className="relative w-full h-[28vh] flex items-center overflow-hidden pointer-events-none select-none"
+          className="relative w-full h-[36vh] flex items-center overflow-hidden pointer-events-none select-none"
         >
           <div data-testid="nazareth-mobile-text" className="flex w-max will-change-transform">
             <div className="animate-marquee-left flex shrink-0 items-center">
               <span
-                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  fontSize: 'clamp(80px, 26vh, 220px)',
                   lineHeight: '0.85',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -520,11 +520,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 PRINSON ROYAL NAZARETH
               </span>
               <span
-                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  fontSize: 'clamp(80px, 26vh, 220px)',
                   lineHeight: '0.85',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -536,11 +536,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
             </div>
             <div className="animate-marquee-left flex shrink-0 items-center" aria-hidden="true">
               <span
-                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  fontSize: 'clamp(80px, 26vh, 220px)',
                   lineHeight: '0.85',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
@@ -550,11 +550,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 PRINSON ROYAL NAZARETH
               </span>
               <span
-                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  fontSize: 'clamp(80px, 26vh, 220px)',
                   lineHeight: '0.85',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
