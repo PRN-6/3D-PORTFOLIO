@@ -204,3 +204,4 @@ export class PathGenerator {
     outObject.visible = scaleMultiplier > 0.01;
   }
 }
+

@@ -103,3 +103,4 @@ export const ANIMATION_PRESETS: Record<PresetKey, AnimationPreset> = {
     staggerSpread: 0.7,
   },
 };
+

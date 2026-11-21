@@ -136,3 +136,4 @@ export class TransformStore {
     this.snapshots.clear();
   }
 }
+

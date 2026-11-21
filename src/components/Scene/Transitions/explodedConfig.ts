@@ -330,7 +330,6 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     // --- Character & Motes ---
     { name: 'EisenContainer', offset: [0, 2.5, 0], explodedScale: 0, timing: [0.0, 0.45] },
     { name: 'workshop-motes', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
-    { name: 'WorkshopMotes', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
 
     // --- Floating Ring Pivots & Arcane Rings ---
     { name: 'RingPivot_0', offset: [0.55, 6, -0.5], explodedScale: 0, timing: [0.2, 0.7] },
@@ -338,7 +337,6 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     { name: 'RingPivot_2', offset: [0.55, 8, -0.5], explodedScale: 0, timing: [0.24, 0.74] },
     { name: 'arcane-rings', offset: [0.55, 6, -0.5], explodedScale: 0, timing: [0.25, 0.75] },
     { name: 'rune-symbol', offset: [0, 8, -3.5], explodedScale: 0, timing: [0.3, 0.8] },
-    { name: 'FloatingRune', offset: [0, 8, -3.5], explodedScale: 0, timing: [0.3, 0.8] },
 
     // --- 5 Interactive Project Display Stations & Artifacts ---
     { name: 'Artifact_01', offset: [-6.4, 4.5, 1.55], explodedScale: 0, timing: [0.06, 0.52] },
@@ -360,24 +358,18 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
 
     // --- Workshop Furnishings & Arcane Objects ---
     { name: 'crafting-tools', offset: [3.45, 3.0, -2.9], explodedScale: 0, timing: [0.15, 0.65] },
-    { name: 'CraftingEquipment', offset: [3.45, 3.0, -2.9], explodedScale: 0, timing: [0.15, 0.65] },
     { name: 'enchanted-scroll', offset: [-3.2, 4.0, -2.9], explodedScale: 0, timing: [0.18, 0.68] },
     { name: 'floating-tome', offset: [3.55, 4.0, -2.8], explodedScale: 0, timing: [0.2, 0.7] },
     { name: 'decorative-artifacts', offset: [-4.5, 3.0, -2.9], explodedScale: 0, timing: [0.2, 0.7] },
     { name: 'rune-crafting-table', offset: [0.55, 4.0, -0.5], explodedScale: 0.1, timing: [0.3, 0.8] },
-    { name: 'CentralCraftingTable', offset: [0.55, 4.0, -0.5], explodedScale: 0.1, timing: [0.3, 0.8] },
     { name: 'shelves-and-benches', offset: [0, 5.0, -2.5], explodedScale: 0.1, timing: [0.35, 0.85] },
-    { name: 'WorkshopFurnishings', offset: [0, 5.0, -2.5], explodedScale: 0.1, timing: [0.35, 0.85] },
 
     // --- Architecture Pavilion ---
     { name: 'rune-workshop', offset: [0, 9.0, -2.0], rotation: [0.06, 0, 0], explodedScale: 0.1, timing: [0.4, 0.9] },
-    { name: 'RuneWorkshopPavilion', offset: [0, 9.0, -2.0], rotation: [0.06, 0, 0], explodedScale: 0.1, timing: [0.4, 0.9] },
 
     // --- Floor Circle & Landscaping ---
     { name: 'rune-floor-circle', offset: [0.55, -2.5, -0.5], explodedScale: 0.1, timing: [0.45, 0.9] },
-    { name: 'CraftingFloorCircle', offset: [0.55, -2.5, -0.5], explodedScale: 0.1, timing: [0.45, 0.9] },
     { name: 'island-landscaping', offset: [0, -4.0, 0], explodedScale: 0.2, timing: [0.5, 0.95] },
-    { name: 'WorkshopLandscaping', offset: [0, -4.0, 0], explodedScale: 0.2, timing: [0.5, 0.95] },
 
     // --- 6 Satellite Rocks ---
     { name: 'SatelliteRock_0', offset: [6, 2, -5], explodedScale: 0, timing: [0.48, 0.92] },
@@ -389,7 +381,6 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
 
     // --- Island Base ---
     { name: 'workshop-island', offset: [0, -12.0, 0], explodedScale: 0.1, timing: [0.6, 1.0] },
-    { name: 'WorkshopIsland', offset: [0, -12.0, 0], explodedScale: 0.1, timing: [0.6, 1.0] },
   ],
 };
 

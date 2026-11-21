@@ -81,6 +81,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 }) => {
   const { camera, gl } = useThree();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [visibleIsland, setVisibleIsland] = useState<DestinationId>(() => activeDestination || 'HOME');
 
   const homeGroupRef = useRef<THREE.Group>(null);
   const archiveGroupRef = useRef<THREE.Group>(null);
@@ -202,6 +203,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       frozenCamPos.current.copy(camera.position);
       frozenCamRot.current.copy(camera.rotation);
 
+      setVisibleIsland(fromId);
       fromGroup.visible = true;
       toGroup.visible = false;
 
@@ -234,6 +236,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     if (worldState === 'HOME_IDLE') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'HOME';
+      setVisibleIsland('HOME');
       if (homeGroupRef.current) {
         homeGroupRef.current.visible = true;
         if (homeOriginalsRef.current) restoreOriginalTransforms(homeGroupRef.current, homeOriginalsRef.current);
@@ -246,6 +249,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     } else if (worldState === 'ARCHIVE_WORLD') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'ARCHIVE';
+      setVisibleIsland('ARCHIVE');
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) {
         archiveGroupRef.current.visible = true;
@@ -258,6 +262,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     } else if (worldState === 'FOREST_WORLD') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'FOREST';
+      setVisibleIsland('FOREST');
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) {
@@ -270,6 +275,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     } else if (worldState === 'WORKSHOP_WORLD') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'WORKSHOP';
+      setVisibleIsland('WORKSHOP');
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
@@ -367,6 +373,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         // Disassembly complete -> hide outgoing island and restore its components
         outgoingGroup.visible = false;
         if (originals) restoreOriginalTransforms(outgoingGroup, originals);
+        if (incomingProfile) setVisibleIsland(incomingProfile.islandId);
 
         // Advance to brief PAUSE in empty presentation space
         phaseRef.current = 'PAUSE';
@@ -460,6 +467,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       setIsAnimating(false);
       const targetId = targetDestinationRef.current;
       currentActiveIslandRef.current = targetId;
+      setVisibleIsland(targetId);
 
       if (typeof window !== 'undefined') {
         (window as any).__CURRENT_ACTIVE_ISLAND__ = targetId;
@@ -498,13 +506,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     worldState === 'TRANSITIONING_ISLAND';
 
   const isIslandVisible = (islandId: DestinationId) => {
-    if (isAnimating) {
-      return (
-        outgoingProfileRef.current?.islandId === islandId ||
-        incomingProfileRef.current?.islandId === islandId
-      );
-    }
-    return currentActiveIslandRef.current === islandId;
+    return visibleIsland === islandId;
   };
 
   return (

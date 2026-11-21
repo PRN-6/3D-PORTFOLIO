@@ -144,6 +144,12 @@ export const Home: React.FC = () => {
     setResetSignal((prev) => prev + 1);
   }, []);
 
+  const handleTransitionToWorkshopComplete = useCallback(() => {
+    setActiveDestination('WORKSHOP');
+    setWorldState('WORKSHOP_WORLD');
+    setResetSignal((prev) => prev + 1);
+  }, []);
+
   const handleSelectProject = useCallback((project: ProjectItem) => {
     setSelectedProject(project);
   }, []);
@@ -271,6 +277,7 @@ export const Home: React.FC = () => {
         onTransitionFromArchiveToHomeComplete={handleTransitionFromArchiveToHomeComplete}
         onTransitionToForestComplete={handleTransitionToForestComplete}
         onTransitionFromForestToArchiveComplete={handleTransitionFromForestToArchiveComplete}
+        onTransitionToWorkshopComplete={handleTransitionToWorkshopComplete}
         onDestinationReached={handleDestinationReached}
       />
 
