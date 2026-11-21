@@ -422,16 +422,16 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         {showBubble && (
           <>
             <BlackBubbleMesh
-              radius={7.8}
+              radius={6.0}
               progress={bubbleProgress}
               mode={bubbleMode}
-              position={[0, 0.8, 0]}
+              position={[0, 0.6, 0]}
             />
             <BlackBubbleRimDroplets
-              radius={7.8}
+              radius={6.0}
               progress={bubbleProgress}
               mode={bubbleMode}
-              position={[0, 0.8, 0]}
+              position={[0, 0.6, 0]}
             />
           </>
         )}

@@ -26,10 +26,10 @@ interface DropletParticle {
  * replicating the hand-crafted frames of the reference bubble animation sprite.
  */
 export const BlackBubbleRimDroplets: React.FC<BlackBubbleRimDropletsProps> = ({
-  radius = 7.8,
+  radius = 6.0,
   progress,
   mode,
-  position = [0, 0.8, 0],
+  position = [0, 0.6, 0],
   dropletCount = 90,
 }) => {
   const pointsRef = useRef<THREE.Points>(null);
