@@ -77,24 +77,6 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
           </span>
         </button>
 
-        {/* Center Title Pill */}
-        <div
-          className={`hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-xl backdrop-blur-xl border shadow-xl ${
-            isLight
-              ? 'bg-[#f4eee0]/90 border-[#c8bc9f] text-[#2c2823]'
-              : 'bg-[#080a14]/90 border-white/15 text-slate-200'
-          }`}
-        >
-          <span
-            className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold"
-            style={{ color: grimoire.accentColor }}
-          >
-            {grimoire.runeSymbol}
-          </span>
-          <span className="text-xs font-mono uppercase tracking-widest">
-            {grimoire.title}
-          </span>
-        </div>
 
         {/* Quick Close Button */}
         <button
