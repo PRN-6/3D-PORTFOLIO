@@ -100,31 +100,36 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const incomingIslandRef = useRef<DestinationId>(activeDestination);
   const archiveElevateGroupRef = useRef<THREE.Group>(null);
 
-  // Dedicated Book Click Bubble Transition
-  const [bookBubblePhase, setBookBubblePhase] = useState<'IDLE' | 'FORMING' | 'DESCENDING' | 'TEARING' | 'ARRIVED'>('IDLE');
-  const bookBubblePhaseRef = useRef<'IDLE' | 'FORMING' | 'DESCENDING' | 'TEARING' | 'ARRIVED'>('IDLE');
+  // Dedicated Book Click Normal Bubble Transition (Exact same normal bubble as island transitions)
+  const [bookBubblePhase, setBookBubblePhase] = useState<'IDLE' | 'FORMING' | 'SEALED' | 'TEARING'>('IDLE');
+  const bookBubblePhaseRef = useRef<'IDLE' | 'FORMING' | 'SEALED' | 'TEARING'>('IDLE');
   const bookBubbleStartTime = useRef(0);
   const [bookBubbleProgress, setBookBubbleProgress] = useState(0);
   const [bookBubbleMode, setBookBubbleMode] = useState<BubbleAnimationMode>('FORMING');
-  const [bookBubbleY, setBookBubbleY] = useState(0);
-  const bookBubbleYRef = useRef(0);
   const prevSelectedGrimoireRef = useRef<GrimoireItem | null>(null);
 
-  // Trigger book bubble transition when a grimoire book is clicked on Archive Island
+  // Trigger normal bubble when a book is clicked on Archive Island
   useEffect(() => {
     const wasInspecting = !!prevSelectedGrimoireRef.current;
     const isNowInspecting = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
     prevSelectedGrimoireRef.current = selectedGrimoire || null;
 
     if (!wasInspecting && isNowInspecting) {
-      // Step 1: Bubble sweeps over Archive Island model
+      // Normal bubble forms and wraps over the model
       bookBubblePhaseRef.current = 'FORMING';
       setBookBubblePhase('FORMING');
       setBookBubbleMode('FORMING');
       setBookBubbleProgress(0.0);
       bookBubbleStartTime.current = performance.now() / 1000;
-      bookBubbleYRef.current = 0.0;
-      setBookBubbleY(0.0);
+    } else if (wasInspecting && !isNowInspecting) {
+      // When book is closed / unselected: bubble tears open and vanishes
+      if (bookBubblePhaseRef.current !== 'IDLE') {
+        bookBubblePhaseRef.current = 'TEARING';
+        setBookBubblePhase('TEARING');
+        setBookBubbleMode('TEARING');
+        setBookBubbleProgress(0.0);
+        bookBubbleStartTime.current = performance.now() / 1000;
+      }
     }
   }, [selectedGrimoire, currentIsland]);
 
@@ -175,109 +180,46 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     }
   }, [activeDestination, currentIsland, startBubbleTransition]);
 
-  useFrame((_, delta) => {
+  useFrame((_, _delta) => {
     // -------------------------------------------------------------------------
-    // Cinematic Book Inspection Transition:
-    // 1. Black liquid bubble forms and wraps over Archive Island model
-    // 2. Sealed bubble + island model sink DOWN together, camera follows
-    // 3. Bubble tears open at bottom page, revealing floating books in pure black/white space!
+    // Book Click Normal Bubble Animation:
+    // When a book is clicked, the normal black bubble forms and wraps over the model.
+    // That's all: no camera movement, no island movement, no floating books realm.
     // -------------------------------------------------------------------------
-    const isInspectingArchive = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
     const now = performance.now() / 1000;
 
-    if (isInspectingArchive) {
+    // Island model remains stationary at default position and visible at all times
+    if (archiveElevateGroupRef.current) {
+      archiveElevateGroupRef.current.position.set(0, 0, 0);
+      archiveElevateGroupRef.current.visible = true;
+    }
+
+    if (bookBubblePhaseRef.current === 'FORMING') {
+      const FORMING_DURATION = 0.70; // Exact same duration as other page transitions
       const elapsed = now - bookBubbleStartTime.current;
+      const t = Math.min(1.0, elapsed / FORMING_DURATION);
+      const p = t * t * (3.0 - 2.0 * t);
+      setBookBubbleProgress(p);
 
-      // PHASE 1: FORMING (0.0s -> 0.50s) - Liquid black bubble sweeps across and seals the island
-      if (bookBubblePhaseRef.current === 'FORMING') {
-        const DURATION = 0.50;
-        const t = Math.min(1.0, elapsed / DURATION);
-        const p = t * t * (3.0 - 2.0 * t);
-        setBookBubbleProgress(p);
-
-        bookBubbleYRef.current = 0.0;
-        setBookBubbleY(0.0);
-        if (archiveElevateGroupRef.current) {
-          archiveElevateGroupRef.current.position.y = 0.0;
-          archiveElevateGroupRef.current.visible = true;
-        }
-
-        if (t >= 1.0) {
-          bookBubblePhaseRef.current = 'DESCENDING';
-          setBookBubblePhase('DESCENDING');
-          setBookBubbleMode('SEALED');
-          bookBubbleStartTime.current = now;
-        }
+      if (t >= 1.0) {
+        bookBubblePhaseRef.current = 'SEALED';
+        setBookBubblePhase('SEALED');
+        setBookBubbleMode('SEALED');
+        setBookBubbleProgress(1.0);
       }
-      // PHASE 2: DESCENDING (0.0s -> 1.10s) - Sealed bubble + island model move DOWN together, camera follows!
-      else if (bookBubblePhaseRef.current === 'DESCENDING') {
-        const DURATION = 1.10;
-        const t = Math.min(1.0, elapsed / DURATION);
-        const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-        const currentY = -10.0 * ease;
+    } else if (bookBubblePhaseRef.current === 'SEALED') {
+      setBookBubbleProgress(1.0);
+    } else if (bookBubblePhaseRef.current === 'TEARING') {
+      const TEARING_DURATION = 0.45; // Exact same duration as other page transitions
+      const elapsed = now - bookBubbleStartTime.current;
+      const t = Math.min(1.0, elapsed / TEARING_DURATION);
+      const p = Math.pow(t, 1.3);
+      setBookBubbleProgress(p);
 
-        bookBubbleYRef.current = currentY;
-        setBookBubbleY(currentY);
-        if (archiveElevateGroupRef.current) {
-          archiveElevateGroupRef.current.position.y = currentY;
-          archiveElevateGroupRef.current.visible = true;
-        }
-
-        if (t >= 1.0) {
-          bookBubblePhaseRef.current = 'TEARING';
-          setBookBubblePhase('TEARING');
-          setBookBubbleMode('TEARING');
-          setBookBubbleProgress(0.0);
-          bookBubbleStartTime.current = now;
-        }
-      }
-      // PHASE 3: TEARING & POP (0.0s -> 0.45s) - Bubble ruptures at new page, revealing floating books!
-      else if (bookBubblePhaseRef.current === 'TEARING') {
-        const DURATION = 0.45;
-        const t = Math.min(1.0, elapsed / DURATION);
-        const p = Math.pow(t, 1.25);
-        setBookBubbleProgress(p);
-
-        bookBubbleYRef.current = -10.0;
-        setBookBubbleY(-10.0);
-        if (archiveElevateGroupRef.current) {
-          archiveElevateGroupRef.current.position.y = -10.0;
-          archiveElevateGroupRef.current.visible = t < 0.25;
-        }
-
-        if (t >= 1.0) {
-          bookBubblePhaseRef.current = 'ARRIVED';
-          setBookBubblePhase('ARRIVED');
-          if (archiveElevateGroupRef.current) {
-            archiveElevateGroupRef.current.visible = false;
-          }
-        }
-      }
-      // PHASE 4: ARRIVED - Clean new page with pure black/white background
-      else if (bookBubblePhaseRef.current === 'ARRIVED') {
-        bookBubbleYRef.current = -10.0;
-        setBookBubbleY(-10.0);
-        if (archiveElevateGroupRef.current) {
-          archiveElevateGroupRef.current.position.y = -10.0;
-          archiveElevateGroupRef.current.visible = false;
-        }
-      }
-    } else {
-      // Smooth return back UP to Island when modal is closed
-      if (bookBubblePhaseRef.current !== 'IDLE') {
-        bookBubbleYRef.current = THREE.MathUtils.damp(bookBubbleYRef.current, 0.0, 3.5, delta);
-        setBookBubbleY(bookBubbleYRef.current);
-        if (archiveElevateGroupRef.current) {
-          archiveElevateGroupRef.current.position.y = bookBubbleYRef.current;
-          archiveElevateGroupRef.current.visible = true;
-        }
-
-        if (Math.abs(bookBubbleYRef.current) < 0.05) {
-          bookBubbleYRef.current = 0.0;
-          setBookBubbleY(0.0);
-          bookBubblePhaseRef.current = 'IDLE';
-          setBookBubblePhase('IDLE');
-        }
+      if (t >= 1.0) {
+        bookBubblePhaseRef.current = 'IDLE';
+        setBookBubblePhase('IDLE');
+        setBookBubbleProgress(0.0);
       }
     }
 
@@ -451,7 +393,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         onResetComplete={onResetComplete}
         selectedGrimoire={selectedGrimoire}
         activeIsland={currentIsland}
-        inspectDescentY={bookBubbleY}
+        inspectDescentY={0}
       />
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
@@ -482,7 +424,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           scale={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.scale}
           visible={isIslandVisible('ARCHIVE')}
         >
-          {/* THE 3D ISLAND MODEL (Lifts UP completely out of the screen when a book is clicked) */}
+          {/* THE 3D ISLAND MODEL */}
           <group ref={archiveElevateGroupRef} name="ArchiveElevationContainer">
             <WorldC_ArchiveIsland
               disableCamera={true}
@@ -493,29 +435,11 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
             />
           </group>
 
-          {/* THE BOOK INSPECTION BUBBLE (Forms around island, moves down with island, tears open at new page) */}
-          {bookBubblePhase !== 'IDLE' && bookBubblePhase !== 'ARRIVED' && (
-            <>
-              <BlackBubbleMesh
-                radius={6.9}
-                progress={bookBubbleProgress}
-                mode={bookBubbleMode}
-                position={[0, 0.7 + bookBubbleY, 0]}
-              />
-              <BlackBubbleRimDroplets
-                radius={6.9}
-                progress={bookBubbleProgress}
-                mode={bookBubbleMode}
-                position={[0, 0.7 + bookBubbleY, 0]}
-              />
-            </>
-          )}
-
-          {/* THE FLOATING BOOKS PAGE REALM (Revealed when bubble tears open at Y = -10.0) */}
+          {/* FloatingBooksRealm disabled per user request: only bubble is shown */}
           <FloatingBooksRealm
             selectedGrimoire={selectedGrimoire || null}
             onSelectGrimoire={onSelectGrimoire || (() => {})}
-            active={currentIsland === 'ARCHIVE' && !!selectedGrimoire && (bookBubblePhase === 'TEARING' || bookBubblePhase === 'ARRIVED')}
+            active={false}
           />
         </group>
 
@@ -552,7 +476,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           />
         </group>
 
-        {/* THE FULL BLACK SWEEPING BUBBLE (Reference Sprite Animation) */}
+        {/* THE FULL BLACK SWEEPING BUBBLE (Reference Sprite Animation for Page Transitions) */}
         {showBubble && (
           <>
             <BlackBubbleMesh
@@ -565,6 +489,24 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
               radius={6.9}
               progress={bubbleProgress}
               mode={bubbleMode}
+              position={[0, 0.7, 0]}
+            />
+          </>
+        )}
+
+        {/* THE NORMAL BUBBLE ON BOOK CLICK (Exact same bubble as page transitions) */}
+        {bookBubblePhase !== 'IDLE' && (
+          <>
+            <BlackBubbleMesh
+              radius={6.9}
+              progress={bookBubbleProgress}
+              mode={bookBubbleMode}
+              position={[0, 0.7, 0]}
+            />
+            <BlackBubbleRimDroplets
+              radius={6.9}
+              progress={bookBubbleProgress}
+              mode={bookBubbleMode}
               position={[0, 0.7, 0]}
             />
           </>
