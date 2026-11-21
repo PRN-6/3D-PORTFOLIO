@@ -242,165 +242,346 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
         />
 
       {/* ========================================================================= */}
-      {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper, Dominant) + ROYAL NAZARETH (Lower) */}
+      {/* DESKTOP LAYOUT (>= 768px): KINETIC TRAVELING LOOP MARQUEE TYPOGRAPHY       */}
+      {/* Upper Line: PRINSON ROYAL NAZARETH traveling RIGHT (->)                   */}
+      {/* Lower Line: PRINSON ROYAL NAZARETH traveling LEFT (<-)                    */}
       {/* ========================================================================= */}
-      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[74px] pb-8 px-2 sm:px-3 relative z-[3] overflow-hidden">
-        {/* UPPER: PRINSON (Dominant primary typography, noticeably larger than Royal Nazareth) */}
-        <div className="w-full h-[55vh] lg:h-[57vh] flex items-start justify-center overflow-hidden">
-          <svg
-            data-testid="prinson-text"
-            viewBox="0 0 980 240"
-            className="w-full h-full select-none"
-            preserveAspectRatio="none"
-          >
-            <text
-              x="490"
-              y="218"
-              textAnchor="middle"
-              textLength="950"
-              lengthAdjust="spacing"
-              fontSize="242"
-              fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
-              fontWeight="900"
-              fill={textColorPrimary}
-              style={{ filter: textShadowPrimary }}
-            >
-              PRINSON
-            </text>
-          </svg>
+      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[70px] pb-6 relative z-[3] overflow-hidden select-none pointer-events-none">
+        {/* UPPER LINE: Full Name traveling RIGHT in continuous loop */}
+        <div
+          data-testid="prinson-text"
+          className="relative w-full h-[54vh] flex items-start overflow-hidden pointer-events-none select-none"
+        >
+          <div className="flex w-max will-change-transform">
+            <div className="animate-marquee-right flex shrink-0 items-center">
+              <span
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(140px, 48vh, 520px)',
+                  lineHeight: '0.82',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(140px, 48vh, 520px)',
+                  lineHeight: '0.82',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(140px, 48vh, 520px)',
+                  lineHeight: '0.82',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+            <div className="animate-marquee-right flex shrink-0 items-center" aria-hidden="true">
+              <span
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(140px, 48vh, 520px)',
+                  lineHeight: '0.82',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(140px, 48vh, 520px)',
+                  lineHeight: '0.82',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-16 lg:mr-24 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(140px, 48vh, 520px)',
+                  lineHeight: '0.82',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* LOWER: ROYAL (Left) + NAZARETH (Right) (Secondary typography, framed smaller under island) */}
-        <div className="w-full h-[33vh] lg:h-[35vh] flex items-end justify-between overflow-hidden">
-          {/* ROYAL (Left side) */}
-          <div className="w-[35vw] h-full flex items-end">
-            <svg
-              data-testid="royal-text"
-              viewBox="0 0 720 240"
-              className="w-full h-full select-none"
-              preserveAspectRatio="none"
-            >
-              <text
-                x="360"
-                y="220"
-                textAnchor="middle"
-                textLength="695"
-                lengthAdjust="spacing"
-                fontSize="240"
-                fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
-                fontWeight="900"
-                fill={textColorSecondary}
-                style={{ filter: textShadowSecondary }}
+        {/* LOWER LINE: Full Name traveling LEFT in continuous loop */}
+        <div
+          data-testid="royal-text"
+          className="relative w-full h-[32vh] flex items-end overflow-hidden pointer-events-none select-none"
+        >
+          <div data-testid="nazareth-text" className="flex w-max will-change-transform">
+            <div className="animate-marquee-left flex shrink-0 items-center">
+              <span
+                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  lineHeight: '0.82',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
               >
-                ROYAL
-              </text>
-            </svg>
-          </div>
-
-          {/* NAZARETH (Right side) */}
-          <div className="w-[53vw] h-full flex items-end">
-            <svg
-              data-testid="nazareth-text"
-              viewBox="0 0 1100 240"
-              className="w-full h-full select-none"
-              preserveAspectRatio="none"
-            >
-              <text
-                x="550"
-                y="220"
-                textAnchor="middle"
-                textLength="1065"
-                lengthAdjust="spacing"
-                fontSize="240"
-                fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
-                fontWeight="900"
-                fill={textColorSecondary}
-                style={{ filter: textShadowSecondary }}
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  lineHeight: '0.82',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
               >
-                NAZARETH
-              </text>
-            </svg>
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  lineHeight: '0.82',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+            <div className="animate-marquee-left flex shrink-0 items-center" aria-hidden="true">
+              <span
+                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  lineHeight: '0.82',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  lineHeight: '0.82',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-14 lg:mr-20 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(90px, 30vh, 320px)',
+                  lineHeight: '0.82',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* MOBILE LAYOUT (< 768px): PRINSON (Top, Dominant) + ROYAL (Middle) + NAZARETH (Bottom) */}
+      {/* MOBILE LAYOUT (< 768px): KINETIC TRAVELING LOOP MARQUEE TYPOGRAPHY          */}
       {/* ========================================================================= */}
-      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-[54px] pb-10 px-1 relative z-[3] overflow-hidden">
-        {/* TIER 1 (Top): PRINSON (Dominant primary tier, noticeably larger than tiers below) */}
-        <div className="w-full h-[36vh] flex items-center justify-center overflow-hidden">
-          <svg
-            data-testid="prinson-mobile-text"
-            viewBox="0 0 980 240"
-            className="w-full h-full select-none"
-            preserveAspectRatio="none"
-          >
-            <text
-              x="490"
-              y="218"
-              textAnchor="middle"
-              textLength="950"
-              lengthAdjust="spacing"
-              fontSize="242"
-              fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
-              fontWeight="900"
-              fill={textColorPrimary}
-              style={{ filter: textShadowPrimary }}
-            >
-              PRINSON
-            </text>
-          </svg>
+      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-[54px] pb-10 relative z-[3] overflow-hidden select-none pointer-events-none">
+        {/* UPPER MOBILE TIER: Traveling RIGHT */}
+        <div
+          data-testid="prinson-mobile-text"
+          className="relative w-full h-[36vh] flex items-center overflow-hidden pointer-events-none select-none"
+        >
+          <div className="flex w-max will-change-transform">
+            <div className="animate-marquee-right flex shrink-0 items-center">
+              <span
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(80px, 26vh, 220px)',
+                  lineHeight: '0.85',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(80px, 26vh, 220px)',
+                  lineHeight: '0.85',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+            <div className="animate-marquee-right flex shrink-0 items-center" aria-hidden="true">
+              <span
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(80px, 26vh, 220px)',
+                  lineHeight: '0.85',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-10 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(80px, 26vh, 220px)',
+                  lineHeight: '0.85',
+                  color: textColorPrimary,
+                  filter: textShadowPrimary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* TIER 2 (Middle): ROYAL (Secondary tier, positioned behind the 3D island center) */}
-        <div className="w-full h-[23vh] flex items-center justify-center overflow-hidden">
-          <svg
-            data-testid="royal-mobile-text"
-            viewBox="0 0 720 240"
-            className="w-full h-full select-none"
-            preserveAspectRatio="none"
-          >
-            <text
-              x="360"
-              y="220"
-              textAnchor="middle"
-              textLength="695"
-              lengthAdjust="spacing"
-              fontSize="240"
-              fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
-              fontWeight="900"
-              fill={textColorSecondary}
-              style={{ filter: textShadowSecondary }}
-            >
-              ROYAL
-            </text>
-          </svg>
-        </div>
-
-        {/* TIER 3 (Bottom): NAZARETH (Secondary tier behind lower island rock cliff and campfire) */}
-        <div className="w-full h-[24vh] flex items-center justify-center overflow-hidden">
-          <svg
-            data-testid="nazareth-mobile-text"
-            viewBox="0 0 1100 240"
-            className="w-full h-full select-none"
-            preserveAspectRatio="none"
-          >
-            <text
-              x="550"
-              y="220"
-              textAnchor="middle"
-              textLength="1065"
-              lengthAdjust="spacing"
-              fontSize="240"
-              fontFamily="'Anton', 'Bebas Neue', 'Oswald', sans-serif"
-              fontWeight="900"
-              fill={textColorSecondary}
-              style={{ filter: textShadowSecondary }}
-            >
-              NAZARETH
-            </text>
-          </svg>
+        {/* LOWER MOBILE TIER: Traveling LEFT */}
+        <div
+          data-testid="royal-mobile-text"
+          className="relative w-full h-[28vh] flex items-center overflow-hidden pointer-events-none select-none"
+        >
+          <div data-testid="nazareth-mobile-text" className="flex w-max will-change-transform">
+            <div className="animate-marquee-left flex shrink-0 items-center">
+              <span
+                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  lineHeight: '0.85',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  lineHeight: '0.85',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+            <div className="animate-marquee-left flex shrink-0 items-center" aria-hidden="true">
+              <span
+                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  lineHeight: '0.85',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+              <span
+                className="mr-8 inline-block shrink-0 uppercase tracking-tighter"
+                style={{
+                  fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
+                  fontWeight: 900,
+                  fontSize: 'clamp(60px, 20vh, 160px)',
+                  lineHeight: '0.85',
+                  color: textColorSecondary,
+                  filter: textShadowSecondary,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                PRINSON ROYAL NAZARETH
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       </div>
