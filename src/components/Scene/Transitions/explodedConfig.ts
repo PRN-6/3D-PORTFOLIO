@@ -516,7 +516,9 @@ function easeInOutCubic(x: number): number {
 }
 
 /**
- * Applies exploded interpolation to an object based on progress (0.0 = assembled, 1.0 = exploded)
+ * Applies exploded interpolation to an object based on progress (0.0 = assembled, 1.0 = exploded).
+ * Enhanced with Viscous Realm Level 3 3D curved spiral trajectories, orbital rotations,
+ * and volume-preserving arrival settling.
  */
 export function applyExplodedTransform(
   obj: THREE.Object3D,
@@ -524,34 +526,76 @@ export function applyExplodedTransform(
   config: ExplodedComponentConfig,
   progress: number
 ) {
+  // CRITICAL: Absolute mathematical identity guarantee at progress <= 0.00001
+  if (progress <= 0.00001) {
+    obj.position.copy(orig.position);
+    obj.rotation.copy(orig.rotation);
+    obj.scale.copy(orig.scale);
+    obj.visible = true;
+    return;
+  }
+
   // Staggered timing clamp
   const [tStart, tEnd] = config.timing;
   const rawT = THREE.MathUtils.clamp((progress - tStart) / (tEnd - tStart), 0, 1);
   const factor = easeInOutCubic(rawT);
 
+  if (factor <= 0.00001) {
+    obj.position.copy(orig.position);
+    obj.rotation.copy(orig.rotation);
+    obj.scale.copy(orig.scale);
+    obj.visible = true;
+    return;
+  }
+
+  // 1. 3D Curved Arc & Orbital Spiral Trajectory
+  const liftArc = Math.sin(Math.PI * (1.0 - factor)) * 3.2;
+  const spiralRadius = 3.5 * Math.pow(factor, 1.25);
+  // Azimuthal phase derived from component offset
+  const baseAngle = Math.atan2(config.offset[2], config.offset[0]);
+  const spiralAngle = baseAngle + factor * Math.PI * 2.2;
+  const spiralX = spiralRadius * Math.cos(spiralAngle);
+  const spiralZ = spiralRadius * Math.sin(spiralAngle);
+
   // Position
   obj.position.set(
-    orig.position.x + config.offset[0] * factor,
-    orig.position.y + config.offset[1] * factor,
-    orig.position.z + config.offset[2] * factor
+    orig.position.x + config.offset[0] * factor + spiralX,
+    orig.position.y + config.offset[1] * factor + liftArc,
+    orig.position.z + config.offset[2] * factor + spiralZ
   );
 
-  // Rotation
+  // Rotation with orbital tumble
   if (config.rotation) {
+    const tumble = (1.0 - factor) * factor * 0.4;
     obj.rotation.set(
-      orig.rotation.x + config.rotation[0] * factor,
-      orig.rotation.y + config.rotation[1] * factor,
-      orig.rotation.z + config.rotation[2] * factor
+      orig.rotation.x + config.rotation[0] * factor + tumble,
+      orig.rotation.y + config.rotation[1] * factor + factor * 0.5,
+      orig.rotation.z + config.rotation[2] * factor - tumble * 0.5
     );
   }
 
-  // Scale
+  // Scale with tactile arrival squash & stretch
   const targetScale = config.explodedScale !== undefined ? config.explodedScale : 0.0;
-  const curScale = THREE.MathUtils.lerp(1.0, targetScale, factor);
+  let curScale = THREE.MathUtils.lerp(1.0, targetScale, factor);
+
+  let scaleY = curScale;
+  let scaleXZ = curScale;
+
+  // Damped harmonic bounce as object docks into position (factor < 0.18)
+  if (factor > 0.0001 && factor < 0.18) {
+    const tau = (0.18 - factor) / 0.18; // 0 (start settle) to 1 (touchdown)
+    const decay = Math.exp(-6.0 * tau);
+    const osc = Math.cos(16.0 * tau * Math.PI);
+    const bounce = 0.09 * decay * osc * (1.0 - tau);
+
+    scaleY = Math.max(0.01, curScale * (1.0 - bounce));
+    scaleXZ = Math.max(0.01, curScale * (1.0 + 0.5 * bounce));
+  }
+
   obj.scale.set(
-    orig.scale.x * curScale,
-    orig.scale.y * curScale,
-    orig.scale.z * curScale
+    orig.scale.x * scaleXZ,
+    orig.scale.y * scaleY,
+    orig.scale.z * scaleXZ
   );
 
   obj.visible = curScale > 0.005;

@@ -16,6 +16,7 @@ import { ProductsModal } from '../components/UI/ProductsModal';
 import { ProjectDetailModal } from '../components/UI/ProjectDetailModal';
 import { GrimoireDetailModal } from '../components/UI/GrimoireDetailModal';
 import { ArchiveScrollModal } from '../components/UI/ArchiveScrollModal';
+import { AnimationControls } from '../components/UI/AnimationControls';
 import { useModelInteraction } from '../hooks/useModelInteraction';
 import { useTheme } from '../context/ThemeContext';
 import type { ProjectItem } from '../data/projectsData';
@@ -459,6 +460,12 @@ export const Home: React.FC = () => {
         isOpen={isFunOpen}
         onClose={handleCloseFun}
         onTriggerOrbit={handleResetCamera}
+      />
+
+      {/* Floating Cinematic Assembly Controls (Viscous Realm Level 3 Interactive Showcase) */}
+      <AnimationControls
+        onResetCamera={handleResetCamera}
+        className="bottom-20 right-4 sm:bottom-16 sm:right-6 md:right-8"
       />
 
       {/* Fixed Bottom Footer (Desktop: Left Icons + Right Vis Counter; Mobile: Responsive Safe Insets) */}

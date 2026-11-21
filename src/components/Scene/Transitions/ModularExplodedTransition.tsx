@@ -6,6 +6,7 @@ import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
+import { assemblyEngine } from '../../../animation/AssemblyEngine';
 import {
   HERO_HOME_EXPLODED_PROFILE,
   ARCHIVE_EXPLODED_PROFILE,
@@ -186,6 +187,11 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
       if (!fromGroup || !toGroup) return;
 
+      if (assemblyEngine.getState().isPlaying) {
+        assemblyEngine.pause();
+        assemblyEngine.restoreOriginals();
+      }
+
       outgoingProfileRef.current = fromProfile;
       incomingProfileRef.current = toProfile;
       outgoingGroupRef.current = fromGroup;
@@ -231,6 +237,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (homeGroupRef.current) {
         homeGroupRef.current.visible = true;
         if (homeOriginalsRef.current) restoreOriginalTransforms(homeGroupRef.current, homeOriginalsRef.current);
+        assemblyEngine.init(homeGroupRef.current, 'HOME');
       }
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
@@ -243,6 +250,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (archiveGroupRef.current) {
         archiveGroupRef.current.visible = true;
         if (archiveOriginalsRef.current) restoreOriginalTransforms(archiveGroupRef.current, archiveOriginalsRef.current);
+        assemblyEngine.init(archiveGroupRef.current, 'ARCHIVE');
       }
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
@@ -255,6 +263,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (forestGroupRef.current) {
         forestGroupRef.current.visible = true;
         if (forestOriginalsRef.current) restoreOriginalTransforms(forestGroupRef.current, forestOriginalsRef.current);
+        assemblyEngine.init(forestGroupRef.current, 'FOREST');
       }
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
@@ -267,6 +276,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       if (workshopGroupRef.current) {
         workshopGroupRef.current.visible = true;
         if (workshopOriginalsRef.current) restoreOriginalTransforms(workshopGroupRef.current, workshopOriginalsRef.current);
+        assemblyEngine.init(workshopGroupRef.current, 'WORKSHOP');
       }
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'TRANSITION_HOME_TO_ARCHIVE') {
@@ -297,8 +307,11 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   // ---------------------------------------------------------------------------
   // Frame Animation Loop (Pure Three.js Mutation, Zero React Re-renders)
   // ---------------------------------------------------------------------------
-  useFrame((state) => {
-    if (phaseRef.current === 'IDLE') return;
+  useFrame((state, delta) => {
+    if (phaseRef.current === 'IDLE') {
+      assemblyEngine.update(Math.min(delta, 0.1));
+      return;
+    }
 
     // CRITICAL: Camera remains 100% stationary throughout the transition
     camera.position.copy(frozenCamPos.current);
