@@ -9,6 +9,8 @@ import {
   Compass,
   X,
   Eye,
+  FileText,
+  Camera,
 } from 'lucide-react';
 import { assemblyEngine, type AssemblyEngineState } from '../../animation/AssemblyEngine';
 import { ANIMATION_PRESETS, type PresetKey } from '../../animation/AnimationPresets';
@@ -71,6 +73,14 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({
 
   const handleToggleRails = useCallback(() => {
     assemblyEngine.toggleRails();
+  }, []);
+
+  const handleTogglePapercraft = useCallback(() => {
+    assemblyEngine.togglePapercraftMaterial();
+  }, []);
+
+  const handleToggleIsometric = useCallback(() => {
+    assemblyEngine.toggleIsometricCamera();
   }, []);
 
   const progressPercent = Math.round(engineState.progress * 100);
@@ -233,7 +243,7 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({
           <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl bg-black/5 dark:bg-white/5 border border-current/10">
             <div className="flex items-center gap-2">
               <Eye className="w-3.5 h-3.5" />
-              <span className="font-serif text-[11px] font-medium">3D Trajectory Rails:</span>
+              <span className="font-serif text-[11px] font-medium">3D Spline Rails:</span>
             </div>
             <button
               onClick={handleToggleRails}
@@ -242,7 +252,46 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({
               }`}
               title="Toggle visible 3D NURBS spline trajectory guide rails (like Blender viewport)"
             >
-              {engineState.showRails ? 'ON (Blender Mode)' : 'OFF'}
+              {engineState.showRails ? 'ON' : 'OFF'}
+            </button>
+          </div>
+
+          {/* Papercraft Cardstock & Isometric Studio Camera Toggles */}
+          <div className="grid grid-cols-2 gap-1.5 text-xs">
+            <button
+              onClick={handleTogglePapercraft}
+              className={`flex items-center justify-between py-1.5 px-2.5 rounded-xl border text-[11px] font-serif transition-all ${
+                engineState.isPapercraftMaterial
+                  ? `${pillActive} border-transparent`
+                  : `${pillInactive} border-current/10`
+              }`}
+              title="Toggle handcrafted matte cardstock papercraft material mode"
+            >
+              <div className="flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5" />
+                <span>Papercraft</span>
+              </div>
+              <span className="text-[9px] font-mono uppercase opacity-75">
+                {engineState.isPapercraftMaterial ? 'CARDSTOCK' : 'ORIGINAL'}
+              </span>
+            </button>
+
+            <button
+              onClick={handleToggleIsometric}
+              className={`flex items-center justify-between py-1.5 px-2.5 rounded-xl border text-[11px] font-serif transition-all ${
+                engineState.isIsometricCamera
+                  ? `${pillActive} border-transparent`
+                  : `${pillInactive} border-current/10`
+              }`}
+              title="Toggle locked orthographic isometric diorama camera"
+            >
+              <div className="flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5" />
+                <span>Isometric</span>
+              </div>
+              <span className="text-[9px] font-mono uppercase opacity-75">
+                {engineState.isIsometricCamera ? 'LOCKED' : 'ORBIT'}
+              </span>
             </button>
           </div>
 

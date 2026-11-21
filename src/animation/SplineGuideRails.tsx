@@ -24,9 +24,31 @@ export const SplineGuideRails: React.FC<SplineGuideRailsProps> = ({ visible = tr
     return SplineRailEngine.getAllRails();
   }, [SplineRailEngine.getAllRails().length]);
 
+  // Curate major structural rails matching Blender Collection Part 2 (NurbsPath.005 - 011)
+  const activeRails: ComponentSplineRail[] = useMemo(() => {
+    if (!rails || rails.length <= 10) return rails;
+    const curated = rails.filter((r) => {
+      const name = r.componentName.toLowerCase();
+      return (
+        r.archetype === 'OVERHEAD_LOOP' ||
+        r.archetype === 'PERIMETER_SWOOP' ||
+        name.includes('roof') ||
+        name.includes('house') ||
+        name.includes('workshop') ||
+        name.includes('library') ||
+        name.includes('arch') ||
+        name.includes('pavilion') ||
+        name.includes('chimney') ||
+        name.includes('table') ||
+        name.includes('lamp')
+      );
+    });
+    return curated.length >= 5 ? curated.slice(0, 10) : rails.slice(0, 10);
+  }, [rails]);
+
   // Construct combined LineSegments geometry for all 3D spline rails
   const lineGeometry = useMemo(() => {
-    if (!rails || rails.length === 0) return null;
+    if (!activeRails || activeRails.length === 0) return null;
 
     const positions: number[] = [];
     const colors: number[] = [];
@@ -36,7 +58,7 @@ export const SplineGuideRails: React.FC<SplineGuideRailsProps> = ({ visible = tr
     const cMid = new THREE.Color(isLight ? '#d97706' : '#818cf8');
     const cEnd = new THREE.Color(isLight ? '#475569' : '#0284c7');
 
-    for (const rail of rails) {
+    for (const rail of activeRails) {
       const pts = rail.samplePoints;
       for (let i = 0; i < pts.length - 1; i++) {
         const pA = pts[i];
@@ -60,19 +82,19 @@ export const SplineGuideRails: React.FC<SplineGuideRailsProps> = ({ visible = tr
     geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     return geo;
-  }, [rails, isLight]);
+  }, [activeRails, isLight]);
 
   // Pulse particles that travel along rails
   const pulseGeometry = useMemo(() => {
-    if (!rails || rails.length === 0) return null;
-    const positions = new Float32Array(rails.length * 3);
+    if (!activeRails || activeRails.length === 0) return null;
+    const positions = new Float32Array(activeRails.length * 3);
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     return geo;
-  }, [rails]);
+  }, [activeRails]);
 
   useFrame(() => {
-    if (!visible || !pulseBeadsRef.current || !rails || rails.length === 0) return;
+    if (!visible || !pulseBeadsRef.current || !activeRails || activeRails.length === 0) return;
 
     const state = assemblyEngine.getState();
     const progress = state.progress;
@@ -80,8 +102,8 @@ export const SplineGuideRails: React.FC<SplineGuideRailsProps> = ({ visible = tr
     const array = posAttr.array as Float32Array;
 
     const vTemp = new THREE.Vector3();
-    for (let i = 0; i < rails.length; i++) {
-      const rail = rails[i];
+    for (let i = 0; i < activeRails.length; i++) {
+      const rail = activeRails[i];
       // Disperse beads based on progress
       const u = (progress + (i * 0.17)) % 1.0;
       rail.curve.getPointAt(u, vTemp);

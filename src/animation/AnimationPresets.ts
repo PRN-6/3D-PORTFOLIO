@@ -1,4 +1,4 @@
-export type PresetKey = 'SPIRAL' | 'SMOOTH' | 'DRAMATIC' | 'MINIMAL';
+export type PresetKey = 'PAPERCRAFT' | 'SPIRAL' | 'SMOOTH' | 'DRAMATIC' | 'MINIMAL';
 
 export interface AnimationPreset {
   key: PresetKey;
@@ -22,6 +22,26 @@ export interface AnimationPreset {
 }
 
 export const ANIMATION_PRESETS: Record<PresetKey, AnimationPreset> = {
+  PAPERCRAFT: {
+    key: 'PAPERCRAFT',
+    name: 'Papercraft Pop-Up',
+    tagline: 'Handcrafted Pop-Up Book Flaps',
+    description: 'Floor emergence, bottom-edge wall folding, base-pivot furniture pop-up, and cascading domino details.',
+    duration: 2.4,
+    disassemblyDuration: 2.0,
+    spiralRadiusMultiplier: 0.2,
+    spiralTurns: 0.0,
+    liftArcHeight: 0.8,
+    spinRate: 0.0,
+    squashStretch: {
+      enabled: true,
+      amplitude: 0.08,
+      frequency: 14.0,
+      damping: 6.5,
+      arrivalWindow: 0.16,
+    },
+    staggerSpread: 1.0,
+  },
   SPIRAL: {
     key: 'SPIRAL',
     name: 'Spiral Assembly',

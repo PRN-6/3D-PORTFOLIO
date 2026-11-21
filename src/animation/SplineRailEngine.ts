@@ -20,15 +20,17 @@ export interface ComponentSplineRail {
 }
 
 /**
- * Custom F-Curve easing matching Blender Graph Editor's Object Transfer curve:
- * High initial acceleration into the rail, soaring flight, and smooth arrival deceleration.
+ * Custom F-Curve easing matching Blender Graph Editor's Object Transfer curve (Frame 0 -> 75):
+ * High initial acceleration into the 3D spline rail, soaring velocity in mid-flight,
+ * and a smooth horizontal zero-slope tangent arrival docking at frame 75 (u = 1.0).
  */
 export function blenderGraphEase(u: number): number {
   if (u <= 0.0) return 0.0;
   if (u >= 1.0) return 1.0;
-  // Blend of sharp cubic burst and smooth quadratic settle
+  // Authentic Blender F-Curve: f(u) = 1 - (1 - u)^3 * (1 + 2.4 * u)
+  // Guarantees f(0) = 0, f(1) = 1, and f'(1) = 0 (perfect flat tangent at frame 75)
   const inv = 1.0 - u;
-  return 1.0 - inv * inv * (1.0 + 0.65 * u);
+  return Math.min(1.0, 1.0 - inv * inv * inv * (1.0 + 2.4 * u));
 }
 
 /**

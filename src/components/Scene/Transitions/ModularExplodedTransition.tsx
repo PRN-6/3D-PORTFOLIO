@@ -8,6 +8,7 @@ import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
 import { assemblyEngine } from '../../../animation/AssemblyEngine';
 import { SplineGuideRails } from '../../../animation/SplineGuideRails';
+import { IsometricStudioCamera } from '../IsometricStudioCamera';
 import {
   HERO_HOME_EXPLODED_PROFILE,
   ARCHIVE_EXPLODED_PROFILE,
@@ -84,10 +85,12 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   const [isAnimating, setIsAnimating] = useState(false);
   const [visibleIsland, setVisibleIsland] = useState<DestinationId>(() => activeDestination || 'HOME');
   const [showRails, setShowRails] = useState(() => assemblyEngine.getState().showRails);
+  const [isIsometricCamera, setIsIsometricCamera] = useState(() => assemblyEngine.getState().isIsometricCamera);
 
   useEffect(() => {
     const unsub = assemblyEngine.subscribe((state) => {
       setShowRails(state.showRails);
+      setIsIsometricCamera(state.isIsometricCamera);
     });
     return unsub;
   }, []);
@@ -520,8 +523,11 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
   return (
     <>
+      {/* LOCKED ORTHOGRAPHIC ISOMETRIC STUDIO CAMERA (Papercraft Diorama Mode) */}
+      <IsometricStudioCamera active={isIsometricCamera} />
+
       {/* UNIFIED PRESENTATION CAMERA CONTROLLER (Stationary During Transitions, Zero Zoom) */}
-      {(worldState !== 'FOREST_WORLD' || isTransitioning) && (
+      {!isIsometricCamera && (worldState !== 'FOREST_WORLD' || isTransitioning) && (
         <UnifiedPresentationCameraController
           isTransitioning={isTransitioning}
           resetSignal={resetSignal}

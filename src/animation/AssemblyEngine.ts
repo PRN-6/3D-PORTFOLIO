@@ -5,6 +5,8 @@ import { ANIMATION_PRESETS, type AnimationPreset, type PresetKey } from './Anima
 import { AssemblyTimeline } from './AssemblyTimeline.ts';
 import { PathGenerator } from './PathGenerator.ts';
 import { SplineRailEngine } from './SplineRailEngine.ts';
+import { popUpAssemblyEngine } from './PopUpAssemblyEngine.ts';
+import { PapercraftMaterialManager } from './PapercraftMaterialManager.ts';
 
 export type PlaybackDirection = 'forward' | 'reverse';
 
@@ -18,6 +20,8 @@ export interface AssemblyEngineState {
   activeIsland: string;
   componentCount: number;
   showRails: boolean;
+  isPapercraftMaterial: boolean;
+  isIsometricCamera: boolean;
 }
 
 export type StateListener = (state: AssemblyEngineState) => void;
@@ -40,6 +44,7 @@ export class AssemblyEngine {
   private speed = 1.0;
   private activeIsland = 'HOME';
   private showRails = true;
+  private isIsometricCamera = false;
 
   private listeners: Set<StateListener> = new Set();
   private lastNotifiedProgress = 1.0;
@@ -68,6 +73,9 @@ export class AssemblyEngine {
         SplineRailEngine.getOrCreateRail(comp, orig, this.preset, islandProfileName);
       }
     }
+
+    // 5. Initialize Papercraft Pop-Up Assembly Engine
+    popUpAssemblyEngine.init(root, islandProfileName);
 
     // Default to fully assembled
     this.progress = 1.0;
@@ -132,6 +140,12 @@ export class AssemblyEngine {
     // If fully assembled (progress = 1.0), lock to pristine original transforms
     if (this.progress >= 0.99999) {
       this.restoreOriginals();
+      return;
+    }
+
+    // Route to Papercraft Pop-Up Assembly Engine when Papercraft preset is active
+    if (this.preset.key === 'PAPERCRAFT') {
+      popUpAssemblyEngine.scrub(this.progress);
       return;
     }
 
@@ -263,6 +277,24 @@ export class AssemblyEngine {
   }
 
   /**
+   * Toggles handcrafted papercraft cardstock materials.
+   */
+  public togglePapercraftMaterial(): void {
+    if (this.root) {
+      PapercraftMaterialManager.togglePapercraft(this.root);
+      this.notifyState();
+    }
+  }
+
+  /**
+   * Toggles locked orthographic isometric studio camera.
+   */
+  public toggleIsometricCamera(): void {
+    this.isIsometricCamera = !this.isIsometricCamera;
+    this.notifyState();
+  }
+
+  /**
    * Restores all components to their 100% exact original transforms.
    */
   public restoreOriginals(): void {
@@ -285,6 +317,8 @@ export class AssemblyEngine {
       activeIsland: this.activeIsland,
       componentCount: this.analysis ? this.analysis.components.length : 0,
       showRails: this.showRails,
+      isPapercraftMaterial: PapercraftMaterialManager.isPapercraft(),
+      isIsometricCamera: this.isIsometricCamera,
     };
   }
 
@@ -307,6 +341,10 @@ export class AssemblyEngine {
   public dispose(): void {
     this.listeners.clear();
     this.restoreOriginals();
+    if (this.root) {
+      PapercraftMaterialManager.restoreOriginalMaterials(this.root);
+    }
+    popUpAssemblyEngine.dispose();
     this.root = null;
     this.analysis = null;
     this.timeline = null;
