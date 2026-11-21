@@ -7,6 +7,7 @@ import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
 import { assemblyEngine } from '../../../animation/AssemblyEngine';
+import { SplineGuideRails } from '../../../animation/SplineGuideRails';
 import {
   HERO_HOME_EXPLODED_PROFILE,
   ARCHIVE_EXPLODED_PROFILE,
@@ -82,6 +83,14 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   const { camera, gl } = useThree();
   const [isAnimating, setIsAnimating] = useState(false);
   const [visibleIsland, setVisibleIsland] = useState<DestinationId>(() => activeDestination || 'HOME');
+  const [showRails, setShowRails] = useState(() => assemblyEngine.getState().showRails);
+
+  useEffect(() => {
+    const unsub = assemblyEngine.subscribe((state) => {
+      setShowRails(state.showRails);
+    });
+    return unsub;
+  }, []);
 
   const homeGroupRef = useRef<THREE.Group>(null);
   const archiveGroupRef = useRef<THREE.Group>(null);
@@ -522,6 +531,13 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
       <group name="PresentationAnchorGroup" position={[0, 0, 0]}>
+        {/* 3D Spline Guide Rails (Blender Viewport Trajectory Tracks) */}
+        <group
+          position={ISLAND_DISPLAY_TRANSFORMS[visibleIsland].position}
+          scale={ISLAND_DISPLAY_TRANSFORMS[visibleIsland].scale}
+        >
+          <SplineGuideRails visible={showRails || isAnimating} />
+        </group>
         {/* DESTINATION 1: Hero's Home */}
         <group
           ref={homeGroupRef}

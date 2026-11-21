@@ -365,7 +365,7 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     { name: 'shelves-and-benches', offset: [0, 5.0, -2.5], explodedScale: 0.1, timing: [0.35, 0.85] },
 
     // --- Architecture Pavilion ---
-    { name: 'rune-workshop', offset: [0, 9.0, -2.0], rotation: [0.06, 0, 0], explodedScale: 0.1, timing: [0.4, 0.9] },
+    { name: 'rune-workshop', offset: [4.5, 9.5, -4.5], rotation: [0.18, 0.35, -0.12], explodedScale: 0.1, timing: [0.35, 0.85] },
 
     // --- Floor Circle & Landscaping ---
     { name: 'rune-floor-circle', offset: [0.55, -2.5, -0.5], explodedScale: 0.1, timing: [0.45, 0.9] },
@@ -380,7 +380,7 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     { name: 'SatelliteRock_5', offset: [5, 4, 0], explodedScale: 0, timing: [0.58, 0.98] },
 
     // --- Island Base ---
-    { name: 'workshop-island', offset: [0, -12.0, 0], explodedScale: 0.1, timing: [0.6, 1.0] },
+    { name: 'workshop-island', offset: [0, -10.0, 0], explodedScale: 0.1, timing: [0.55, 1.0] },
   ],
 };
 
@@ -539,29 +539,40 @@ export function applyExplodedTransform(
     return;
   }
 
-  // 1. 3D Curved Arc & Orbital Spiral Trajectory
-  const liftArc = Math.sin(Math.PI * (1.0 - factor)) * 3.2;
-  const spiralRadius = 3.5 * Math.pow(factor, 1.25);
-  // Azimuthal phase derived from component offset
-  const baseAngle = Math.atan2(config.offset[2], config.offset[0]);
+  // 1. 3D Curved Arc & Orbital Spline Trajectory (Level 3 Viscous Realm Looping Splines)
+  const isArchitecture =
+    config.name.toLowerCase().includes('roof') ||
+    config.name.toLowerCase().includes('gable') ||
+    config.name.toLowerCase().includes('chimney') ||
+    config.name.toLowerCase().includes('workshop') ||
+    config.name.toLowerCase().includes('timber') ||
+    config.name.toLowerCase().includes('porch');
+
+  // Parabolic overhead looping arc matching Blender NURBS curves
+  const loopLift = Math.sin(Math.PI * factor) * (isArchitecture ? 8.5 : 4.5);
+  const loopFlareX = Math.sin(Math.PI * factor * 1.2) * (config.offset[0] >= 0 ? 3.0 : -3.0);
+  const loopFlareZ = Math.cos(Math.PI * factor) * 2.5;
+
+  const spiralRadius = 4.2 * Math.pow(factor, 1.25);
+  const baseAngle = Math.atan2(config.offset[2], config.offset[0]) || 0.5;
   const spiralAngle = baseAngle + factor * Math.PI * 2.2;
   const spiralX = spiralRadius * Math.cos(spiralAngle);
   const spiralZ = spiralRadius * Math.sin(spiralAngle);
 
-  // Position
+  // Position along 3D looping curve
   obj.position.set(
-    orig.position.x + config.offset[0] * factor + spiralX,
-    orig.position.y + config.offset[1] * factor + liftArc,
-    orig.position.z + config.offset[2] * factor + spiralZ
+    orig.position.x + config.offset[0] * factor + loopFlareX + spiralX * 0.7,
+    orig.position.y + config.offset[1] * factor + loopLift,
+    orig.position.z + config.offset[2] * factor + loopFlareZ + spiralZ * 0.7
   );
 
-  // Rotation with orbital tumble
+  // 2. Tangential Banking and Orbital Rotation
   if (config.rotation) {
-    const tumble = (1.0 - factor) * factor * 0.4;
+    const bankTumble = Math.sin(Math.PI * factor) * 0.45;
     obj.rotation.set(
-      orig.rotation.x + config.rotation[0] * factor + tumble,
-      orig.rotation.y + config.rotation[1] * factor + factor * 0.5,
-      orig.rotation.z + config.rotation[2] * factor - tumble * 0.5
+      orig.rotation.x + config.rotation[0] * factor + bankTumble,
+      orig.rotation.y + config.rotation[1] * factor + factor * 0.65,
+      orig.rotation.z + config.rotation[2] * factor - bankTumble * 0.5
     );
   }
 

@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { ModelAnalyzer, type ModelAnalysisResult } from './ModelAnalyzer';
-import { TransformStore } from './TransformStore';
-import { ANIMATION_PRESETS, type AnimationPreset, type PresetKey } from './AnimationPresets';
-import { AssemblyTimeline } from './AssemblyTimeline';
-import { PathGenerator } from './PathGenerator';
+import { ModelAnalyzer, type ModelAnalysisResult } from './ModelAnalyzer.ts';
+import { TransformStore } from './TransformStore.ts';
+import { ANIMATION_PRESETS, type AnimationPreset, type PresetKey } from './AnimationPresets.ts';
+import { AssemblyTimeline } from './AssemblyTimeline.ts';
+import { PathGenerator } from './PathGenerator.ts';
+import { SplineRailEngine } from './SplineRailEngine.ts';
 
 export type PlaybackDirection = 'forward' | 'reverse';
 
@@ -16,13 +17,15 @@ export interface AssemblyEngineState {
   presetKey: PresetKey;
   activeIsland: string;
   componentCount: number;
+  showRails: boolean;
 }
 
 export type StateListener = (state: AssemblyEngineState) => void;
 
 /**
  * Production Three.js Assembly Engine.
- * Mutates 3D components in place along curved spiral trajectories without React render overhead.
+ * Mutates 3D components in place along 3D NURBS/Catmull-Rom spline curve rails
+ * with tangential velocity alignment, banking, and tactile arrival settling.
  */
 export class AssemblyEngine {
   private root: THREE.Object3D | null = null;
@@ -36,6 +39,7 @@ export class AssemblyEngine {
   private direction: PlaybackDirection = 'forward';
   private speed = 1.0;
   private activeIsland = 'HOME';
+  private showRails = true;
 
   private listeners: Set<StateListener> = new Set();
   private lastNotifiedProgress = 1.0;
@@ -55,6 +59,15 @@ export class AssemblyEngine {
 
     // 3. Build assembly timeline
     this.timeline = new AssemblyTimeline(this.analysis.components, this.preset);
+
+    // 4. Pre-generate 3D spline rails for all components
+    SplineRailEngine.clearCache();
+    for (const comp of this.analysis.components) {
+      const orig = this.store.get(comp.name);
+      if (orig) {
+        SplineRailEngine.getOrCreateRail(comp, orig, this.preset, islandProfileName);
+      }
+    }
 
     // Default to fully assembled
     this.progress = 1.0;
@@ -102,7 +115,7 @@ export class AssemblyEngine {
 
       this.applyTransforms();
 
-      // Notify progress listeners periodically (every ~3% change to avoid spamming React)
+      // Notify progress listeners periodically (every ~2% change to avoid spamming React)
       if (Math.abs(this.progress - this.lastNotifiedProgress) >= 0.02) {
         this.lastNotifiedProgress = this.progress;
         this.notifyState();
@@ -111,7 +124,7 @@ export class AssemblyEngine {
   }
 
   /**
-   * Applies the calculated transforms at current progress to every component.
+   * Applies the calculated transforms at current progress to every component along 3D spline rails.
    */
   public applyTransforms(): void {
     if (!this.root || !this.analysis || !this.timeline) return;
@@ -133,7 +146,7 @@ export class AssemblyEngine {
 
       // Local progress for this specific component
       const u = this.timeline.getComponentProgress(comp.name, this.progress);
-      PathGenerator.evaluateTransform(comp, orig, this.preset, u, obj);
+      PathGenerator.evaluateTransform(comp, orig, this.preset, u, obj, this.activeIsland);
     }
   }
 
@@ -148,23 +161,26 @@ export class AssemblyEngine {
   }
 
   /**
-   * Begins playback in the specified direction.
+   * Starts playback in specified direction.
    */
-  public play(dir: PlaybackDirection = 'forward'): void {
-    this.direction = dir;
+  public play(direction: PlaybackDirection = 'forward'): void {
+    this.direction = direction;
+    this.isPlaying = true;
 
-    if (dir === 'forward' && this.progress >= 0.999) {
-      this.progress = 0.0; // Restart from exploded state
-    } else if (dir === 'reverse' && this.progress <= 0.001) {
-      this.progress = 1.0; // Restart from assembled state
+    // If already at boundary, wrap or reset
+    if (direction === 'forward' && this.progress >= 0.9999) {
+      this.progress = 0.0;
+      this.applyTransforms();
+    } else if (direction === 'reverse' && this.progress <= 0.0001) {
+      this.progress = 1.0;
+      this.applyTransforms();
     }
 
-    this.isPlaying = true;
     this.notifyState();
   }
 
   /**
-   * Pauses active playback.
+   * Pauses playback.
    */
   public pause(): void {
     this.isPlaying = false;
@@ -172,31 +188,25 @@ export class AssemblyEngine {
   }
 
   /**
-   * Resumes active playback.
-   */
-  public resume(): void {
-    this.isPlaying = true;
-    this.notifyState();
-  }
-
-  /**
-   * Toggles play/pause state.
+   * Toggles playback between playing and paused.
    */
   public togglePlay(): void {
     if (this.isPlaying) {
       this.pause();
     } else {
-      // If assembled, disassemble; if exploded, assemble
-      if (this.progress >= 0.99) {
+      // If at end, play reverse; if at start, play forward; otherwise continue current direction
+      if (this.progress >= 0.9999) {
         this.play('reverse');
-      } else {
+      } else if (this.progress <= 0.0001) {
         this.play('forward');
+      } else {
+        this.play(this.direction);
       }
     }
   }
 
   /**
-   * Restarts the current assembly from 0.0.
+   * Restarts the animation from 0.0 and plays forward.
    */
   public restart(): void {
     this.progress = 0.0;
@@ -207,35 +217,48 @@ export class AssemblyEngine {
   }
 
   /**
-   * Reverses current playback direction.
+   * Sets playback speed multiplier (e.g. 0.5x, 1.0x, 2.0x).
    */
-  public reverse(): void {
-    this.direction = this.direction === 'forward' ? 'reverse' : 'forward';
-    this.isPlaying = true;
+  public setSpeed(speedMultiplier: number): void {
+    this.speed = Math.max(0.1, Math.min(5.0, speedMultiplier));
     this.notifyState();
   }
 
   /**
-   * Sets the playback speed multiplier.
-   */
-  public setSpeed(speed: number): void {
-    this.speed = Math.max(0.1, Math.min(4.0, speed));
-    this.notifyState();
-  }
-
-  /**
-   * Switches the active cinematic preset.
+   * Selects an animation preset (SPIRAL, SMOOTH, DRAMATIC, MINIMAL).
    */
   public setPreset(key: PresetKey): void {
-    const p = ANIMATION_PRESETS[key];
-    if (!p) return;
-    this.preset = p;
-
-    if (this.analysis) {
-      this.timeline = new AssemblyTimeline(this.analysis.components, this.preset);
+    const selected = ANIMATION_PRESETS[key];
+    if (selected) {
+      this.preset = selected;
+      if (this.analysis) {
+        this.timeline = new AssemblyTimeline(this.analysis.components, this.preset);
+        SplineRailEngine.clearCache();
+        for (const comp of this.analysis.components) {
+          const orig = this.store.get(comp.name);
+          if (orig) {
+            SplineRailEngine.getOrCreateRail(comp, orig, this.preset, this.activeIsland);
+          }
+        }
+      }
+      this.applyTransforms();
+      this.notifyState();
     }
+  }
 
-    this.applyTransforms();
+  /**
+   * Toggles 3D spline guide rails visibility.
+   */
+  public toggleRails(): void {
+    this.showRails = !this.showRails;
+    this.notifyState();
+  }
+
+  /**
+   * Explicitly sets 3D spline guide rails visibility.
+   */
+  public setShowRails(show: boolean): void {
+    this.showRails = show;
     this.notifyState();
   }
 
@@ -261,6 +284,7 @@ export class AssemblyEngine {
       presetKey: this.preset.key,
       activeIsland: this.activeIsland,
       componentCount: this.analysis ? this.analysis.components.length : 0,
+      showRails: this.showRails,
     };
   }
 
@@ -286,6 +310,7 @@ export class AssemblyEngine {
     this.root = null;
     this.analysis = null;
     this.timeline = null;
+    SplineRailEngine.clearCache();
     if (typeof window !== 'undefined' && (window as any).__ASSEMBLY_ENGINE__ === this) {
       delete (window as any).__ASSEMBLY_ENGINE__;
     }

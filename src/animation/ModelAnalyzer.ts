@@ -6,7 +6,7 @@ import {
   WORKSHOP_EXPLODED_PROFILE,
   type IslandExplodedProfile,
   type ExplodedComponentConfig,
-} from '../components/Scene/Transitions/explodedConfig';
+} from '../components/Scene/Transitions/explodedConfig.ts';
 
 export type ComponentLayer =
   | 'FOUNDATION'
