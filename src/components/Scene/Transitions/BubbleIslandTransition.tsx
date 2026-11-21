@@ -100,6 +100,34 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const incomingIslandRef = useRef<DestinationId>(activeDestination);
   const archiveElevateGroupRef = useRef<THREE.Group>(null);
 
+  // Dedicated Book Click Bubble Transition
+  const [bookBubblePhase, setBookBubblePhase] = useState<'IDLE' | 'FORMING' | 'DESCENDING' | 'TEARING' | 'ARRIVED'>('IDLE');
+  const bookBubblePhaseRef = useRef<'IDLE' | 'FORMING' | 'DESCENDING' | 'TEARING' | 'ARRIVED'>('IDLE');
+  const bookBubbleStartTime = useRef(0);
+  const [bookBubbleProgress, setBookBubbleProgress] = useState(0);
+  const [bookBubbleMode, setBookBubbleMode] = useState<BubbleAnimationMode>('FORMING');
+  const [bookBubbleY, setBookBubbleY] = useState(0);
+  const bookBubbleYRef = useRef(0);
+  const prevSelectedGrimoireRef = useRef<GrimoireItem | null>(null);
+
+  // Trigger book bubble transition when a grimoire book is clicked on Archive Island
+  useEffect(() => {
+    const wasInspecting = !!prevSelectedGrimoireRef.current;
+    const isNowInspecting = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
+    prevSelectedGrimoireRef.current = selectedGrimoire || null;
+
+    if (!wasInspecting && isNowInspecting) {
+      // Step 1: Bubble sweeps over Archive Island model
+      bookBubblePhaseRef.current = 'FORMING';
+      setBookBubblePhase('FORMING');
+      setBookBubbleMode('FORMING');
+      setBookBubbleProgress(0.0);
+      bookBubbleStartTime.current = performance.now() / 1000;
+      bookBubbleYRef.current = 0.0;
+      setBookBubbleY(0.0);
+    }
+  }, [selectedGrimoire, currentIsland]);
+
   const getIslandGroup = (id: DestinationId): THREE.Group | null => {
     switch (id) {
       case 'HOME':
@@ -149,33 +177,113 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
   useFrame((_, delta) => {
     // -------------------------------------------------------------------------
-    // Cinematic Book Inspection: Archive Island sinks DOWN OUT OF THE SCREEN (Y -> -28)
-    // Smooth, majestic descent where user clearly sees the 3D model sink down and away
+    // Cinematic Book Inspection Transition:
+    // 1. Black liquid bubble forms and wraps over Archive Island model
+    // 2. Sealed bubble + island model sink DOWN together, camera follows
+    // 3. Bubble tears open at bottom page, revealing floating books in pure black/white space!
     // -------------------------------------------------------------------------
     const isInspectingArchive = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
-    const targetElevateY = isInspectingArchive ? -28.0 : 0.0;
+    const now = performance.now() / 1000;
 
-    if (archiveElevateGroupRef.current) {
-      archiveElevateGroupRef.current.position.y = THREE.MathUtils.damp(
-        archiveElevateGroupRef.current.position.y,
-        targetElevateY,
-        2.0,
-        delta
-      );
-      archiveElevateGroupRef.current.position.x = THREE.MathUtils.damp(
-        archiveElevateGroupRef.current.position.x,
-        0.0,
-        2.0,
-        delta
-      );
-      // Cleanly hide island once completely offscreen below viewport
-      archiveElevateGroupRef.current.visible = archiveElevateGroupRef.current.position.y > -26.0;
+    if (isInspectingArchive) {
+      const elapsed = now - bookBubbleStartTime.current;
+
+      // PHASE 1: FORMING (0.0s -> 0.50s) - Liquid black bubble sweeps across and seals the island
+      if (bookBubblePhaseRef.current === 'FORMING') {
+        const DURATION = 0.50;
+        const t = Math.min(1.0, elapsed / DURATION);
+        const p = t * t * (3.0 - 2.0 * t);
+        setBookBubbleProgress(p);
+
+        bookBubbleYRef.current = 0.0;
+        setBookBubbleY(0.0);
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.position.y = 0.0;
+          archiveElevateGroupRef.current.visible = true;
+        }
+
+        if (t >= 1.0) {
+          bookBubblePhaseRef.current = 'DESCENDING';
+          setBookBubblePhase('DESCENDING');
+          setBookBubbleMode('SEALED');
+          bookBubbleStartTime.current = now;
+        }
+      }
+      // PHASE 2: DESCENDING (0.0s -> 1.10s) - Sealed bubble + island model move DOWN together, camera follows!
+      else if (bookBubblePhaseRef.current === 'DESCENDING') {
+        const DURATION = 1.10;
+        const t = Math.min(1.0, elapsed / DURATION);
+        const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        const currentY = -10.0 * ease;
+
+        bookBubbleYRef.current = currentY;
+        setBookBubbleY(currentY);
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.position.y = currentY;
+          archiveElevateGroupRef.current.visible = true;
+        }
+
+        if (t >= 1.0) {
+          bookBubblePhaseRef.current = 'TEARING';
+          setBookBubblePhase('TEARING');
+          setBookBubbleMode('TEARING');
+          setBookBubbleProgress(0.0);
+          bookBubbleStartTime.current = now;
+        }
+      }
+      // PHASE 3: TEARING & POP (0.0s -> 0.45s) - Bubble ruptures at new page, revealing floating books!
+      else if (bookBubblePhaseRef.current === 'TEARING') {
+        const DURATION = 0.45;
+        const t = Math.min(1.0, elapsed / DURATION);
+        const p = Math.pow(t, 1.25);
+        setBookBubbleProgress(p);
+
+        bookBubbleYRef.current = -10.0;
+        setBookBubbleY(-10.0);
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.position.y = -10.0;
+          archiveElevateGroupRef.current.visible = t < 0.25;
+        }
+
+        if (t >= 1.0) {
+          bookBubblePhaseRef.current = 'ARRIVED';
+          setBookBubblePhase('ARRIVED');
+          if (archiveElevateGroupRef.current) {
+            archiveElevateGroupRef.current.visible = false;
+          }
+        }
+      }
+      // PHASE 4: ARRIVED - Clean new page with pure black/white background
+      else if (bookBubblePhaseRef.current === 'ARRIVED') {
+        bookBubbleYRef.current = -10.0;
+        setBookBubbleY(-10.0);
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.position.y = -10.0;
+          archiveElevateGroupRef.current.visible = false;
+        }
+      }
+    } else {
+      // Smooth return back UP to Island when modal is closed
+      if (bookBubblePhaseRef.current !== 'IDLE') {
+        bookBubbleYRef.current = THREE.MathUtils.damp(bookBubbleYRef.current, 0.0, 3.5, delta);
+        setBookBubbleY(bookBubbleYRef.current);
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.position.y = bookBubbleYRef.current;
+          archiveElevateGroupRef.current.visible = true;
+        }
+
+        if (Math.abs(bookBubbleYRef.current) < 0.05) {
+          bookBubbleYRef.current = 0.0;
+          setBookBubbleY(0.0);
+          bookBubblePhaseRef.current = 'IDLE';
+          setBookBubblePhase('IDLE');
+        }
+      }
     }
 
     const phase = phaseRef.current;
     if (phase === 'IDLE') return;
 
-    const now = performance.now() / 1000;
     const elapsed = now - phaseStartTimeRef.current;
 
     const outgoingGroup = getIslandGroup(outgoingIslandRef.current);
@@ -343,6 +451,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         onResetComplete={onResetComplete}
         selectedGrimoire={selectedGrimoire}
         activeIsland={currentIsland}
+        inspectDescentY={bookBubbleY}
       />
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
@@ -384,11 +493,29 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
             />
           </group>
 
-          {/* THE FLOATING BOOKS PAGE REALM (Disabled for now: only 3D model goes up) */}
+          {/* THE BOOK INSPECTION BUBBLE (Forms around island, moves down with island, tears open at new page) */}
+          {bookBubblePhase !== 'IDLE' && bookBubblePhase !== 'ARRIVED' && (
+            <>
+              <BlackBubbleMesh
+                radius={6.9}
+                progress={bookBubbleProgress}
+                mode={bookBubbleMode}
+                position={[0, 0.7 + bookBubbleY, 0]}
+              />
+              <BlackBubbleRimDroplets
+                radius={6.9}
+                progress={bookBubbleProgress}
+                mode={bookBubbleMode}
+                position={[0, 0.7 + bookBubbleY, 0]}
+              />
+            </>
+          )}
+
+          {/* THE FLOATING BOOKS PAGE REALM (Revealed when bubble tears open at Y = -10.0) */}
           <FloatingBooksRealm
             selectedGrimoire={selectedGrimoire || null}
             onSelectGrimoire={onSelectGrimoire || (() => {})}
-            active={false}
+            active={currentIsland === 'ARCHIVE' && !!selectedGrimoire && (bookBubblePhase === 'TEARING' || bookBubblePhase === 'ARRIVED')}
           />
         </group>
 

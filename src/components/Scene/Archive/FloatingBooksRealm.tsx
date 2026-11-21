@@ -301,8 +301,8 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
     if (!realmGroupRef.current) return;
     const camY = state.camera.position.y;
 
-    // The camera has completed moving down when camY reaches <= -8.5
-    const isArrivedAtBottom = active && camY <= -8.5;
+    // The camera has completed moving down when camY reaches <= 1.5 (from starting 10.0 down with -10.0 offset)
+    const isArrivedAtBottom = active && camY <= 1.5;
     const targetReveal = isArrivedAtBottom ? 1.0 : 0.0;
 
     revealProgressRef.current = THREE.MathUtils.damp(
