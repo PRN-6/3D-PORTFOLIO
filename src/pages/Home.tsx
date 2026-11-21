@@ -319,6 +319,7 @@ export const Home: React.FC = () => {
         <GrimoireDetailModal
           grimoire={selectedGrimoire}
           onClose={handleCloseGrimoire}
+          onSelectGrimoire={handleSelectGrimoire}
         />
       )}
 

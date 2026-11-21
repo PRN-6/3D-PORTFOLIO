@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { WorldA_HeroIsland } from '../WorldA_HeroIsland';
 import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
+import { FloatingBooksRealm } from '../Archive/FloatingBooksRealm';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
@@ -148,25 +149,27 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
   useFrame((_, delta) => {
     // -------------------------------------------------------------------------
-    // Cinematic Book Inspection: Archive Island elevates UP and frames left when a book is clicked
+    // Cinematic Book Inspection: Archive Island elevates UP OUT OF THE SCREEN (Y -> +80)
+    // while camera descends DOWN to the Floating Books Realm (Y -> -10)
     // -------------------------------------------------------------------------
     const isInspectingArchive = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
-    const targetElevateY = isInspectingArchive ? 2.8 : 0.0;
-    const targetShiftX = isInspectingArchive ? -2.2 : 0.0;
+    const targetElevateY = isInspectingArchive ? 80.0 : 0.0;
 
     if (archiveElevateGroupRef.current) {
       archiveElevateGroupRef.current.position.y = THREE.MathUtils.damp(
         archiveElevateGroupRef.current.position.y,
         targetElevateY,
-        3.5,
+        4.5,
         delta
       );
       archiveElevateGroupRef.current.position.x = THREE.MathUtils.damp(
         archiveElevateGroupRef.current.position.x,
-        targetShiftX,
-        3.5,
+        0.0,
+        4.5,
         delta
       );
+      // Cleanly hide island once completely offscreen above viewport
+      archiveElevateGroupRef.current.visible = archiveElevateGroupRef.current.position.y < 45.0;
     }
 
     const phase = phaseRef.current;
@@ -370,6 +373,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           scale={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.scale}
           visible={isIslandVisible('ARCHIVE')}
         >
+          {/* THE 3D ISLAND MODEL (Lifts UP completely out of the screen when a book is clicked) */}
           <group ref={archiveElevateGroupRef} name="ArchiveElevationContainer">
             <WorldC_ArchiveIsland
               disableCamera={true}
@@ -379,6 +383,13 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
               onResetComplete={onResetComplete}
             />
           </group>
+
+          {/* THE FLOATING BOOKS PAGE REALM (Located below at Y = -10 where camera moves down) */}
+          <FloatingBooksRealm
+            selectedGrimoire={selectedGrimoire || null}
+            onSelectGrimoire={onSelectGrimoire || (() => {})}
+            active={currentIsland === 'ARCHIVE' && !!selectedGrimoire}
+          />
         </group>
 
         {/* DESTINATION 3: Whispering Forest */}

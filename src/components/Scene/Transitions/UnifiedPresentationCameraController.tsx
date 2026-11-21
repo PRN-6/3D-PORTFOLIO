@@ -72,24 +72,22 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
     return { defaultCamPos, presentationTarget, fixedDistance };
   }, [isMobile, isTablet]);
 
-  // Dramatic cinematic low camera position when inspecting a book on Archive island:
-  // Camera moves DOWN (y drops from 10.0 down to ~2.2) and tilts UPWARD toward the rising island & books.
-  // Framed to center the action in the open viewport to the left of the drawer modal.
+  // Dramatic cinematic camera descent when inspecting books on Archive island:
+  // The camera moves DOWN (y drops from 10.0 down to -10.0) to reveal the Floating Books Realm
   const { inspectCamPos, inspectTarget } = useMemo(() => {
     let inspectCamPos: THREE.Vector3;
     let inspectTarget: THREE.Vector3;
 
     if (isMobile) {
-      inspectCamPos = new THREE.Vector3(6.5, 2.5, 11.0);
-      inspectTarget = new THREE.Vector3(0.0, 2.8, 0.0);
+      inspectCamPos = new THREE.Vector3(0.0, -10.0, 15.5);
+      inspectTarget = new THREE.Vector3(0.0, -10.0, 0.0);
     } else if (isTablet) {
-      inspectCamPos = new THREE.Vector3(6.8, 2.3, 11.5);
-      inspectTarget = new THREE.Vector3(1.2, 2.8, 0.0);
+      inspectCamPos = new THREE.Vector3(0.0, -10.0, 14.8);
+      inspectTarget = new THREE.Vector3(0.0, -10.0, 0.0);
     } else {
-      // Desktop: Camera at [7.0, 2.2, 12.0], target at [1.8, 2.8, 0.0]
-      // This places the island and floating book centered in the left 60% of the screen!
-      inspectCamPos = new THREE.Vector3(7.0, 2.2, 12.0);
-      inspectTarget = new THREE.Vector3(1.8, 2.8, 0.0);
+      // Desktop: Camera descends straight down to Y = -10.0, looking forward at floating books
+      inspectCamPos = new THREE.Vector3(0.0, -10.0, 14.0);
+      inspectTarget = new THREE.Vector3(0.0, -10.0, 0.0);
     }
 
     return { inspectCamPos, inspectTarget };
