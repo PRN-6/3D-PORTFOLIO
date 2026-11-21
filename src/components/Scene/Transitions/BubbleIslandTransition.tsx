@@ -101,15 +101,27 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const incomingIslandRef = useRef<DestinationId>(activeDestination);
   const archiveElevateGroupRef = useRef<THREE.Group>(null);
 
+  type BookBubblePhase =
+    | 'IDLE'
+    | 'FORMING'
+    | 'SEALED'
+    | 'RELEASING'
+    | 'FLOATING'
+    | 'RETRACT_BOOKS'
+    | 'RETRACT_BUBBLES'
+    | 'RETRACT_SEALED'
+    | 'TEARING';
+
   // Dedicated Book Click Normal Bubble Transition with Small Bubbles Release
-  const [bookBubblePhase, setBookBubblePhase] = useState<'IDLE' | 'FORMING' | 'SEALED' | 'RELEASING' | 'FLOATING' | 'TEARING'>('IDLE');
-  const bookBubblePhaseRef = useRef<'IDLE' | 'FORMING' | 'SEALED' | 'RELEASING' | 'FLOATING' | 'TEARING'>('IDLE');
+  const [bookBubblePhase, setBookBubblePhase] = useState<BookBubblePhase>('IDLE');
+  const bookBubblePhaseRef = useRef<BookBubblePhase>('IDLE');
   const bookBubbleStartTime = useRef(0);
   const releaseStartTimeRef = useRef(0);
   const [bookBubbleProgress, setBookBubbleProgress] = useState(0);
   const [bookBubbleMode, setBookBubbleMode] = useState<BubbleAnimationMode>('FORMING');
   const [mainBubbleScale, setMainBubbleScale] = useState(1.0);
   const [releaseProgress, setReleaseProgress] = useState(0.0);
+  const [reverseBooksProgress, setReverseBooksProgress] = useState(0.0);
   const prevSelectedGrimoireRef = useRef<GrimoireItem | null>(null);
 
   // Trigger normal bubble when a book is clicked on Archive Island
@@ -126,14 +138,22 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       setBookBubbleProgress(0.0);
       setMainBubbleScale(1.0);
       setReleaseProgress(0.0);
+      setReverseBooksProgress(0.0);
       bookBubbleStartTime.current = performance.now() / 1000;
     } else if (wasInspecting && !isNowInspecting) {
-      // When book is closed / unselected: tear open / dissolve and vanish
-      if (bookBubblePhaseRef.current !== 'IDLE') {
-        bookBubblePhaseRef.current = 'TEARING';
-        setBookBubblePhase('TEARING');
-        setBookBubbleMode('TEARING');
-        setBookBubbleProgress(0.0);
+      // EXACT REVERSE SEQUENCE TRIGGER:
+      // When book is closed / unselected: run exact same animation in reverse order!
+      // 1. RETRACT_BOOKS: 6 books shrink back into the 6 bubbles
+      // 2. RETRACT_BUBBLES: 6 bubbles fly back to center into main bubble
+      // 3. RETRACT_SEALED: main bubble sealed at center
+      // 4. TEARING: main bubble tears open, restoring Archive Island!
+      if (
+        bookBubblePhaseRef.current === 'FLOATING' ||
+        bookBubblePhaseRef.current === 'RELEASING'
+      ) {
+        bookBubblePhaseRef.current = 'RETRACT_BOOKS';
+        setBookBubblePhase('RETRACT_BOOKS');
+        setReverseBooksProgress(0.0);
         bookBubbleStartTime.current = performance.now() / 1000;
       }
     }
@@ -277,20 +297,85 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       if (archiveElevateGroupRef.current) {
         archiveElevateGroupRef.current.visible = false;
       }
+    } else if (bookBubblePhaseRef.current === 'RETRACT_BOOKS') {
+      // 1. REVERSE STEP 1: Books shrink down back into the 6 bubbles (0.40s)
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = false;
+      }
+      const DURATION = 0.40;
+      const elapsed = now - bookBubbleStartTime.current;
+      const t = Math.min(1.0, elapsed / DURATION);
+      setReverseBooksProgress(t);
+      setMainBubbleScale(0.0);
+      setReleaseProgress(1.0);
+
+      if (t >= 1.0) {
+        bookBubblePhaseRef.current = 'RETRACT_BUBBLES';
+        setBookBubblePhase('RETRACT_BUBBLES');
+        bookBubbleStartTime.current = now;
+      }
+    } else if (bookBubblePhaseRef.current === 'RETRACT_BUBBLES') {
+      // 2. REVERSE STEP 2: 6 bubbles fly back to center while main bubble grows (1.25s)
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = false;
+      }
+      const DURATION = 1.25;
+      const elapsed = now - bookBubbleStartTime.current;
+      const t = Math.min(1.0, elapsed / DURATION);
+      // Smooth cubic curve
+      const p = t * t * (3.0 - 2.0 * t);
+      const relProg = Math.max(0.0, 1.0 - p);
+      setReleaseProgress(relProg);
+
+      // As small bubbles fly back inward, the main center bubble emerges and grows back to 1.0!
+      const grow = Math.min(1.0, Math.pow(t, 0.95));
+      const squish = Math.sin(t * Math.PI * 6.0) * 0.04 * (1.0 - t);
+      const currentScale = Math.min(1.0, Math.max(0.0, grow + squish));
+      setMainBubbleScale(currentScale);
+      setBookBubbleMode('SEALED');
+      setBookBubbleProgress(1.0);
+
+      if (t >= 1.0) {
+        bookBubblePhaseRef.current = 'RETRACT_SEALED';
+        setBookBubblePhase('RETRACT_SEALED');
+        setMainBubbleScale(1.0);
+        setReleaseProgress(0.0);
+        bookBubbleStartTime.current = now;
+      }
+    } else if (bookBubblePhaseRef.current === 'RETRACT_SEALED') {
+      // 3. REVERSE STEP 3: Main bubble fully sealed at center (brief 0.15s pause)
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = false;
+      }
+      setMainBubbleScale(1.0);
+      setBookBubbleMode('SEALED');
+      setBookBubbleProgress(1.0);
+
+      const elapsed = now - bookBubbleStartTime.current;
+      if (elapsed >= 0.15) {
+        // 4. REVERSE STEP 4: Tear open the bubble to reveal the island!
+        bookBubblePhaseRef.current = 'TEARING';
+        setBookBubblePhase('TEARING');
+        setBookBubbleMode('TEARING');
+        setBookBubbleProgress(0.0);
+        bookBubbleStartTime.current = now;
+      }
     } else if (bookBubblePhaseRef.current === 'TEARING') {
-      const TEARING_DURATION = 0.45; // Exact same duration as other page transitions
+      // 4. TEARING: Main bubble tears open from bottom-right, revealing the 3D island model
+      const TEARING_DURATION = 0.65;
       const elapsed = now - bookBubbleStartTime.current;
       const t = Math.min(1.0, elapsed / TEARING_DURATION);
-      const p = Math.pow(t, 1.3);
+      const p = Math.pow(t, 1.2);
       setBookBubbleProgress(p);
+      setMainBubbleScale(1.0);
 
-      // When tearing open, restore model visibility
+      // Restore island model visibility with elastic settle
       if (archiveElevateGroupRef.current) {
-        if (t < 0.12) {
+        if (t < 0.10) {
           archiveElevateGroupRef.current.visible = false;
         } else {
           archiveElevateGroupRef.current.visible = true;
-          const s = THREE.MathUtils.lerp(0.65, 1.0, (t - 0.12) / 0.88);
+          const s = THREE.MathUtils.lerp(0.70, 1.0, Math.min(1.0, (t - 0.10) / 0.90));
           archiveElevateGroupRef.current.scale.set(s, s, s);
         }
       }
@@ -301,6 +386,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         setBookBubbleProgress(0.0);
         setMainBubbleScale(1.0);
         setReleaseProgress(0.0);
+        setReverseBooksProgress(0.0);
         if (archiveElevateGroupRef.current) {
           archiveElevateGroupRef.current.visible = true;
           archiveElevateGroupRef.current.scale.set(1, 1, 1);
@@ -604,11 +690,17 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         )}
 
         {/* THE RELEASED SMALL BUBBLES SWARM TO RANDOM PLACES ON SCREEN */}
-        {bookBubblePhase !== 'IDLE' && bookBubblePhase !== 'FORMING' && (
+        {bookBubblePhase !== 'IDLE' &&
+          bookBubblePhase !== 'FORMING' &&
+          bookBubblePhase !== 'SEALED' &&
+          bookBubblePhase !== 'RETRACT_SEALED' &&
+          bookBubblePhase !== 'TEARING' && (
           <ReleasedSmallBubbles
             active={true}
             releaseProgress={releaseProgress}
-            isTearing={bookBubblePhase === 'TEARING'}
+            isReversing={bookBubblePhase === 'RETRACT_BOOKS' || bookBubblePhase === 'RETRACT_BUBBLES'}
+            reverseStage={bookBubblePhase === 'RETRACT_BOOKS' ? 'BOOKS' : 'BUBBLES'}
+            reverseBooksProgress={reverseBooksProgress}
             onSelectGrimoire={onSelectGrimoire}
             selectedGrimoire={selectedGrimoire}
             onSelectProject={onSelectProject}

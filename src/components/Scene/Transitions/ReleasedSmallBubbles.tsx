@@ -192,6 +192,8 @@ interface RevealedGrimoireBookProps {
   popTime: number;
   floatingTimerRef: React.MutableRefObject<number>;
   isHovered: boolean;
+  isReversing?: boolean;
+  reverseBooksProgress?: number;
   onPointerOver: () => void;
   onPointerOut: () => void;
   onClick: () => void;
@@ -206,6 +208,8 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
   popTime,
   floatingTimerRef,
   isHovered,
+  isReversing = false,
+  reverseBooksProgress = 0,
   onPointerOver,
   onPointerOut,
   onClick,
@@ -252,6 +256,26 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
 
   useFrame((state, delta) => {
     if (!bookGroupRef.current) return;
+
+    if (isReversing) {
+      const revProg = THREE.MathUtils.clamp(reverseBooksProgress, 0.0, 1.0);
+      const shrinkFactor = Math.max(0.0, 1.0 - Math.pow(revProg, 1.4));
+      if (shrinkFactor <= 0.001) {
+        bookGroupRef.current.visible = false;
+        bookGroupRef.current.scale.set(0, 0, 0);
+        return;
+      }
+      bookGroupRef.current.visible = true;
+      const currentScale = baseScale * shrinkFactor;
+      bookGroupRef.current.scale.set(currentScale, currentScale, currentScale);
+
+      bookGroupRef.current.quaternion.copy(camera.quaternion);
+      bookGroupRef.current.rotateX(0.18);
+      const t = state.clock.getElapsedTime();
+      bookGroupRef.current.rotateY(-0.24 + Math.sin(t * 1.5 + index * 1.1) * 0.07);
+      return;
+    }
+
     if (!isPopped || popTime < 0) {
       bookGroupRef.current.visible = false;
       bookGroupRef.current.scale.set(0, 0, 0);
@@ -350,7 +374,7 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
             onPointerOut();
           }}
           className={`flex flex-col items-center cursor-pointer transition-all duration-300 ${
-            isPopped ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75 pointer-events-none'
+            isPopped && !isReversing ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75 pointer-events-none'
           }`}
         >
           {/* Main Project Name Pill */}
@@ -429,6 +453,9 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
 export interface ReleasedSmallBubblesProps {
   active: boolean;
   releaseProgress: number; // 0.0 to 1.0
+  isReversing?: boolean;
+  reverseStage?: 'BOOKS' | 'BUBBLES';
+  reverseBooksProgress?: number;
   isTearing?: boolean;
   onSelectGrimoire?: (grimoire: GrimoireItem) => void;
   selectedGrimoire?: GrimoireItem | null;
@@ -439,6 +466,9 @@ export interface ReleasedSmallBubblesProps {
 export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
   active,
   releaseProgress,
+  isReversing = false,
+  reverseStage = 'BUBBLES',
+  reverseBooksProgress = 0,
   isTearing = false,
   onSelectGrimoire,
   selectedGrimoire: _selectedGrimoire,
@@ -460,12 +490,12 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
 
   // Reset pop states if deactivated
   useEffect(() => {
-    if (!active || releaseProgress < 0.1) {
+    if (!active || (!isReversing && releaseProgress < 0.1)) {
       setPoppedMask([false, false, false, false, false, false]);
       popTimesRef.current = [-1, -1, -1, -1, -1, -1];
       floatingTimerRef.current = 0;
     }
-  }, [active, releaseProgress]);
+  }, [active, releaseProgress, isReversing]);
 
   // Pick responsive preset based on viewport form factor
   const activePresets = useMemo(() => {
@@ -558,6 +588,59 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
       const grp = bubbleRefs.current[index];
       if (!grp) return;
 
+      // -----------------------------------------------------------------------
+      // REVERSE STEP 1: Books shrink down, 6 bubbles reform at target positions
+      // -----------------------------------------------------------------------
+      if (isReversing && reverseStage === 'BOOKS') {
+        grp.visible = true;
+        const target = targetPositions[index];
+        const floatX = Math.sin(t * (1.3 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.12 : 0.18);
+        const floatY = Math.cos(t * (1.6 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.16 : 0.24);
+        const floatZ = Math.sin(t * (1.1 * b.wobbleSpeed) + b.phase) * 0.14;
+        grp.position.set(target.x + floatX, target.y + floatY, target.z + floatZ);
+        grp.scale.set(1.0, 1.0, 1.0);
+        return;
+      }
+
+      // -----------------------------------------------------------------------
+      // REVERSE STEP 2: 6 bubbles fly back towards center into growing main bubble
+      // -----------------------------------------------------------------------
+      if (isReversing && reverseStage === 'BUBBLES') {
+        const returnProgress = THREE.MathUtils.clamp(1.0 - releaseProgress, 0.0, 1.0);
+        // Staggered return: bubbles fly back in reverse order (5 -> 4 -> 3 -> 2 -> 1 -> 0)
+        const returnDelay = (5 - index) * 0.06;
+        const returnWindow = 0.55;
+        const tauRet = Math.min(1.0, Math.max(0.0, (returnProgress - returnDelay) / returnWindow));
+        // Smooth cubic ease towards center
+        const retEase = tauRet * tauRet * (3.0 - 2.0 * tauRet);
+
+        const start = startPositions[index];
+        const target = targetPositions[index];
+
+        const curX = THREE.MathUtils.lerp(target.x, start.x, retEase);
+        const curY = THREE.MathUtils.lerp(target.y, start.y, retEase);
+        const curZ = THREE.MathUtils.lerp(target.z, start.z, retEase);
+
+        const floatDim = Math.max(0.0, 1.0 - retEase);
+        const floatX = Math.sin(t * (1.3 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.12 : 0.18) * floatDim;
+        const floatY = Math.cos(t * (1.6 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.16 : 0.24) * floatDim;
+        const floatZ = Math.sin(t * (1.1 * b.wobbleSpeed) + b.phase) * 0.14 * floatDim;
+
+        grp.position.set(curX + floatX, curY + floatY, curZ + floatZ);
+
+        // Near center, merge and shrink smoothly into the expanding main bubble
+        let mergeScale = 1.0;
+        if (retEase > 0.65) {
+          mergeScale = Math.max(0.0, 1.0 - ((retEase - 0.65) / 0.35));
+        }
+        grp.scale.set(mergeScale, mergeScale, mergeScale);
+        grp.visible = mergeScale > 0.01;
+        return;
+      }
+
+      // -----------------------------------------------------------------------
+      // FORWARD ANIMATION: Budding, traveling outward, and hovering
+      // -----------------------------------------------------------------------
       // Check if this bubble has begun budding
       if (releaseProgress < b.delay) {
         grp.visible = false;
@@ -623,13 +706,21 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
         const isPopped = poppedMask[index];
         const popTime = popTimesRef.current[index];
 
-        // Anticipation swell just before popping (0.08s before pop)
-        const scheduledTime = 0.20 + index * 0.15;
-        const timeUntilPop = scheduledTime - floatingTimerRef.current;
+        // Bubble scale handling for forward swell or reverse reformation
         let bubbleScaleMultiplier = 1.0;
-        if (!isPopped && timeUntilPop > 0 && timeUntilPop < 0.08) {
-          const u = 1.0 - timeUntilPop / 0.08;
-          bubbleScaleMultiplier = 1.0 + Math.sin(u * Math.PI) * 0.14;
+        if (isReversing) {
+          if (reverseStage === 'BOOKS') {
+            bubbleScaleMultiplier = THREE.MathUtils.clamp(reverseBooksProgress / 0.85, 0.0, 1.0);
+          } else {
+            bubbleScaleMultiplier = 1.0;
+          }
+        } else if (!isPopped) {
+          const scheduledTime = 0.20 + index * 0.15;
+          const timeUntilPop = scheduledTime - floatingTimerRef.current;
+          if (timeUntilPop > 0 && timeUntilPop < 0.08) {
+            const u = 1.0 - timeUntilPop / 0.08;
+            bubbleScaleMultiplier = 1.0 + Math.sin(u * Math.PI) * 0.14;
+          }
         }
 
         return (
@@ -640,13 +731,13 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
             }}
             visible={false}
           >
-            {/* 1. BLACK BUBBLE MESH (Visible before popping, vanishes upon pop) */}
-            {!isPopped && (
+            {/* 1. BLACK BUBBLE MESH (Visible before popping, and when reversing back into bubbles!) */}
+            {(!isPopped || isReversing) && (
               <group
                 scale={[bubbleScaleMultiplier, bubbleScaleMultiplier, bubbleScaleMultiplier]}
                 onClick={(e) => {
                   e.stopPropagation();
-                  triggerBubblePop(index);
+                  if (!isReversing) triggerBubblePop(index);
                 }}
                 onPointerOver={(e) => {
                   e.stopPropagation();
@@ -667,14 +758,16 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
               </group>
             )}
 
-            {/* 2. POP BURST PARTICLES & SHOCKWAVE RING (FRAME DRIVEN) */}
-            <PopBurstEffect
-              color={grimoire.accentColor}
-              radius={b.radius}
-              isPopped={isPopped}
-              popTime={popTime}
-              floatingTimerRef={floatingTimerRef}
-            />
+            {/* 2. POP BURST PARTICLES & SHOCKWAVE RING (FRAME DRIVEN - only on forward pop) */}
+            {!isReversing && (
+              <PopBurstEffect
+                color={grimoire.accentColor}
+                radius={b.radius}
+                isPopped={isPopped}
+                popTime={popTime}
+                floatingTimerRef={floatingTimerRef}
+              />
+            )}
 
             {/* 3. REVEALED 3D GRIMOIRE BOOK (FRAME DRIVEN) */}
             <RevealedGrimoireBook
@@ -686,6 +779,8 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
               popTime={popTime}
               floatingTimerRef={floatingTimerRef}
               isHovered={hoveredIndex === index}
+              isReversing={isReversing}
+              reverseBooksProgress={reverseBooksProgress}
               onPointerOver={() => setHoveredIndex(index)}
               onPointerOut={() => setHoveredIndex(null)}
               onClick={() => {
