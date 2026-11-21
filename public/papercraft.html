@@ -183,10 +183,13 @@
             analyze(root) {
                 const FOUNDATION = new Set(['FloatingIsland', 'Meadow', 'WaystonePath']);
                 const STRUCTURE = new Set(['BackBoundary', 'TimberFrame', 'PorchAndOakDoor', 'ShingledGables', 'FieldstoneChimney']);
+                const FLUID_STRETCH = new Set([
+                    'MainTree', 'WindwardFir', 'YoungFir',
+                    'Frieren', 'Himmel', 'Heiter', 'Eisen'
+                ]);
                 const PRIMARY = new Set([
                     'PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire',
-                    'Woodpile', 'GardenStool', 'MainTree', 'WindwardFir', 'YoungFir',
-                    'Frieren', 'Himmel', 'Heiter', 'Eisen'
+                    'Woodpile', 'GardenStool'
                 ]);
                 const PROPS = new Set([
                     'CropPatchCarrots', 'CropPatchCabbages', 'CropPatchSquash', 'Scarecrow',
@@ -196,7 +199,7 @@
                 ]);
                 const DECOR = new Set(['CliffIvyAndRoots', 'WildflowerBanks']);
 
-                const out = { foundation: [], structure: [], primaryFurniture: [], secondaryProps: [], decorations: [] };
+                const out = { foundation: [], structure: [], primaryFurniture: [], secondaryProps: [], decorations: [], fluidStretch: [] };
                 const charRoots = new Set();
                 root.traverse((o) => { if (['Frieren', 'Himmel', 'Heiter', 'Eisen'].includes(o.name)) charRoots.add(o); });
                 const underChar = (o) => { for (let p = o.parent; p; p = p.parent) if (charRoots.has(p)) return true; return false; };
@@ -205,6 +208,7 @@
                     if (obj === root || underChar(obj)) return;
                     if (FOUNDATION.has(obj.name)) out.foundation.push(obj);
                     else if (STRUCTURE.has(obj.name)) out.structure.push(obj);
+                    else if (FLUID_STRETCH.has(obj.name)) out.fluidStretch.push(obj);
                     else if (PRIMARY.has(obj.name)) out.primaryFurniture.push(obj);
                     else if (PROPS.has(obj.name)) out.secondaryProps.push(obj);
                     else if (DECOR.has(obj.name)) out.decorations.push(obj);
@@ -226,6 +230,7 @@
                 this.hinges = [];
                 this.pops = [];
                 this.foliage = [];
+                this.fluidStretch = [];
                 this.matBackups = new Map();
                 this.tmp = { x: 0, y: 0, z: 0 };
             }
@@ -234,6 +239,7 @@
                 this.hinges = [];
                 this.pops = [];
                 this.foliage = [];
+                this.fluidStretch = [];
                 this.matBackups.clear();
 
                 root.traverse((o) => {
@@ -282,14 +288,53 @@
                     this.hinges.push({ wrapper, spec });
                 });
 
-                const pOrder = ['PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire', 'Woodpile', 'GardenStool', 'MainTree', 'WindwardFir', 'YoungFir', 'Frieren', 'Himmel', 'Heiter', 'Eisen'];
+                // FLUID STRETCH FLIGHT: Trees & Characters swoop in from far away as stretched smooth sticks
+                const stretchTrajectories = {
+                    MainTree: { startOffset: [14, 16, -12], ctrl1: [7, 18, -4], ctrl2: [2, 6, 1], start: 14, end: 40 },
+                    WindwardFir: { startOffset: [-16, 13, 10], ctrl1: [-8, 14, 5], ctrl2: [-2, 5, 2], start: 18, end: 43 },
+                    YoungFir: { startOffset: [15, 12, 12], ctrl1: [8, 14, 6], ctrl2: [2, 4, 2], start: 22, end: 45 },
+                    Frieren: { startOffset: [-12, 16, -9], ctrl1: [-6, 11, 4], ctrl2: [1.5, 5, 2], start: 28, end: 50 },
+                    Himmel: { startOffset: [13, 15, 9], ctrl1: [6, 16, 3], ctrl2: [1, 5, 1], start: 31, end: 52 },
+                    Heiter: { startOffset: [-13, 13, -7], ctrl1: [-6, 12, -2], ctrl2: [-1, 4, 1], start: 34, end: 54 },
+                    Eisen: { startOffset: [10, 14, -12], ctrl1: [4, 15, -5], ctrl2: [1, 5, -1], start: 37, end: 57 }
+                };
+
+                cls.fluidStretch.forEach((obj) => {
+                    obj.updateMatrixWorld(true);
+                    box.setFromObject(obj);
+                    box.getCenter(center);
+                    const wrapper = this.tm.createPivotWrapper(obj, new THREE.Vector3(center.x, box.min.y, center.z), 'StretchPivot_' + obj.name);
+                    const basePos = wrapper.position.clone();
+                    const origRot = wrapper.quaternion.clone();
+                    const origScale = wrapper.scale.clone();
+                    const spec = stretchTrajectories[obj.name] || {
+                        startOffset: [12, 14, -10], ctrl1: [6, 15, -4], ctrl2: [1, 5, 1], start: 20, end: 48
+                    };
+
+                    const p0 = basePos.clone().add(new THREE.Vector3(...spec.startOffset));
+                    const p1 = basePos.clone().add(new THREE.Vector3(...spec.ctrl1));
+                    const p2 = basePos.clone().add(new THREE.Vector3(...spec.ctrl2));
+                    const p3 = basePos.clone();
+
+                    this.fluidStretch.push({
+                        wrapper,
+                        basePos,
+                        origRot,
+                        origScale,
+                        start: spec.start,
+                        end: spec.end,
+                        p0, p1, p2, p3
+                    });
+                });
+
+                const pOrder = ['PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire', 'Woodpile', 'GardenStool'];
                 cls.primaryFurniture.sort((a, b) => pOrder.indexOf(a.name) - pOrder.indexOf(b.name));
                 cls.primaryFurniture.forEach((obj, idx) => {
                     obj.updateMatrixWorld(true);
                     box.setFromObject(obj);
                     box.getCenter(center);
                     const wrapper = this.tm.createPivotWrapper(obj, new THREE.Vector3(center.x, box.min.y, center.z), 'PrimPivot_' + obj.name);
-                    const start = Math.min(30, 12 + idx * 1.4);
+                    const start = Math.min(30, 12 + idx * 1.8);
                     this.pops.push({ wrapper, cat: 'PRIM', start, end: Math.min(40, start + 11), lift: 0.14, tilt: (idx % 2 === 0 ? 1 : -1) * 0.035, baseY: wrapper.position.y });
                 });
 
@@ -376,6 +421,79 @@
                     f.wrapper.scale.set(s, s, s);
                     const dec = 1 - eased, sway = dampedSway(t, 0.045, 2);
                     f.wrapper.rotation.set(f.rot0[0] * dec + sway * 0.5, f.rot0[1] * dec + sway, f.rot0[2] * dec + sway * 0.7);
+                }
+
+                // FLUID STRETCH FLIGHT: Far-away flight as stretched stick -> blossoming into shape
+                for (const item of this.fluidStretch) {
+                    const t = frameRangeProgress(frame, item.start, item.end);
+                    if (t <= 0) {
+                        item.wrapper.visible = false;
+                        item.wrapper.scale.set(0.0001, 0.0001, 0.0001);
+                        continue;
+                    }
+                    item.wrapper.visible = true;
+                    if (t >= 1) {
+                        item.wrapper.position.copy(item.basePos);
+                        item.wrapper.quaternion.copy(item.origRot);
+                        item.wrapper.scale.copy(item.origScale);
+                        continue;
+                    }
+
+                    // Authentic Blender F-Curve easing
+                    const inv = 1 - t;
+                    const easedT = Math.min(1, 1 - inv * inv * inv * (1 + 2.4 * t));
+
+                    // 1. Position along 3D fluid curve
+                    evalCubicBezier3D(item.p0, item.p1, item.p2, item.p3, easedT, this.tmp);
+                    item.wrapper.position.set(this.tmp.x, this.tmp.y, this.tmp.z);
+
+                    // 2. Tangent vector calculation (sampling slightly ahead)
+                    const dt = 0.01;
+                    const tNext = Math.min(1, easedT + dt);
+                    const posNext = { x: 0, y: 0, z: 0 };
+                    evalCubicBezier3D(item.p0, item.p1, item.p2, item.p3, tNext, posNext);
+                    const tangent = new THREE.Vector3(posNext.x - this.tmp.x, posNext.y - this.tmp.y, posNext.z - this.tmp.z).normalize();
+
+                    // 3. Flight alignment (local +Y aligned with velocity tangent)
+                    const qAlign = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent);
+                    const qFlight = qAlign.clone().multiply(item.origRot);
+
+                    // 4. Stretched Stick vs. Formed 3D Shape
+                    let sParallel = 1.0;
+                    let sPerp = 1.0;
+                    let dockFactor = 0.0;
+
+                    if (t < 0.70) {
+                        // In flight from far away: Stretched smooth stick
+                        sParallel = 3.8;
+                        sPerp = 0.32;
+                        dockFactor = 0.0;
+                    } else if (t < 0.90) {
+                        // Approaching destination: Stretch rapidly contracts & blossoms into full shape
+                        const alpha = (t - 0.70) / 0.20;
+                        const smoothAlpha = alpha * alpha * (3 - 2 * alpha);
+                        sParallel = THREE.MathUtils.lerp(3.8, 0.88, smoothAlpha);
+                        sPerp = THREE.MathUtils.lerp(0.32, 1.14, smoothAlpha);
+                        dockFactor = smoothAlpha;
+                    } else {
+                        // Touchdown impact & harmonic settle
+                        const settleT = (t - 0.90) / 0.10;
+                        const decay = Math.exp(-9.0 * settleT);
+                        const osc = Math.cos(settleT * Math.PI * 4.0);
+                        sParallel = 1.0 - 0.12 * decay * osc;
+                        sPerp = 1.0 + 0.08 * decay * osc;
+                        dockFactor = 1.0;
+                    }
+
+                    // Smoothly slerp orientation to resting pose
+                    item.wrapper.quaternion.copy(qFlight).slerp(item.origRot, dockFactor);
+
+                    // Longitudinal stretch along local Y, radial compression along X & Z
+                    item.wrapper.scale.set(
+                        item.origScale.x * sPerp,
+                        item.origScale.y * sParallel,
+                        item.origScale.z * sPerp
+                    );
                 }
             }
 
