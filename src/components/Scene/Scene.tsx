@@ -4,7 +4,7 @@ import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
-import { ModularExplodedTransition } from './Transitions/ModularExplodedTransition';
+import { BubbleIslandTransition } from './Transitions/BubbleIslandTransition';
 import { CinematicBackgroundTitle } from './Title/CinematicBackgroundTitle';
 import type { ProjectItem } from '../../data/projectsData';
 import type { GrimoireItem } from '../../data/archiveData';
@@ -169,7 +169,7 @@ export const Scene: React.FC<SceneProps> = ({
               onTransitionFromForestToArchiveComplete={onTransitionFromForestToArchiveComplete}
             />
           ) : (
-            <ModularExplodedTransition
+            <BubbleIslandTransition
               worldState={worldState}
               activeDestination={activeDestination}
               resetSignal={resetSignal}
