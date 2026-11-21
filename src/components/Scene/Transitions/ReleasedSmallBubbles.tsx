@@ -15,14 +15,14 @@ export interface SmallBubbleItem {
 }
 
 export const BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -6.8, screenY:  3.5, depth:  0.4, radius: 1.30, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  6.2, screenY:  4.0, depth: -0.6, radius: 1.10, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX: -8.0, screenY: -0.2, depth:  0.9, radius: 1.50, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX: -1.2, screenY:  4.6, depth: -1.0, radius: 1.20, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX:  7.6, screenY: -0.5, depth:  0.3, radius: 1.60, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX: -5.4, screenY: -3.6, depth: -0.4, radius: 1.00, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
-  { id: 6, screenX:  5.6, screenY: -3.4, depth:  1.0, radius: 1.40, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
-  { id: 7, screenX:  0.6, screenY: -4.0, depth: -0.2, radius: 1.15, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
+  { id: 0, screenX: -7.8, screenY:  4.2, depth:  0.4, radius: 2.00, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  7.5, screenY:  4.4, depth: -0.6, radius: 1.75, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX: -9.6, screenY: -0.8, depth:  0.9, radius: 2.25, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX: -0.5, screenY:  5.2, depth: -1.0, radius: 1.90, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX:  9.5, screenY: -0.4, depth:  0.3, radius: 2.35, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX: -5.4, screenY: -4.6, depth: -0.4, radius: 1.70, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
+  { id: 6, screenX:  6.5, screenY: -4.4, depth:  1.0, radius: 2.15, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
+  { id: 7, screenX:  0.5, screenY: -4.8, depth: -0.2, radius: 1.85, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
 ];
 
 export interface ReleasedSmallBubblesProps {
@@ -169,3 +169,4 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
     </group>
   );
 };
+
