@@ -5,8 +5,8 @@ import { BlackBubbleMesh } from './BlackBubbleMesh';
 
 export interface SmallBubbleItem {
   id: number;
-  screenX: number; // horizontal spread across screen (-9 to +9)
-  screenY: number; // vertical spread across screen (-5 to +5)
+  screenX: number; // horizontal spread across screen
+  screenY: number; // vertical spread across screen
   depth: number;   // z depth variation (-2 to +2)
   radius: number;  // bubble radius
   delay: number;   // normalized launch time within release window (0.0 to 0.8)
@@ -14,6 +14,7 @@ export interface SmallBubbleItem {
   phase: number;
 }
 
+/** Desktop widescreen balanced distribution */
 export const BUBBLE_PRESETS: SmallBubbleItem[] = [
   { id: 0, screenX: -7.8, screenY:  4.2, depth:  0.4, radius: 2.00, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
   { id: 1, screenX:  7.5, screenY:  4.4, depth: -0.6, radius: 1.75, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
@@ -23,6 +24,30 @@ export const BUBBLE_PRESETS: SmallBubbleItem[] = [
   { id: 5, screenX: -5.4, screenY: -4.6, depth: -0.4, radius: 1.70, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
   { id: 6, screenX:  6.5, screenY: -4.4, depth:  1.0, radius: 2.15, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
   { id: 7, screenX:  0.5, screenY: -4.8, depth: -0.2, radius: 1.85, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
+];
+
+/** Tablet (4:3 / medium width) balanced distribution */
+export const TABLET_BUBBLE_PRESETS: SmallBubbleItem[] = [
+  { id: 0, screenX: -5.2, screenY:  4.2, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  5.0, screenY:  4.5, depth: -0.6, radius: 1.65, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX: -6.2, screenY: -0.5, depth:  0.8, radius: 2.05, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX: -0.4, screenY:  5.0, depth: -1.0, radius: 1.75, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX:  6.0, screenY: -0.3, depth:  0.3, radius: 2.15, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX: -4.2, screenY: -4.5, depth: -0.4, radius: 1.55, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
+  { id: 6, screenX:  4.5, screenY: -4.2, depth:  1.0, radius: 1.95, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
+  { id: 7, screenX:  0.3, screenY: -4.8, depth: -0.2, radius: 1.70, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
+];
+
+/** Mobile portrait vertical cascading serpentine distribution */
+export const MOBILE_BUBBLE_PRESETS: SmallBubbleItem[] = [
+  { id: 0, screenX: -1.9, screenY:  6.0, depth:  0.4, radius: 1.40, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  1.8, screenY:  4.4, depth: -0.6, radius: 1.25, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX: -2.0, screenY:  2.6, depth:  0.8, radius: 1.50, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX:  1.7, screenY:  0.9, depth: -0.8, radius: 1.30, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX: -1.9, screenY: -0.9, depth:  0.3, radius: 1.55, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX:  1.9, screenY: -2.6, depth: -0.4, radius: 1.20, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
+  { id: 6, screenX: -1.6, screenY: -4.4, depth:  0.9, radius: 1.45, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
+  { id: 7, screenX:  1.5, screenY: -6.0, depth: -0.2, radius: 1.30, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
 ];
 
 export interface ReleasedSmallBubblesProps {
@@ -36,19 +61,26 @@ export interface ReleasedSmallBubblesProps {
  *
  * Implements the user's release choreography:
  * The large main black bubble releases small glossy bubbles from itself to random places across the screen.
- * Each bubble:
- * - Buds out organically from the main bubble's surface with an elastic pop
- * - Glides outward to its screen-space destination
- * - Gently bobs and floats with fluid surface wobble
+ * Seamlessly adapts layout for Desktop, Tablet, and Mobile Portrait screens.
  */
 export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
   active,
   releaseProgress,
   isTearing = false,
 }) => {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
+  const isMobile = size.width < 768;
+  const isTablet = size.width >= 768 && size.width < 1024;
+
   const timeRef = useRef(0);
   const tearTimeRef = useRef(0);
+
+  // Pick responsive preset based on viewport form factor
+  const activePresets = useMemo(() => {
+    if (isMobile) return MOBILE_BUBBLE_PRESETS;
+    if (isTablet) return TABLET_BUBBLE_PRESETS;
+    return BUBBLE_PRESETS;
+  }, [isMobile, isTablet]);
 
   // Group refs for individual bubbles
   const bubbleRefs = useRef<(THREE.Group | null)[]>([]);
@@ -66,22 +98,23 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
 
   // Pre-calculate target positions in world space
   const targetPositions = useMemo(() => {
-    return BUBBLE_PRESETS.map((b) => {
+    return activePresets.map((b) => {
       return centerAnchor
         .clone()
         .addScaledVector(rightVec, b.screenX)
         .addScaledVector(upVec, b.screenY)
         .addScaledVector(lookVec, -b.depth);
     });
-  }, [centerAnchor, rightVec, upVec, lookVec]);
+  }, [centerAnchor, rightVec, upVec, lookVec, activePresets]);
 
   // Pre-calculate start positions along main bubble surface
   const startPositions = useMemo(() => {
+    const startDist = isMobile ? 3.0 : 4.2;
     return targetPositions.map((target) => {
       const dir = new THREE.Vector3().subVectors(target, centerAnchor).normalize();
-      return centerAnchor.clone().addScaledVector(dir, 4.2);
+      return centerAnchor.clone().addScaledVector(dir, startDist);
     });
-  }, [targetPositions, centerAnchor]);
+  }, [targetPositions, centerAnchor, isMobile]);
 
   useFrame((_, delta) => {
     if (!active) return;
@@ -95,7 +128,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
     }
     const tearFactor = Math.max(0.0, 1.0 - tearTimeRef.current);
 
-    BUBBLE_PRESETS.forEach((b, index) => {
+    activePresets.forEach((b, index) => {
       const grp = bubbleRefs.current[index];
       if (!grp) return;
 
@@ -124,8 +157,8 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
       const curZ = THREE.MathUtils.lerp(start.z, target.z, ease);
 
       // Ambient fluid floating bobbing once arrived
-      const floatX = Math.sin(t * (1.3 * b.wobbleSpeed) + b.phase) * 0.18 * ease;
-      const floatY = Math.cos(t * (1.6 * b.wobbleSpeed) + b.phase) * 0.24 * ease;
+      const floatX = Math.sin(t * (1.3 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.12 : 0.18) * ease;
+      const floatY = Math.cos(t * (1.6 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.16 : 0.24) * ease;
       const floatZ = Math.sin(t * (1.1 * b.wobbleSpeed) + b.phase) * 0.14 * ease;
 
       grp.position.set(curX + floatX, curY + floatY, curZ + floatZ);
@@ -149,7 +182,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
 
   return (
     <group name="ReleasedSmallBubblesContainer">
-      {BUBBLE_PRESETS.map((b, index) => (
+      {activePresets.map((b, index) => (
         <group
           key={b.id}
           ref={(el) => {
@@ -169,4 +202,3 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
     </group>
   );
 };
-
