@@ -14,8 +14,10 @@ export interface FloatingBooksRealmProps {
 /**
  * Ambient floating books with animated turning parchment pages from archive-floating-books.glb
  */
-const AmbientFloatingBooksLayer: React.FC = () => {
+const AmbientFloatingBooksLayer: React.FC<{ revealProgress: number }> = ({ revealProgress }) => {
   const gltf = useGLTF('/models/archive/archive-floating-books.glb');
+  const groupRef = useRef<THREE.Group>(null);
+
   const clonedScene = useMemo(() => {
     const clone = gltf.scene.clone(true);
     clone.traverse((child) => {
@@ -39,17 +41,30 @@ const AmbientFloatingBooksLayer: React.FC = () => {
     };
   }, [actions]);
 
-  return <primitive object={clonedScene} position={[0, 0.5, -1.5]} scale={1.25} />;
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+    const s = THREE.MathUtils.damp(groupRef.current.scale.x, revealProgress * 1.25, 4.0, delta);
+    groupRef.current.scale.set(s, s, s);
+    groupRef.current.visible = s > 0.05;
+  });
+
+  return (
+    <group ref={groupRef} position={[0, 0.5, -1.5]} scale={0}>
+      <primitive object={clonedScene} />
+    </group>
+  );
 };
 
 /**
  * Floating Open Grimoire with hover animation
  */
-const AmbientOpenBook: React.FC<{ position: [number, number, number]; rotation?: [number, number, number] }> = ({
-  position,
-  rotation = [0, 0, 0],
-}) => {
+const AmbientOpenBook: React.FC<{
+  position: [number, number, number];
+  rotation?: [number, number, number];
+  revealProgress: number;
+}> = ({ position, rotation = [0, 0, 0], revealProgress }) => {
   const gltf = useGLTF('/models/archive/floating-open-book.glb');
+  const groupRef = useRef<THREE.Group>(null);
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const { actions } = useAnimations(gltf.animations, scene);
 
@@ -61,19 +76,35 @@ const AmbientOpenBook: React.FC<{ position: [number, number, number]; rotation?:
     };
   }, [actions]);
 
-  return <primitive object={scene} position={position} rotation={rotation} scale={1.1} />;
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+    const s = THREE.MathUtils.damp(groupRef.current.scale.x, revealProgress * 1.1, 4.0, delta);
+    groupRef.current.scale.set(s, s, s);
+    groupRef.current.visible = s > 0.05;
+  });
+
+  return (
+    <group ref={groupRef} position={position} rotation={rotation} scale={0}>
+      <primitive object={scene} />
+    </group>
+  );
 };
 
 /**
  * Individual Interactive Floating Grimoire in the Arcane Realm
+ *
+ * Implements the user's staged choreography:
+ * - When clicking a book: ONLY this book is shown first while the camera smoothly glides down.
+ * - Once down at the new page, the surrounding books smoothly fan out and reveal themselves!
  */
 const FloatingGrimoireItem: React.FC<{
   grimoire: GrimoireItem;
   isSelected: boolean;
   isAnySelected: boolean;
   index: number;
+  revealProgress: number;
   onSelect: (grimoire: GrimoireItem) => void;
-}> = ({ grimoire, isSelected, index, onSelect }) => {
+}> = ({ grimoire, isSelected, index, revealProgress, onSelect }) => {
   const gltf = useGLTF(grimoire.modelFile);
   const groupRef = useRef<THREE.Group>(null);
   const runeRingRef = useRef<THREE.Mesh>(null);
@@ -119,7 +150,6 @@ const FloatingGrimoireItem: React.FC<{
 
   // Arc formation coordinates for non-selected books
   const arcLayout = useMemo(() => {
-    // Array of 6 positions arranged in a sweeping crescent in front of the camera
     const positions: [number, number, number][] = [
       [-5.6, -0.2, 1.4], // 0: Frontend
       [-3.4, 0.35, 2.6], // 1: Backend
@@ -134,50 +164,79 @@ const FloatingGrimoireItem: React.FC<{
   useFrame((state, delta) => {
     if (!groupRef.current) return;
     const time = state.clock.getElapsedTime();
-
-    let targetX = arcLayout[0];
-    let targetY = arcLayout[1];
-    let targetZ = arcLayout[2];
-    let targetScale = 1.05;
-    let targetRotX = 0.18;
-    let targetRotY = (arcLayout[0] > 0 ? -0.24 : 0.24);
-    let targetRotZ = 0.0;
+    const camY = state.camera.position.y;
 
     if (isSelected) {
-      // HERO SPOTLIGHT: Positioned dead-center in the screen, prominently facing viewer
+      // =======================================================================
+      // 1. HERO BOOK: SHOWN FIRST! Floats smoothly dead-center in front of camera while descending!
+      // =======================================================================
+      groupRef.current.visible = true;
+
+      // Keep book centered along camera line of sight during vertical descent
+      const descentLocalY = (camY + 10.0) * 0.45;
       const heroBob = Math.sin(time * 2.4) * 0.16;
-      targetX = 0.0;
-      targetY = -0.35 + heroBob;
-      targetZ = 4.8;
-      targetScale = 1.85;
-      // Facing directly toward the viewer with readable upward tilt
-      targetRotX = 0.35 + Math.sin(time * 1.6) * 0.04;
-      targetRotY = Math.sin(time * 1.2) * 0.08;
-      targetRotZ = 0.0;
+
+      const targetX = 0.0;
+      const targetY = descentLocalY - 0.2 + heroBob;
+      const targetZ = 4.8;
+      const targetScale = 1.85;
+      const targetRotX = 0.35 + Math.sin(time * 1.6) * 0.04;
+      const targetRotY = Math.sin(time * 1.2) * 0.08;
+      const targetRotZ = 0.0;
+
+      groupRef.current.position.x = THREE.MathUtils.damp(groupRef.current.position.x, targetX, 4.0, delta);
+      groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, targetY, 4.0, delta);
+      groupRef.current.position.z = THREE.MathUtils.damp(groupRef.current.position.z, targetZ, 4.0, delta);
+
+      const curScale = groupRef.current.scale.x;
+      const newScale = THREE.MathUtils.damp(curScale, targetScale, 4.0, delta);
+      groupRef.current.scale.set(newScale, newScale, newScale);
+
+      groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetRotX, 4.0, delta);
+      groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetRotY, 4.0, delta);
+      groupRef.current.rotation.z = THREE.MathUtils.damp(groupRef.current.rotation.z, targetRotZ, 4.0, delta);
     } else {
-      // Surrounding arc harmonic floating
+      // =======================================================================
+      // 2. OTHER BOOKS: HIDDEN DURING DESCENT, THEN FAN OUT ONCE ARRIVED!
+      // =======================================================================
+      // Staggered reveal based on revealProgress (0 -> 1)
+      const bookReveal = THREE.MathUtils.clamp((revealProgress - index * 0.08) / 0.35, 0.0, 1.0);
+
+      if (bookReveal <= 0.01) {
+        groupRef.current.visible = false;
+        groupRef.current.scale.set(0, 0, 0);
+        // Anchor at center ready to fan out
+        groupRef.current.position.set(0, 0, 3.5);
+        return;
+      }
+
+      groupRef.current.visible = true;
+
+      // Fan out gracefully from center to arc formation
       const staggerBob = Math.sin(time * 1.8 + index * 1.05) * 0.12;
-      targetY += staggerBob;
-      targetScale = 1.25;
+      const targetX = arcLayout[0] * bookReveal;
+      const targetY = (arcLayout[1] + staggerBob) * bookReveal;
+      const targetZ = arcLayout[2] * bookReveal;
+      let targetScale = 1.25 * bookReveal;
+
       if (hovered) {
         targetScale = 1.45;
-        targetY += 0.25;
-        targetZ += 0.4;
       }
+
+      const targetRotX = 0.18;
+      const targetRotY = arcLayout[0] > 0 ? -0.24 : 0.24;
+
+      groupRef.current.position.x = THREE.MathUtils.damp(groupRef.current.position.x, targetX, 4.2, delta);
+      groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, targetY, 4.2, delta);
+      groupRef.current.position.z = THREE.MathUtils.damp(groupRef.current.position.z, targetZ, 4.2, delta);
+
+      const curScale = groupRef.current.scale.x;
+      const newScale = THREE.MathUtils.damp(curScale, targetScale, 4.2, delta);
+      groupRef.current.scale.set(newScale, newScale, newScale);
+
+      groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetRotX, 4.2, delta);
+      groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetRotY, 4.2, delta);
     }
-
-    // Smooth position and rotation damping
-    groupRef.current.position.x = THREE.MathUtils.damp(groupRef.current.position.x, targetX, 4.0, delta);
-    groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, targetY, 4.0, delta);
-    groupRef.current.position.z = THREE.MathUtils.damp(groupRef.current.position.z, targetZ, 4.0, delta);
-
-    const curScale = groupRef.current.scale.x;
-    const newScale = THREE.MathUtils.damp(curScale, targetScale, 4.0, delta);
-    groupRef.current.scale.set(newScale, newScale, newScale);
-
-    groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetRotX, 4.0, delta);
-    groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetRotY, 4.0, delta);
-    groupRef.current.rotation.z = THREE.MathUtils.damp(groupRef.current.rotation.z, targetRotZ, 4.0, delta);
 
     if (runeRingRef.current) {
       runeRingRef.current.rotation.z += delta * (isSelected ? 0.8 : 0.3);
@@ -187,8 +246,10 @@ const FloatingGrimoireItem: React.FC<{
   return (
     <group
       ref={groupRef}
-      position={isSelected ? [0, 0.4, 4.2] : arcLayout}
+      position={[0, 0, 0]}
+      scale={isSelected ? 1.0 : 0.0}
       onPointerOver={(e) => {
+        if (!groupRef.current?.visible) return;
         e.stopPropagation();
         setHovered(true);
         document.body.style.cursor = 'pointer';
@@ -198,6 +259,7 @@ const FloatingGrimoireItem: React.FC<{
         document.body.style.cursor = 'auto';
       }}
       onClick={(e) => {
+        if (!groupRef.current?.visible) return;
         e.stopPropagation();
         onSelect(grimoire);
       }}
@@ -241,7 +303,7 @@ const FloatingGrimoireItem: React.FC<{
 /**
  * Floating Mana Motes Field drifting upwards
  */
-const FloatingManaMotes: React.FC = () => {
+const FloatingManaMotes: React.FC<{ revealProgress: number }> = ({ revealProgress }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const count = 48;
 
@@ -267,6 +329,10 @@ const FloatingManaMotes: React.FC = () => {
       }
     }
     posAttr.needsUpdate = true;
+
+    // Fade in particles with revealProgress
+    const mat = pointsRef.current.material as THREE.PointsMaterial;
+    mat.opacity = THREE.MathUtils.damp(mat.opacity, revealProgress * 0.65, 4.0, delta);
   });
 
   return (
@@ -281,7 +347,7 @@ const FloatingManaMotes: React.FC = () => {
         size={0.14}
         color="#fbbf24"
         transparent
-        opacity={0.65}
+        opacity={0}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -293,11 +359,12 @@ const FloatingManaMotes: React.FC = () => {
  * FloatingBooksRealm
  *
  * Dedicated 3D Realm located beneath the island (at Y = -10.0).
- * When a book is clicked:
- * 1. Island model goes UP completely OUT of the screen (Y -> +36).
- * 2. Camera goes DOWN to this realm (Y -> -10).
- * 3. Shows the floating books prominently on the screen with turning pages,
- *    celestial grimoire arc, glowing runes, and interactive selection!
+ * Implements user's staged choreography:
+ * 1. Click book on island: 3D island flies up offscreen (Y -> +80).
+ * 2. Camera glides smoothly down (Y -> -10): ONLY THIS CLICKED BOOK is shown first,
+ *    floating smoothly right before the viewer on screen.
+ * 3. Once arrived down at the new realm: THEN the other books smoothly fan out
+ *    into their crescent floating formation with turning pages and motes!
  */
 export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
   selectedGrimoire,
@@ -305,15 +372,31 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
   active,
 }) => {
   const realmGroupRef = useRef<THREE.Group>(null);
+  const revealProgressRef = useRef(0);
+  const [revealProgress, setRevealProgress] = useState(0);
 
-  // Smoothly fade realm visibility and scale into existence
-  useFrame((_, delta) => {
+  // Monitor camera position to detect when descent is complete
+  useFrame((state, delta) => {
     if (!realmGroupRef.current) return;
-    const targetScale = active ? 1.0 : 0.001;
-    const curScale = realmGroupRef.current.scale.x;
-    const newScale = THREE.MathUtils.damp(curScale, targetScale, 4.5, delta);
-    realmGroupRef.current.scale.set(newScale, newScale, newScale);
-    realmGroupRef.current.visible = newScale > 0.01;
+    const camY = state.camera.position.y;
+
+    // The camera has completed moving down when camY reaches <= -8.5
+    const isArrivedAtBottom = active && camY <= -8.5;
+    const targetReveal = isArrivedAtBottom ? 1.0 : 0.0;
+
+    revealProgressRef.current = THREE.MathUtils.damp(
+      revealProgressRef.current,
+      targetReveal,
+      3.2,
+      delta
+    );
+
+    // Update state occasionally for child components
+    if (Math.abs(revealProgressRef.current - revealProgress) > 0.02) {
+      setRevealProgress(revealProgressRef.current);
+    }
+
+    realmGroupRef.current.visible = active;
   });
 
   return (
@@ -324,26 +407,35 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
       visible={active}
     >
       {/* Realm Local Lighting */}
-      <ambientLight intensity={0.6} color="#1e2540" />
-      <directionalLight position={[6, 12, 8]} intensity={1.2} color="#a6c5ff" />
+      <ambientLight intensity={0.65} color="#1e2540" />
+      <directionalLight position={[6, 12, 8]} intensity={1.3} color="#a6c5ff" />
       <directionalLight position={[-6, 6, -6]} intensity={0.8} color="#818cf8" />
 
-      {/* 1. Ambient Floating Books with Turning Parchment Pages */}
+      {/* 1. Ambient Floating Books with Turning Parchment Pages (Reveals after moving down) */}
       <ModelErrorBoundary fallback={null}>
         <Suspense fallback={null}>
-          <AmbientFloatingBooksLayer />
+          <AmbientFloatingBooksLayer revealProgress={revealProgress} />
         </Suspense>
       </ModelErrorBoundary>
 
-      {/* 2. Floating Open & Closed Decorative Books */}
+      {/* 2. Floating Open & Closed Decorative Books (Reveals after moving down) */}
       <ModelErrorBoundary fallback={null}>
         <Suspense fallback={null}>
-          <AmbientOpenBook position={[-4.2, -0.6, 2.2]} rotation={[0.2, 0.4, 0]} />
-          <AmbientOpenBook position={[4.2, -0.6, 2.2]} rotation={[0.2, -0.4, 0]} />
+          <AmbientOpenBook
+            position={[-4.2, -0.6, 2.2]}
+            rotation={[0.2, 0.4, 0]}
+            revealProgress={revealProgress}
+          />
+          <AmbientOpenBook
+            position={[4.2, -0.6, 2.2]}
+            rotation={[0.2, -0.4, 0]}
+            revealProgress={revealProgress}
+          />
         </Suspense>
       </ModelErrorBoundary>
 
-      {/* 3. The 6 Interactive Master Skill Grimoires in Floating Formation */}
+      {/* 3. The 6 Interactive Master Skill Grimoires */}
+      {/* HERO BOOK IS SHOWN FIRST! Other books fan out after descent! */}
       <ModelErrorBoundary fallback={null}>
         <Suspense fallback={null}>
           {GRIMOIRES_DATA.map((grimoire, index) => {
@@ -355,6 +447,7 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
                 isSelected={isSelected}
                 isAnySelected={!!selectedGrimoire}
                 index={index}
+                revealProgress={revealProgress}
                 onSelect={onSelectGrimoire}
               />
             );
@@ -362,8 +455,8 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
         </Suspense>
       </ModelErrorBoundary>
 
-      {/* 4. Drifting Golden Mana Motes Field */}
-      <FloatingManaMotes />
+      {/* 4. Drifting Golden Mana Motes Field (Reveals after moving down) */}
+      <FloatingManaMotes revealProgress={revealProgress} />
     </group>
   );
 };

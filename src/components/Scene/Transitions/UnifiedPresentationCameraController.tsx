@@ -42,6 +42,7 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
 
   const isResetting = useRef(false);
   const isReturningFromInspect = useRef(false);
+  const currentLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0.8, 0));
 
   // Responsive focal length adjustments consistent with established framing
   useLayoutEffect(() => {
@@ -123,13 +124,21 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
     if (!controlsRef.current) return;
 
     // =========================================================================
-    // 1. BOOK INSPECTION ANIMATION: Camera moves DOWN, tilts UP toward floating books
+    // 1. BOOK INSPECTION ANIMATION: Buttery smooth camera descent down to -10
+    // Both camera position and look target damp simultaneously without jerks
     // =========================================================================
     if (isInspecting) {
       controlsRef.current.enabled = false;
-      const step = Math.min(delta * 3.5, 0.16);
-      camera.position.lerp(inspectCamPos, step);
-      camera.lookAt(inspectTarget);
+      
+      camera.position.x = THREE.MathUtils.damp(camera.position.x, inspectCamPos.x, 3.2, delta);
+      camera.position.y = THREE.MathUtils.damp(camera.position.y, inspectCamPos.y, 3.2, delta);
+      camera.position.z = THREE.MathUtils.damp(camera.position.z, inspectCamPos.z, 3.2, delta);
+
+      currentLookAtRef.current.x = THREE.MathUtils.damp(currentLookAtRef.current.x, inspectTarget.x, 3.2, delta);
+      currentLookAtRef.current.y = THREE.MathUtils.damp(currentLookAtRef.current.y, inspectTarget.y, 3.2, delta);
+      currentLookAtRef.current.z = THREE.MathUtils.damp(currentLookAtRef.current.z, inspectTarget.z, 3.2, delta);
+
+      camera.lookAt(currentLookAtRef.current);
       return;
     }
 
@@ -138,13 +147,21 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
     // =========================================================================
     if (isReturningFromInspect.current) {
       controlsRef.current.enabled = false;
-      const step = Math.min(delta * 3.5, 0.16);
-      camera.position.lerp(defaultCamPos, step);
-      camera.lookAt(presentationTarget);
+      
+      camera.position.x = THREE.MathUtils.damp(camera.position.x, defaultCamPos.x, 3.5, delta);
+      camera.position.y = THREE.MathUtils.damp(camera.position.y, defaultCamPos.y, 3.5, delta);
+      camera.position.z = THREE.MathUtils.damp(camera.position.z, defaultCamPos.z, 3.5, delta);
+
+      currentLookAtRef.current.x = THREE.MathUtils.damp(currentLookAtRef.current.x, presentationTarget.x, 3.5, delta);
+      currentLookAtRef.current.y = THREE.MathUtils.damp(currentLookAtRef.current.y, presentationTarget.y, 3.5, delta);
+      currentLookAtRef.current.z = THREE.MathUtils.damp(currentLookAtRef.current.z, presentationTarget.z, 3.5, delta);
+
+      camera.lookAt(currentLookAtRef.current);
 
       const distPos = camera.position.distanceTo(defaultCamPos);
       if (distPos < 0.08) {
         camera.position.copy(defaultCamPos);
+        currentLookAtRef.current.copy(presentationTarget);
         controlsRef.current.target.copy(presentationTarget);
         controlsRef.current.update();
         controlsRef.current.enabled = true;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Sparkles, BookOpen, ArrowLeft } from 'lucide-react';
 import { GRIMOIRES_DATA, type GrimoireItem } from '../../data/archiveData';
 import { useTheme } from '../../context/ThemeContext';
@@ -15,6 +15,7 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
   onSelectGrimoire,
 }) => {
   const { isLight } = useTheme();
+  const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -23,6 +24,18 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
+
+  // Delay UI entrance so only the floating book is shown while moving down
+  useEffect(() => {
+    if (grimoire) {
+      const timer = setTimeout(() => {
+        setIsRevealed(true);
+      }, 750);
+      return () => clearTimeout(timer);
+    } else {
+      setIsRevealed(false);
+    }
+  }, [grimoire]);
 
   if (!grimoire) return null;
 
@@ -41,7 +54,11 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
       />
 
       {/* TOP FLOATING BAR: Return to Island Button & Active Realm Header */}
-      <header className="relative z-50 flex items-center justify-between w-full pointer-events-auto">
+      <header
+        className={`relative z-50 flex items-center justify-between w-full pointer-events-auto transition-all duration-500 ease-out ${
+          isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
+        }`}
+      >
         <button
           onClick={onClose}
           type="button"
@@ -96,7 +113,11 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
       </header>
 
       {/* BOTTOM AREA: 6-Book Selector Switcher & Focused Book Information Drawer */}
-      <footer className="relative z-50 flex flex-col md:flex-row items-end justify-between gap-4 w-full pointer-events-auto">
+      <footer
+        className={`relative z-50 flex flex-col md:flex-row items-end justify-between gap-4 w-full pointer-events-auto transition-all duration-500 ease-out ${
+          isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
+        }`}
+      >
         {/* Left: 6 Floating Codices Selector Pills */}
         <nav
           aria-label="Grimoire Switcher"
