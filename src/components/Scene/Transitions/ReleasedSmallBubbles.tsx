@@ -34,14 +34,14 @@ export const TABLET_BUBBLE_PRESETS: SmallBubbleItem[] = [
   { id: 5, screenX: -5.2, screenY: -2.8, depth: -0.4, radius: 1.80, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
 ];
 
-/** Mobile portrait vertical cascading 6-bubble distribution */
+/** Mobile portrait organic constellation 6-bubble distribution (full screen coverage) */
 export const MOBILE_BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -1.8, screenY:  5.2, depth:  0.4, radius: 1.45, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  1.8, screenY:  3.6, depth: -0.6, radius: 1.35, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX: -1.9, screenY:  1.2, depth:  0.8, radius: 1.55, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX:  1.9, screenY: -1.2, depth: -0.8, radius: 1.40, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX: -1.8, screenY: -3.6, depth:  0.3, radius: 1.50, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX:  1.8, screenY: -5.2, depth: -0.2, radius: 1.35, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
+  { id: 0, screenX: -2.6, screenY:  8.8, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.2, phase: 0.0 },
+  { id: 1, screenX:  2.4, screenY:  6.8, depth: -0.5, radius: 1.95, delay: 0.16, wobbleSpeed: 1.4, phase: 1.2 },
+  { id: 2, screenX: -0.8, screenY:  2.6, depth:  0.8, radius: 2.15, delay: 0.32, wobbleSpeed: 1.0, phase: 2.5 },
+  { id: 3, screenX:  2.8, screenY: -1.2, depth: -0.6, radius: 1.85, delay: 0.48, wobbleSpeed: 1.5, phase: 3.7 },
+  { id: 4, screenX: -2.6, screenY: -4.8, depth:  0.4, radius: 1.95, delay: 0.64, wobbleSpeed: 1.1, phase: 4.8 },
+  { id: 5, screenX:  1.2, screenY: -8.8, depth: -0.3, radius: 1.80, delay: 0.80, wobbleSpeed: 1.3, phase: 5.6 },
 ];
 
 export interface ReleasedSmallBubblesProps {
@@ -165,10 +165,11 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
         s = 1.16 - ((tau - 0.35) / 0.65) * 0.16;
       }
 
-      // Apply tear dismissal scale
-      s *= tearFactor;
+      // Gentle fluid breathing pulsation once arrived
+      const breath = Math.sin(t * (2.2 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.035 : 0.025) * ease;
+      const finalScale = Math.max(0.0, (s + breath) * tearFactor);
 
-      grp.scale.set(s, s, s);
+      grp.scale.set(finalScale, finalScale, finalScale);
     });
   });
 
