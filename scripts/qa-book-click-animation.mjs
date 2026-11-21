@@ -28,28 +28,28 @@ async function run() {
   console.log('Clicking book on canvas...');
   await page.mouse.click(680, 450);
 
-  // 3D model ascending up out of the screen!
+  // 3D model sinking down out of the screen!
   await new Promise(r => setTimeout(r, 250));
-  await page.screenshot({ path: path.join(outDir, '02_island_ascending_up.png') });
-  console.log('Captured 02_island_ascending_up.png');
+  await page.screenshot({ path: path.join(outDir, '02_island_sinking_down.png') });
+  console.log('Captured 02_island_sinking_down.png');
 
-  // Passing through the top edge
+  // Passing through the bottom edge
   await new Promise(r => setTimeout(r, 350));
-  await page.screenshot({ path: path.join(outDir, '03_island_near_top_exit.png') });
-  console.log('Captured 03_island_near_top_exit.png');
+  await page.screenshot({ path: path.join(outDir, '03_island_near_bottom_exit.png') });
+  console.log('Captured 03_island_near_bottom_exit.png');
 
-  // Fully cleared out of the screen
+  // Fully cleared out of the screen below
   await new Promise(r => setTimeout(r, 700));
-  await page.screenshot({ path: path.join(outDir, '04_island_fully_cleared_sky.png') });
-  console.log('Captured 04_island_fully_cleared_sky.png');
+  await page.screenshot({ path: path.join(outDir, '04_island_fully_cleared_below.png') });
+  console.log('Captured 04_island_fully_cleared_below.png');
 
-  // 3. Dismiss modal (Escape key) -> Brings 3D model back down!
+  // 3. Dismiss modal (Escape key) -> Brings 3D model back UP!
   console.log('Closing modal via Escape key...');
   await page.keyboard.press('Escape');
   await new Promise(r => setTimeout(r, 1400));
 
-  await page.screenshot({ path: path.join(outDir, '05_island_restored_down.png') });
-  console.log('Captured 05_island_restored_down.png');
+  await page.screenshot({ path: path.join(outDir, '05_island_restored_up.png') });
+  console.log('Captured 05_island_restored_up.png');
 
   console.log('Staged QA Book Click test complete!');
   await browser.close();

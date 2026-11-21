@@ -149,11 +149,11 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
   useFrame((_, delta) => {
     // -------------------------------------------------------------------------
-    // Cinematic Book Inspection: Archive Island elevates UP OUT OF THE SCREEN (Y -> +24)
-    // Smooth, majestic levitation where user clearly sees the 3D model float up and away
+    // Cinematic Book Inspection: Archive Island sinks DOWN OUT OF THE SCREEN (Y -> -28)
+    // Smooth, majestic descent where user clearly sees the 3D model sink down and away
     // -------------------------------------------------------------------------
     const isInspectingArchive = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
-    const targetElevateY = isInspectingArchive ? 24.0 : 0.0;
+    const targetElevateY = isInspectingArchive ? -28.0 : 0.0;
 
     if (archiveElevateGroupRef.current) {
       archiveElevateGroupRef.current.position.y = THREE.MathUtils.damp(
@@ -168,8 +168,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         2.0,
         delta
       );
-      // Cleanly hide island once completely offscreen above viewport
-      archiveElevateGroupRef.current.visible = archiveElevateGroupRef.current.position.y < 23.0;
+      // Cleanly hide island once completely offscreen below viewport
+      archiveElevateGroupRef.current.visible = archiveElevateGroupRef.current.position.y > -26.0;
     }
 
     const phase = phaseRef.current;
