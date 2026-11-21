@@ -256,8 +256,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
       // As it is releasing small bubbles, the main bubble gets smaller!
       const shrink = Math.max(0.0, 1.0 - pRel);
-      // Fluid recoil squish on each release
-      const squish = Math.sin(pRel * Math.PI * 8.0) * 0.05 * shrink;
+      // Fluid recoil squish on each release (6 beats for 6 bubbles)
+      const squish = Math.sin(pRel * Math.PI * 6.0) * 0.05 * shrink;
       const currentScale = Math.max(0.0, shrink + squish);
       setMainBubbleScale(currentScale);
 

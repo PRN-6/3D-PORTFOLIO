@@ -14,40 +14,34 @@ export interface SmallBubbleItem {
   phase: number;
 }
 
-/** Desktop widescreen balanced distribution */
+/** Desktop widescreen balanced 6-bubble distribution */
 export const BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -7.8, screenY:  4.2, depth:  0.4, radius: 2.00, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  7.5, screenY:  4.4, depth: -0.6, radius: 1.75, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX: -9.6, screenY: -0.8, depth:  0.9, radius: 2.25, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX: -0.5, screenY:  5.2, depth: -1.0, radius: 1.90, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX:  9.5, screenY: -0.4, depth:  0.3, radius: 2.35, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX: -5.4, screenY: -4.6, depth: -0.4, radius: 1.70, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
-  { id: 6, screenX:  6.5, screenY: -4.4, depth:  1.0, radius: 2.15, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
-  { id: 7, screenX:  0.5, screenY: -4.8, depth: -0.2, radius: 1.85, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
+  { id: 0, screenX: -7.5, screenY:  3.2, depth:  0.4, radius: 2.10, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  0.0, screenY:  4.8, depth: -0.6, radius: 1.95, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX:  7.5, screenY:  3.2, depth:  0.5, radius: 2.20, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX:  7.5, screenY: -3.0, depth: -0.5, radius: 2.15, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX:  0.0, screenY: -4.5, depth:  0.3, radius: 2.35, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX: -7.5, screenY: -3.0, depth: -0.4, radius: 2.05, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
 ];
 
-/** Tablet (4:3 / medium width) balanced distribution */
+/** Tablet (4:3 / medium width) balanced 6-bubble distribution */
 export const TABLET_BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -5.2, screenY:  4.2, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  5.0, screenY:  4.5, depth: -0.6, radius: 1.65, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX: -6.2, screenY: -0.5, depth:  0.8, radius: 2.05, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX: -0.4, screenY:  5.0, depth: -1.0, radius: 1.75, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX:  6.0, screenY: -0.3, depth:  0.3, radius: 2.15, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX: -4.2, screenY: -4.5, depth: -0.4, radius: 1.55, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
-  { id: 6, screenX:  4.5, screenY: -4.2, depth:  1.0, radius: 1.95, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
-  { id: 7, screenX:  0.3, screenY: -4.8, depth: -0.2, radius: 1.70, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
+  { id: 0, screenX: -5.2, screenY:  2.8, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  0.0, screenY:  4.5, depth: -0.6, radius: 1.75, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX:  5.2, screenY:  2.8, depth:  0.5, radius: 1.95, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX:  5.2, screenY: -2.8, depth: -0.5, radius: 1.90, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX:  0.0, screenY: -4.4, depth:  0.3, radius: 2.05, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX: -5.2, screenY: -2.8, depth: -0.4, radius: 1.80, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
 ];
 
-/** Mobile portrait vertical cascading serpentine distribution */
+/** Mobile portrait vertical cascading 6-bubble distribution */
 export const MOBILE_BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -1.9, screenY:  6.0, depth:  0.4, radius: 1.40, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  1.8, screenY:  4.4, depth: -0.6, radius: 1.25, delay: 0.12, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX: -2.0, screenY:  2.6, depth:  0.8, radius: 1.50, delay: 0.24, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX:  1.7, screenY:  0.9, depth: -0.8, radius: 1.30, delay: 0.36, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX: -1.9, screenY: -0.9, depth:  0.3, radius: 1.55, delay: 0.48, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX:  1.9, screenY: -2.6, depth: -0.4, radius: 1.20, delay: 0.60, wobbleSpeed: 1.6, phase: 5.2 },
-  { id: 6, screenX: -1.6, screenY: -4.4, depth:  0.9, radius: 1.45, delay: 0.72, wobbleSpeed: 1.2, phase: 6.1 },
-  { id: 7, screenX:  1.5, screenY: -6.0, depth: -0.2, radius: 1.30, delay: 0.84, wobbleSpeed: 1.4, phase: 0.7 },
+  { id: 0, screenX: -1.8, screenY:  5.2, depth:  0.4, radius: 1.45, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  1.8, screenY:  3.6, depth: -0.6, radius: 1.35, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX: -1.9, screenY:  1.2, depth:  0.8, radius: 1.55, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX:  1.9, screenY: -1.2, depth: -0.8, radius: 1.40, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX: -1.8, screenY: -3.6, depth:  0.3, radius: 1.50, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX:  1.8, screenY: -5.2, depth: -0.2, radius: 1.35, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
 ];
 
 export interface ReleasedSmallBubblesProps {
