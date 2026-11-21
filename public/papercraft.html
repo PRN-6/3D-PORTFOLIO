@@ -288,15 +288,15 @@
                     this.hinges.push({ wrapper, spec });
                 });
 
-                // FLUID STRETCH FLIGHT: Trees & Characters swoop in from far away as stretched smooth sticks
-                const stretchTrajectories = {
-                    MainTree: { startOffset: [14, 16, -12], ctrl1: [7, 18, -4], ctrl2: [2, 6, 1], start: 14, end: 40 },
-                    WindwardFir: { startOffset: [-16, 13, 10], ctrl1: [-8, 14, 5], ctrl2: [-2, 5, 2], start: 18, end: 43 },
-                    YoungFir: { startOffset: [15, 12, 12], ctrl1: [8, 14, 6], ctrl2: [2, 4, 2], start: 22, end: 45 },
-                    Frieren: { startOffset: [-12, 16, -9], ctrl1: [-6, 11, 4], ctrl2: [1.5, 5, 2], start: 28, end: 50 },
-                    Himmel: { startOffset: [13, 15, 9], ctrl1: [6, 16, 3], ctrl2: [1, 5, 1], start: 31, end: 52 },
-                    Heiter: { startOffset: [-13, 13, -7], ctrl1: [-6, 12, -2], ctrl2: [-1, 4, 1], start: 34, end: 54 },
-                    Eisen: { startOffset: [10, 14, -12], ctrl1: [4, 15, -5], ctrl2: [1, 5, -1], start: 37, end: 57 }
+                // ON-THE-SPOT GENESIS: Trees & Characters are created right on their spots out of nothing
+                const stretchSpecs = {
+                    MainTree: { lift: 3.2, start: 16, end: 38 },
+                    WindwardFir: { lift: 2.6, start: 20, end: 42 },
+                    YoungFir: { lift: 2.4, start: 24, end: 45 },
+                    Frieren: { lift: 1.8, start: 30, end: 52 },
+                    Himmel: { lift: 1.8, start: 34, end: 54 },
+                    Heiter: { lift: 1.7, start: 37, end: 56 },
+                    Eisen: { lift: 1.6, start: 40, end: 58 }
                 };
 
                 cls.fluidStretch.forEach((obj) => {
@@ -307,14 +307,7 @@
                     const basePos = wrapper.position.clone();
                     const origRot = wrapper.quaternion.clone();
                     const origScale = wrapper.scale.clone();
-                    const spec = stretchTrajectories[obj.name] || {
-                        startOffset: [12, 14, -10], ctrl1: [6, 15, -4], ctrl2: [1, 5, 1], start: 20, end: 48
-                    };
-
-                    const p0 = basePos.clone().add(new THREE.Vector3(...spec.startOffset));
-                    const p1 = basePos.clone().add(new THREE.Vector3(...spec.ctrl1));
-                    const p2 = basePos.clone().add(new THREE.Vector3(...spec.ctrl2));
-                    const p3 = basePos.clone();
+                    const spec = stretchSpecs[obj.name] || { lift: 2.0, start: 22, end: 46 };
 
                     this.fluidStretch.push({
                         wrapper,
@@ -323,7 +316,7 @@
                         origScale,
                         start: spec.start,
                         end: spec.end,
-                        p0, p1, p2, p3
+                        lift: spec.lift
                     });
                 });
 
@@ -423,7 +416,7 @@
                     f.wrapper.rotation.set(f.rot0[0] * dec + sway * 0.5, f.rot0[1] * dec + sway, f.rot0[2] * dec + sway * 0.7);
                 }
 
-                // FLUID STRETCH FLIGHT: Far-away flight as stretched stick -> blossoming into shape
+                // ON-THE-SPOT 3D GENESIS: Created out of nothing as a stretched stick -> blooms into 3D shape
                 for (const item of this.fluidStretch) {
                     const t = frameRangeProgress(frame, item.start, item.end);
                     if (t <= 0) {
@@ -443,56 +436,39 @@
                     const inv = 1 - t;
                     const easedT = Math.min(1, 1 - inv * inv * inv * (1 + 2.4 * t));
 
-                    // 1. Position along 3D fluid curve
-                    evalCubicBezier3D(item.p0, item.p1, item.p2, item.p3, easedT, this.tmp);
-                    item.wrapper.position.set(this.tmp.x, this.tmp.y, this.tmp.z);
+                    let sY = 1.0;
+                    let sXZ = 1.0;
+                    let currentY = item.basePos.y;
 
-                    // 2. Tangent vector calculation (sampling slightly ahead)
-                    const dt = 0.01;
-                    const tNext = Math.min(1, easedT + dt);
-                    const posNext = { x: 0, y: 0, z: 0 };
-                    evalCubicBezier3D(item.p0, item.p1, item.p2, item.p3, tNext, posNext);
-                    const tangent = new THREE.Vector3(posNext.x - this.tmp.x, posNext.y - this.tmp.y, posNext.z - this.tmp.z).normalize();
-
-                    // 3. Flight alignment (local +Y aligned with velocity tangent)
-                    const qAlign = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent);
-                    const qFlight = qAlign.clone().multiply(item.origRot);
-
-                    // 4. Stretched Stick vs. Formed 3D Shape
-                    let sParallel = 1.0;
-                    let sPerp = 1.0;
-                    let dockFactor = 0.0;
-
-                    if (t < 0.70) {
-                        // In flight from far away: Stretched smooth stick
-                        sParallel = 3.8;
-                        sPerp = 0.32;
-                        dockFactor = 0.0;
-                    } else if (t < 0.90) {
-                        // Approaching destination: Stretch rapidly contracts & blossoms into full shape
-                        const alpha = (t - 0.70) / 0.20;
-                        const smoothAlpha = alpha * alpha * (3 - 2 * alpha);
-                        sParallel = THREE.MathUtils.lerp(3.8, 0.88, smoothAlpha);
-                        sPerp = THREE.MathUtils.lerp(0.32, 1.14, smoothAlpha);
-                        dockFactor = smoothAlpha;
+                    if (easedT < 0.65) {
+                        // PHASE 1: Created on the spot out of nothing -> shoots up as stretched stick/spindle
+                        const shootT = easedT / 0.65;
+                        currentY = item.basePos.y + item.lift * (1.0 - Math.pow(1.0 - shootT, 2));
+                        sY = Math.min(3.6, shootT * 4.2);
+                        sXZ = Math.max(0.04, Math.min(0.28, shootT * 0.35));
+                    } else if (easedT < 0.88) {
+                        // PHASE 2: At the apex, right on the spot, blooms and expands into true 3D shape
+                        const bloomT = (easedT - 0.65) / 0.23;
+                        const smoothBloom = bloomT * bloomT * (3.0 - 2.0 * bloomT);
+                        currentY = item.basePos.y + item.lift * (1.0 - smoothBloom) * 0.35;
+                        sY = THREE.MathUtils.lerp(3.6, 0.90, smoothBloom);
+                        sXZ = THREE.MathUtils.lerp(0.28, 1.15, smoothBloom);
                     } else {
-                        // Touchdown impact & harmonic settle
-                        const settleT = (t - 0.90) / 0.10;
-                        const decay = Math.exp(-9.0 * settleT);
+                        // PHASE 3: Touchdown impact squash & harmonic settle
+                        const settleT = (easedT - 0.88) / 0.12;
+                        const decay = Math.exp(-8.0 * settleT);
                         const osc = Math.cos(settleT * Math.PI * 4.0);
-                        sParallel = 1.0 - 0.12 * decay * osc;
-                        sPerp = 1.0 + 0.08 * decay * osc;
-                        dockFactor = 1.0;
+                        currentY = item.basePos.y;
+                        sY = 1.0 - 0.10 * decay * osc;
+                        sXZ = 1.0 + 0.06 * decay * osc;
                     }
 
-                    // Smoothly slerp orientation to resting pose
-                    item.wrapper.quaternion.copy(qFlight).slerp(item.origRot, dockFactor);
-
-                    // Longitudinal stretch along local Y, radial compression along X & Z
+                    item.wrapper.position.set(item.basePos.x, currentY, item.basePos.z);
+                    item.wrapper.quaternion.copy(item.origRot);
                     item.wrapper.scale.set(
-                        item.origScale.x * sPerp,
-                        item.origScale.y * sParallel,
-                        item.origScale.z * sPerp
+                        item.origScale.x * sXZ,
+                        item.origScale.y * sY,
+                        item.origScale.z * sXZ
                     );
                 }
             }
@@ -623,7 +599,7 @@
                         }
                     });
                 }
-                engine.evaluateAtProgress(0.05);
+                engine.evaluateAtProgress(0.0);
                 engine.direction = 1;
                 engine.isPlaying = true;
                 syncUI();

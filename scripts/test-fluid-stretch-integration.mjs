@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { FluidStretchFlightAnimator } from '../src/animation/FluidStretchFlightAnimator.ts';
 
-console.log('=== RUNNING FLUID STRETCH FLIGHT INTEGRATION TESTS ===\n');
+console.log('=== RUNNING ON-THE-SPOT 3D CREATION INTEGRATION TESTS ===\n');
 
 const testEntities = [
   { name: 'MainTree', origPos: new THREE.Vector3(5.5, 0, -3.2), origScale: new THREE.Vector3(1.2, 1.2, 1.2) },
@@ -31,24 +31,22 @@ for (const entity of testEntities) {
   const obj = new THREE.Object3D();
   obj.name = entity.name;
 
-  // Test 1: Dispersed Far Away (t = 0)
+  // Test 1: Nothing There at t = 0 (Out of Nothing)
   FluidStretchFlightAnimator.evaluateFlight(obj, snapshot, 0.0);
-  const distFar = obj.position.distanceTo(entity.origPos);
-  if (distFar < 10.0) {
-    console.error(`FAIL: ${entity.name} is not far away at t = 0 (distance = ${distFar.toFixed(2)})`);
+  if (obj.visible || obj.scale.y > 0.001) {
+    console.error(`FAIL: ${entity.name} is visible at t = 0! Must be invisible / nothing there.`);
     allPassed = false;
   }
 
-  // Test 2: Stretched Smooth Stick in Mid-Flight (t = 0.50)
+  // Test 2: Created on the spot as a stretched smooth stick (t = 0.50)
   FluidStretchFlightAnimator.evaluateFlight(obj, snapshot, 0.5);
-  const stretchRatio = obj.scale.y / (entity.origScale.y * (obj.scale.x / entity.origScale.x));
   const sParallel = obj.scale.y / entity.origScale.y;
   const sPerp = obj.scale.x / entity.origScale.x;
   console.log(
-    `[${entity.name}] Mid-flight (t=0.50) -> Long Stretch: ${sParallel.toFixed(2)}x, Radial Thinning: ${sPerp.toFixed(2)}x (Elongation Ratio: ${stretchRatio.toFixed(1)}x)`
+    `[${entity.name}] On-the-spot creation (t=0.50) -> Stretched Stick: Height ${sParallel.toFixed(2)}x, Width ${sPerp.toFixed(2)}x`
   );
-  if (sParallel < 3.5 || sPerp > 0.40) {
-    console.error(`FAIL: ${entity.name} is not stretched into a stick at mid-flight!`);
+  if (sParallel < 2.5 || sPerp > 0.40) {
+    console.error(`FAIL: ${entity.name} is not a stretched stick on the spot!`);
     allPassed = false;
   }
 
@@ -56,7 +54,7 @@ for (const entity of testEntities) {
   FluidStretchFlightAnimator.evaluateFlight(obj, snapshot, 0.85);
   const sPar85 = obj.scale.y / entity.origScale.y;
   const sPerp85 = obj.scale.x / entity.origScale.x;
-  console.log(`[${entity.name}] Approach (t=0.85)   -> Forming Shape: ${sPar85.toFixed(2)}x / ${sPerp85.toFixed(2)}x`);
+  console.log(`[${entity.name}] Forming Shape (t=0.85)        -> Blossom: ${sPar85.toFixed(2)}x / ${sPerp85.toFixed(2)}x`);
 
   // Test 4: Fully Formed Touchdown (t = 1.0)
   FluidStretchFlightAnimator.evaluateFlight(obj, snapshot, 1.0);
@@ -69,7 +67,7 @@ for (const entity of testEntities) {
     console.error(`FAIL: ${entity.name} has drift at t = 1.0! PosDrift: ${posDrift}, ScaleDiff: ${scaleDiff}`);
     allPassed = false;
   } else {
-    console.log(`[${entity.name}] Arrival (t=1.00)    -> Touchdown exact, 0 drift (Pos: ${posDrift.toFixed(6)}, Scale: ${scaleDiff.toFixed(6)})\n`);
+    console.log(`[${entity.name}] Formed at Rest (t=1.00)       -> 0 drift exact (Pos: ${posDrift.toFixed(6)}, Scale: ${scaleDiff.toFixed(6)})\n`);
   }
 }
 
@@ -77,5 +75,5 @@ if (!allPassed) {
   console.error('TEST SUITE FAILED');
   process.exit(1);
 } else {
-  console.log('ALL FLUID STRETCH FLIGHT TESTS PASSED (7/7 ENTITIES VERIFIED)');
+  console.log('ALL ON-THE-SPOT 3D CREATION TESTS PASSED (7/7 ENTITIES VERIFIED)');
 }
