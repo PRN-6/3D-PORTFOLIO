@@ -9,6 +9,7 @@ import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
 import { BlackBubbleMesh, type BubbleAnimationMode } from './BlackBubbleMesh';
 import { BlackBubbleRimDroplets } from './BlackBubbleRimDroplets';
+import { ReleasedSmallBubbles } from './ReleasedSmallBubbles';
 import {
   ISLAND_DISPLAY_TRANSFORMS,
   type DestinationId,
@@ -100,12 +101,15 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const incomingIslandRef = useRef<DestinationId>(activeDestination);
   const archiveElevateGroupRef = useRef<THREE.Group>(null);
 
-  // Dedicated Book Click Normal Bubble Transition (Exact same normal bubble as island transitions)
-  const [bookBubblePhase, setBookBubblePhase] = useState<'IDLE' | 'FORMING' | 'SEALED' | 'TEARING'>('IDLE');
-  const bookBubblePhaseRef = useRef<'IDLE' | 'FORMING' | 'SEALED' | 'TEARING'>('IDLE');
+  // Dedicated Book Click Normal Bubble Transition with Small Bubbles Release
+  const [bookBubblePhase, setBookBubblePhase] = useState<'IDLE' | 'FORMING' | 'SEALED' | 'RELEASING' | 'FLOATING' | 'TEARING'>('IDLE');
+  const bookBubblePhaseRef = useRef<'IDLE' | 'FORMING' | 'SEALED' | 'RELEASING' | 'FLOATING' | 'TEARING'>('IDLE');
   const bookBubbleStartTime = useRef(0);
+  const releaseStartTimeRef = useRef(0);
   const [bookBubbleProgress, setBookBubbleProgress] = useState(0);
   const [bookBubbleMode, setBookBubbleMode] = useState<BubbleAnimationMode>('FORMING');
+  const [mainBubbleScale, setMainBubbleScale] = useState(1.0);
+  const [releaseProgress, setReleaseProgress] = useState(0.0);
   const prevSelectedGrimoireRef = useRef<GrimoireItem | null>(null);
 
   // Trigger normal bubble when a book is clicked on Archive Island
@@ -120,9 +124,11 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       setBookBubblePhase('FORMING');
       setBookBubbleMode('FORMING');
       setBookBubbleProgress(0.0);
+      setMainBubbleScale(1.0);
+      setReleaseProgress(0.0);
       bookBubbleStartTime.current = performance.now() / 1000;
     } else if (wasInspecting && !isNowInspecting) {
-      // When book is closed / unselected: bubble tears open and vanishes
+      // When book is closed / unselected: tear open / dissolve and vanish
       if (bookBubblePhaseRef.current !== 'IDLE') {
         bookBubblePhaseRef.current = 'TEARING';
         setBookBubblePhase('TEARING');
@@ -182,9 +188,12 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
   useFrame((_, _delta) => {
     // -------------------------------------------------------------------------
-    // Book Click Normal Bubble Animation:
-    // When a book is clicked, the normal black bubble forms and wraps over the model.
-    // That's all: no camera movement, no island movement, no floating books realm.
+    // -------------------------------------------------------------------------
+    // Book Click Normal Bubble Animation with Small Bubbles Release:
+    // 1. Normal black bubble forms and wraps over model (0.7s)
+    // 2. Sealed: 3D model disappears inside the bubble (0.2s pause)
+    // 3. Releasing: Main bubble releases small bubbles across screen & shrinks down!
+    // 4. Floating: Released small bubbles float peacefully across screen
     // -------------------------------------------------------------------------
     const now = performance.now() / 1000;
 
@@ -199,6 +208,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       const t = Math.min(1.0, elapsed / FORMING_DURATION);
       const p = t * t * (3.0 - 2.0 * t);
       setBookBubbleProgress(p);
+      setMainBubbleScale(1.0);
 
       // Model gently contracts inside the forming bubble so bounds stay inside
       if (archiveElevateGroupRef.current) {
@@ -212,6 +222,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         setBookBubblePhase('SEALED');
         setBookBubbleMode('SEALED');
         setBookBubbleProgress(1.0);
+        bookBubbleStartTime.current = now;
 
         // After this happens: the 3D model disappears inside the bubble
         if (archiveElevateGroupRef.current) {
@@ -220,7 +231,44 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       }
     } else if (bookBubblePhaseRef.current === 'SEALED') {
       setBookBubbleProgress(1.0);
+      setMainBubbleScale(1.0);
       // Ensure the 3D model is completely disappeared inside the sealed bubble
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = false;
+      }
+
+      // Brief pause of 0.20s in sealed state before releasing small bubbles
+      const elapsedSealed = now - bookBubbleStartTime.current;
+      if (elapsedSealed >= 0.20) {
+        bookBubblePhaseRef.current = 'RELEASING';
+        setBookBubblePhase('RELEASING');
+        releaseStartTimeRef.current = now;
+      }
+    } else if (bookBubblePhaseRef.current === 'RELEASING') {
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = false;
+      }
+
+      const RELEASE_DURATION = 1.60;
+      const elapsedRel = now - releaseStartTimeRef.current;
+      const pRel = Math.min(1.0, elapsedRel / RELEASE_DURATION);
+      setReleaseProgress(pRel);
+
+      // As it is releasing small bubbles, the main bubble gets smaller!
+      const shrink = Math.max(0.0, 1.0 - pRel);
+      // Fluid recoil squish on each release
+      const squish = Math.sin(pRel * Math.PI * 8.0) * 0.05 * shrink;
+      const currentScale = Math.max(0.0, shrink + squish);
+      setMainBubbleScale(currentScale);
+
+      if (pRel >= 1.0) {
+        bookBubblePhaseRef.current = 'FLOATING';
+        setBookBubblePhase('FLOATING');
+        setMainBubbleScale(0.0);
+      }
+    } else if (bookBubblePhaseRef.current === 'FLOATING') {
+      setMainBubbleScale(0.0);
+      setReleaseProgress(1.0);
       if (archiveElevateGroupRef.current) {
         archiveElevateGroupRef.current.visible = false;
       }
@@ -242,6 +290,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         bookBubblePhaseRef.current = 'IDLE';
         setBookBubblePhase('IDLE');
         setBookBubbleProgress(0.0);
+        setMainBubbleScale(1.0);
+        setReleaseProgress(0.0);
         if (archiveElevateGroupRef.current) {
           archiveElevateGroupRef.current.visible = true;
           archiveElevateGroupRef.current.scale.set(1, 1, 1);
@@ -526,22 +576,31 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           </>
         )}
 
-        {/* THE NORMAL BUBBLE ON BOOK CLICK (Exact same bubble as page transitions) */}
-        {bookBubblePhase !== 'IDLE' && (
-          <>
+        {/* THE MAIN NORMAL BUBBLE ON BOOK CLICK (Shrinks as it releases small bubbles) */}
+        {bookBubblePhase !== 'IDLE' && mainBubbleScale > 0.001 && (
+          <group position={[0, 0.7, 0]} scale={[mainBubbleScale, mainBubbleScale, mainBubbleScale]}>
             <BlackBubbleMesh
               radius={6.9}
               progress={bookBubbleProgress}
               mode={bookBubbleMode}
-              position={[0, 0.7, 0]}
+              position={[0, 0, 0]}
             />
             <BlackBubbleRimDroplets
               radius={6.9}
               progress={bookBubbleProgress}
               mode={bookBubbleMode}
-              position={[0, 0.7, 0]}
+              position={[0, 0, 0]}
             />
-          </>
+          </group>
+        )}
+
+        {/* THE RELEASED SMALL BUBBLES SWARM TO RANDOM PLACES ON SCREEN */}
+        {bookBubblePhase !== 'IDLE' && bookBubblePhase !== 'FORMING' && (
+          <ReleasedSmallBubbles
+            active={true}
+            releaseProgress={releaseProgress}
+            isTearing={bookBubblePhase === 'TEARING'}
+          />
         )}
       </group>
     </>

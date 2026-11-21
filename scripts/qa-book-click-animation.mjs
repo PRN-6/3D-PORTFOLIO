@@ -7,7 +7,7 @@ const outDir = 'C:\\Users\\prins\\.gemini\\antigravity\\brain\\e4c6333e-6fb0-498
 fs.mkdirSync(outDir, { recursive: true });
 
 async function run() {
-  console.log('--- TESTING NORMAL BUBBLE ON BOOK CLICK ---');
+  console.log('--- TESTING BUBBLE RELEASE AND SHRINKING ANIMATION ---');
   const browser = await puppeteer.launch({
     executablePath: chromePath,
     headless: 'new',
@@ -33,24 +33,29 @@ async function run() {
   await page.screenshot({ path: path.join(outDir, '02_normal_bubble_forming.png') });
   console.log('Captured 02_normal_bubble_forming.png');
 
-  // 2. Normal black bubble fully sealed enclosing the model (450ms more -> 800ms)
-  await new Promise(r => setTimeout(r, 450));
-  await page.screenshot({ path: path.join(outDir, '03_normal_bubble_sealed.png') });
-  console.log('Captured 03_normal_bubble_sealed.png');
+  // 2. Bubble fully sealed, 3D model disappeared inside (500ms more -> 850ms)
+  await new Promise(r => setTimeout(r, 500));
+  await page.screenshot({ path: path.join(outDir, '03_bubble_sealed_model_disappeared.png') });
+  console.log('Captured 03_bubble_sealed_model_disappeared.png');
 
-  // 3. Dismiss (Escape key) -> Bubble tears open
+  // 3. Main bubble shrinking while releasing small bubbles (850ms more -> 1700ms)
+  await new Promise(r => setTimeout(r, 850));
+  await page.screenshot({ path: path.join(outDir, '04_bubble_releasing_and_shrinking.png') });
+  console.log('Captured 04_bubble_releasing_and_shrinking.png');
+
+  // 4. Main bubble fully shrunk away, small bubbles floating across screen (1100ms more -> 2800ms)
+  await new Promise(r => setTimeout(r, 1100));
+  await page.screenshot({ path: path.join(outDir, '05_bubbles_floating_across_screen.png') });
+  console.log('Captured 05_bubbles_floating_across_screen.png');
+
+  // 5. Dismiss (Escape key) -> Returns back to normal island
   console.log('Dismissing via Escape key...');
   await page.keyboard.press('Escape');
-  await new Promise(r => setTimeout(r, 200));
-  await page.screenshot({ path: path.join(outDir, '04_bubble_tearing_open.png') });
-  console.log('Captured 04_bubble_tearing_open.png');
+  await new Promise(r => setTimeout(r, 1200));
+  await page.screenshot({ path: path.join(outDir, '06_restored_back_to_island.png') });
+  console.log('Captured 06_restored_back_to_island.png');
 
-  // 4. Bubble gone, island restored
-  await new Promise(r => setTimeout(r, 600));
-  await page.screenshot({ path: path.join(outDir, '05_bubble_gone_island_restored.png') });
-  console.log('Captured 05_bubble_gone_island_restored.png');
-
-  console.log('QA Normal Bubble Book Click test complete!');
+  console.log('QA Bubble Release and Shrinking test complete!');
   await browser.close();
 }
 
