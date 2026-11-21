@@ -3,11 +3,8 @@ import * as THREE from 'three';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import { ModelErrorBoundary } from '../ModelErrorBoundary';
 
-// Preload master and satellite models
+// Preload master assembly (contains island, dense meadow, perimeter clouds, floating rocks, petals, and motes)
 useGLTF.preload('/models/blue-flower-garden/blue-flower-garden-complete.glb');
-useGLTF.preload('/models/blue-flower-garden/island/floating-rocks.glb');
-useGLTF.preload('/models/blue-flower-garden/effects/floating-petals.glb');
-useGLTF.preload('/models/blue-flower-garden/effects/magical-motes.glb');
 
 const MasterGardenMesh: React.FC = () => {
   const gltf = useGLTF('/models/blue-flower-garden/blue-flower-garden-complete.glb');
@@ -20,26 +17,12 @@ const MasterGardenMesh: React.FC = () => {
         const mesh = child as THREE.Mesh;
         mesh.receiveShadow = true;
         mesh.castShadow = true;
-        if (mesh.material) {
-          if (Array.isArray(mesh.material)) {
-            mesh.material.forEach((m) => {
-              m.side = THREE.DoubleSide;
-            });
-          } else {
-            mesh.material.side = THREE.DoubleSide;
-          }
-        }
       }
     });
 
-    // 1. FIX: Cloud positioning & geometry
-    // Reduce oversized cloud geometry, move clouds away from camera foreground,
-    // and position them around island perimeter and behind the island.
+    // Cloud soft material treatment (clouds are already baked at perimeter r >= 11.5)
     const cloudsNode = clone.getObjectByName('DreamyClouds');
     if (cloudsNode) {
-      cloudsNode.position.set(-3.8, -2.4, -6.8);
-      cloudsNode.scale.set(0.44, 0.35, 0.44);
-
       cloudsNode.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
@@ -50,7 +33,7 @@ const MasterGardenMesh: React.FC = () => {
             mats.forEach((m) => {
               const mat = m.clone() as THREE.MeshStandardMaterial;
               mat.transparent = true;
-              mat.opacity = 0.84;
+              mat.opacity = 0.88;
               mat.roughness = 0.98;
               mat.metalness = 0.0;
               mat.depthWrite = true;
@@ -81,83 +64,11 @@ const MasterGardenMesh: React.FC = () => {
   );
 };
 
-const SatelliteFloatingRocks: React.FC = () => {
-  const gltf = useGLTF('/models/blue-flower-garden/island/floating-rocks.glb');
-  const groupRef = useRef<THREE.Group>(null);
-
-  const scene = useMemo(() => {
-    const clone = gltf.scene.clone(true);
-    clone.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        child.receiveShadow = true;
-        child.castShadow = true;
-      }
-    });
-    return clone;
-  }, [gltf.scene]);
-
-  const { actions } = useAnimations(gltf.animations, groupRef);
-
-  useEffect(() => {
-    const active = Object.values(actions).filter(Boolean);
-    active.forEach((a) => a?.reset().play());
-    return () => {
-      active.forEach((a) => a?.fadeOut(0.2));
-    };
-  }, [actions]);
-
-  return (
-    <group ref={groupRef} name="floating-rocks">
-      <primitive object={scene} />
-    </group>
-  );
-};
-
-const FloatingPetalsAndMotes: React.FC = () => {
-  const petalsGltf = useGLTF('/models/blue-flower-garden/effects/floating-petals.glb');
-  const motesGltf = useGLTF('/models/blue-flower-garden/effects/magical-motes.glb');
-
-  const petalsGroup = useRef<THREE.Group>(null);
-  const motesGroup = useRef<THREE.Group>(null);
-
-  const petalsScene = useMemo(() => petalsGltf.scene.clone(true), [petalsGltf.scene]);
-  const motesScene = useMemo(() => motesGltf.scene.clone(true), [motesGltf.scene]);
-
-  const petalsAnim = useAnimations(petalsGltf.animations, petalsGroup);
-  const motesAnim = useAnimations(motesGltf.animations, motesGroup);
-
-  useEffect(() => {
-    const activePetals = Object.values(petalsAnim.actions).filter(Boolean);
-    activePetals.forEach((a) => a?.reset().play());
-
-    const activeMotes = Object.values(motesAnim.actions).filter(Boolean);
-    activeMotes.forEach((a) => a?.reset().play());
-
-    return () => {
-      activePetals.forEach((a) => a?.fadeOut(0.2));
-      activeMotes.forEach((a) => a?.fadeOut(0.2));
-    };
-  }, [petalsAnim.actions, motesAnim.actions]);
-
-  return (
-    <>
-      <group ref={petalsGroup} name="floating-petals">
-        <primitive object={petalsScene} />
-      </group>
-      <group ref={motesGroup} name="magical-motes">
-        <primitive object={motesScene} />
-      </group>
-    </>
-  );
-};
-
 export const GardenEnvironment: React.FC = () => {
   return (
     <group name="GardenEnvironmentRoot">
       <ModelErrorBoundary fallback={null}>
         <MasterGardenMesh />
-        <SatelliteFloatingRocks />
-        <FloatingPetalsAndMotes />
       </ModelErrorBoundary>
     </group>
   );
