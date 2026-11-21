@@ -10,36 +10,36 @@ export interface BasePivotConfig {
 /**
  * Handcrafted Paper Pop Easing:
  * 0.00 -> 0.45 -> 0.90 -> 1.08 (overshoot) -> 0.97 (correction) -> 1.00 (settle)
+ * Matches exact elasticPopScaleCurve(t, maxO = 1.08, corr = 0.97).
  */
-export function popElasticOvershootEase(t: number): number {
-  if (t <= 0.0) return 0.0;
-  if (t >= 0.99999) return 1.0;
-
-  // Elastic pop-up curve with distinct 1.08x overshoot and 0.97x rebound
-  const c4 = (2 * Math.PI) / 3.5;
-  if (t < 0.70) {
-    // Sharp emergence to 1.08 peak
-    const tau = t / 0.70;
-    return Math.sin(tau * Math.PI * 0.5) * 1.08;
-  } else {
-    // Damped settling from 1.08 -> 0.97 -> 1.00
-    const tau = (t - 0.70) / 0.30;
-    const decay = Math.exp(-4.2 * tau);
-    const osc = Math.cos(tau * c4);
-    return 1.0 + 0.08 * decay * osc * (1.0 - tau);
+export function elasticPopScaleCurve(t: number, maxO = 1.08, corr = 0.97): number {
+  const x = Math.max(0, Math.min(1, t));
+  if (x === 0 || x === 1) return x;
+  if (x < 0.55) return (1 - Math.pow(1 - x / 0.55, 2.4)) * maxO;
+  if (x < 0.8) {
+    const u = (x - 0.55) / 0.25;
+    return maxO + (corr - maxO) * (0.5 - 0.5 * Math.cos(Math.PI * u));
   }
+  const u = (x - 0.8) / 0.2;
+  return corr + (1 - corr) * (0.5 - 0.5 * Math.cos(Math.PI * u));
 }
+
+// Backward-compatibility alias
+export const popElasticOvershootEase = elasticPopScaleCurve;
 
 /**
  * Snappy Ease-Out-Back for Small Accessories & Cascading Props:
+ * Matches exact easeOutBackFast(t, ov = 1.07).
  */
-export function propEaseOutBack(t: number): number {
-  if (t <= 0.0) return 0.0;
-  if (t >= 0.99999) return 1.0;
-  const c1 = 1.65;
-  const c3 = c1 + 1;
-  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+export function easeOutBackFast(t: number, ov = 1.07): number {
+  const x = Math.max(0, Math.min(1, t));
+  if (x === 0 || x === 1) return x;
+  const c1 = (ov - 1) * 18;
+  return 1 + (c1 + 1) * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
 }
+
+// Backward-compatibility alias
+export const propEaseOutBack = easeOutBackFast;
 
 /**
  * PopScaleAnimator

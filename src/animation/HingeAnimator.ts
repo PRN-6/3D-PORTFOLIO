@@ -11,25 +11,18 @@ export interface HingeConfig {
 /**
  * Custom Hinge Easing with Pop-Up Book Flap Overshoot:
  * Rises rapidly from flat, passes upright by ~4 degrees, and elastically settles.
+ * Matches exact hingeFoldCurve(t, ov = 0.065).
  */
-export function hingeOvershootEase(t: number): number {
-  if (t <= 0.0) return 0.0;
-  if (t >= 0.99999) return 1.0;
-
-  // Base cubic rise
-  const inv = 1.0 - t;
-  const base = 1.0 - inv * inv * inv;
-
-  // Elastic overshoot in the final 35% of the unfold phase
-  let overshoot = 0.0;
-  if (t > 0.65) {
-    const tau = (t - 0.65) / 0.35; // 0.0 to 1.0
-    const decay = Math.exp(-4.5 * tau);
-    overshoot = 0.065 * decay * Math.sin(tau * Math.PI);
-  }
-
-  return base + overshoot;
+export function hingeFoldCurve(t: number, ov = 0.065): number {
+  const x = Math.max(0, Math.min(1, t));
+  if (x === 0 || x === 1) return x;
+  if (x < 0.78) return (1 - Math.pow(1 - x / 0.78, 2.6)) * (1 + ov);
+  const u = (x - 0.78) / 0.22;
+  return 1 + ov * (1 - (0.5 - 0.5 * Math.cos(Math.PI * u)));
 }
+
+// Backward-compatibility alias
+export const hingeOvershootEase = hingeFoldCurve;
 
 /**
  * HingeAnimator

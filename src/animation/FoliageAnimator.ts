@@ -9,6 +9,15 @@ export interface FoliageConfig {
 }
 
 /**
+ * Damped swaying follow-through matching user's papercraft choreography:
+ */
+export function dampedSway(t: number, amplitude = 0.045, cycles = 2): number {
+  const x = Math.max(0, Math.min(1, t));
+  if (x <= 0 || x >= 1) return 0;
+  return amplitude * Math.pow(1 - x, 2) * Math.sin(Math.PI * x) * Math.sin(cycles * Math.PI * 2 * x);
+}
+
+/**
  * FoliageAnimator
  * Coordinates curved growth trajectories, arc sweeping, and delicate secondary
  * sway settling for trees, firs, wildflower banks, ivy, and foliage elements.

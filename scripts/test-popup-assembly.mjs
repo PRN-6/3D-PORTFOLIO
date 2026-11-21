@@ -91,9 +91,9 @@ const seat = root.getObjectByName('HearthsideSeats');
 store.capture([{ name: 'HearthsideSeats', object: seat }]);
 const seatOrig = store.get('HearthsideSeats');
 
-// Evaluate at t = 0.70 (peak overshoot)
-PopScaleAnimator.evaluatePop(seat, seatOrig, 0.70, false);
-console.log(`✅ HearthsideSeats scale at peak overshoot (t=0.70): Y scale = ${(seat.scale.y / seatOrig.localScale.y).toFixed(3)}x`);
+// Evaluate at t = 0.55 (peak overshoot 1.08x matching elasticPopScaleCurve)
+PopScaleAnimator.evaluatePop(seat, seatOrig, 0.55, false);
+console.log(`✅ HearthsideSeats scale at peak overshoot (t=0.55): Y scale = ${(seat.scale.y / seatOrig.localScale.y).toFixed(3)}x`);
 assert(seat.scale.y > seatOrig.localScale.y * 1.04, 'Scale at peak overshoot should be > 1.04x');
 
 // Evaluate at t = 1.0 (settled)

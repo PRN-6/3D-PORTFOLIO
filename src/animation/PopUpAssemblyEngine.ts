@@ -59,7 +59,7 @@ export class PopUpAssemblyEngine {
   private isPlaying = false;
   private direction: PlaybackDirection = 'forward';
   private speed = 1.0;
-  private duration = 2.4; // 2.4 seconds default (72 frames at 30fps)
+  private duration = 2.0; // 2.0 seconds default (60 frames at 30fps) matching HerosHome HTML
   private activeIsland = 'HOME';
   private isIsometricCamera = false;
 
@@ -89,6 +89,34 @@ export class PopUpAssemblyEngine {
     this.metaList = [];
     this.metaMap.clear();
 
+    // Exact choreography definitions from HerosHome Papercraft Pop-Up Assembly HTML
+    const fTiming: Record<string, [number, number, number]> = {
+      FloatingIsland: [1, 16, -0.55],
+      Meadow: [5, 16, -0.08],
+      WaystonePath: [7, 16, -0.06],
+    };
+
+    const hSpec: Record<string, { start: number; end: number; edge: string; axis: string; angle: number }> = {
+      BackBoundary: { start: 5, end: 19, edge: 'back', axis: 'x', angle: Math.PI * 0.48 },
+      TimberFrame: { start: 7, end: 22, edge: 'back', axis: 'x', angle: Math.PI * 0.5 },
+      PorchAndOakDoor: { start: 10, end: 24, edge: 'front', axis: 'x', angle: -Math.PI * 0.5 },
+      ShingledGables: { start: 13, end: 25, edge: 'back', axis: 'x', angle: Math.PI * 0.44 },
+      FieldstoneChimney: { start: 15, end: 25, edge: 'left', axis: 'z', angle: Math.PI * 0.42 },
+    };
+
+    const pOrder = [
+      'PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire',
+      'Woodpile', 'GardenStool', 'MainTree', 'WindwardFir', 'YoungFir',
+      'Frieren', 'Himmel', 'Heiter', 'Eisen'
+    ];
+
+    const sOrder = [
+      'CropPatchCarrots', 'CropPatchCabbages', 'CropPatchSquash', 'Scarecrow',
+      'WateringCan', 'WeaponRack', 'TrainingDummy', 'PracticeTarget', 'WoodenSword',
+      'PorchSign', 'GardenGateLantern', 'HearthFlame1', 'HearthFlame2', 'HearthFlame3',
+      'ChimneyWisp1', 'ChimneyWisp2', 'ChimneyWisp3', 'ChimneyWisp4'
+    ];
+
     const comps = analysis.components;
     for (let i = 0; i < comps.length; i++) {
       const comp = comps[i];
@@ -96,8 +124,32 @@ export class PopUpAssemblyEngine {
       let category: PopUpCategory;
       let timingWindow: [number, number];
 
-      // Stage 1: Floor & Foundation
-      if (
+      // Exact match against HerosHome specification
+      if (fTiming[comp.name]) {
+        category = 'FLOOR';
+        timingWindow = [fTiming[comp.name][0] / 60, fTiming[comp.name][1] / 60];
+      } else if (hSpec[comp.name]) {
+        category = 'WALL_HINGE';
+        timingWindow = [hSpec[comp.name].start / 60, hSpec[comp.name].end / 60];
+      } else if (pOrder.includes(comp.name)) {
+        category = 'PRIMARY_FURNITURE';
+        const pIdx = pOrder.indexOf(comp.name);
+        const pStart = Math.min(30, 12 + pIdx * 1.4);
+        timingWindow = [pStart / 60, Math.min(40, pStart + 11) / 60];
+      } else if (sOrder.includes(comp.name)) {
+        category = 'SECONDARY_PROP';
+        const sIdx = sOrder.indexOf(comp.name);
+        const sStart = Math.min(47, 20 + sIdx * 1.6);
+        timingWindow = [sStart / 60, Math.min(55, sStart + 8) / 60];
+      } else if (comp.name === 'CliffIvyAndRoots') {
+        category = 'FOLIAGE';
+        timingWindow = [15 / 60, 43 / 60];
+      } else if (comp.name === 'WildflowerBanks') {
+        category = 'FOLIAGE';
+        timingWindow = [26 / 60, 54 / 60];
+      }
+      // General fallbacks for multi-island compatibility (Archive, Forest, Workshop)
+      else if (
         name.includes('island') ||
         name.includes('meadow') ||
         name.includes('waystone') ||
@@ -108,9 +160,7 @@ export class PopUpAssemblyEngine {
       ) {
         category = 'FLOOR';
         timingWindow = [0.0, 0.28];
-      }
-      // Stage 2: Walls & Structural Frames (Hinge-based folding)
-      else if (
+      } else if (
         name.includes('timber') ||
         name.includes('wall') ||
         name.includes('porch') ||
@@ -124,12 +174,9 @@ export class PopUpAssemblyEngine {
         name.includes('workshop')
       ) {
         category = 'WALL_HINGE';
-        // Stagger walls slightly: frames 5-25 (0.08 to 0.45)
         const wallOffset = (i % 4) * 0.04;
         timingWindow = [0.08 + wallOffset, 0.42 + wallOffset];
-      }
-      // Stage 3: Primary Furniture
-      else if (
+      } else if (
         name.includes('seat') ||
         name.includes('bench') ||
         name.includes('table') ||
@@ -146,9 +193,7 @@ export class PopUpAssemblyEngine {
         category = 'PRIMARY_FURNITURE';
         const furnOffset = (i % 6) * 0.035;
         timingWindow = [0.20 + furnOffset, 0.62 + furnOffset];
-      }
-      // Stage 5: Foliage & Trees
-      else if (
+      } else if (
         name.includes('tree') ||
         name.includes('fir') ||
         name.includes('wildflower') ||
@@ -160,9 +205,7 @@ export class PopUpAssemblyEngine {
         category = 'FOLIAGE';
         const folOffset = (i % 5) * 0.03;
         timingWindow = [0.25 + folOffset, 0.85 + folOffset];
-      }
-      // Stage 6: Characters
-      else if (
+      } else if (
         name.includes('frieren') ||
         name.includes('himmel') ||
         name.includes('heiter') ||
@@ -170,18 +213,14 @@ export class PopUpAssemblyEngine {
       ) {
         category = 'CHARACTER';
         timingWindow = [0.45, 0.88];
-      }
-      // Stage 7: Effects
-      else if (
+      } else if (
         name.includes('wisp') ||
         name.includes('flame') ||
         name.includes('mote')
       ) {
         category = 'EFFECT';
         timingWindow = [0.60, 0.98];
-      }
-      // Stage 4: Secondary Props (Cascading domino pop-up)
-      else {
+      } else {
         category = 'SECONDARY_PROP';
         const propOffset = (i % 12) * 0.032;
         timingWindow = [0.32 + propOffset, 0.78 + propOffset];
