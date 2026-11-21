@@ -122,3 +122,4 @@ The bottom-right `Cinematic Assembly` floating pill provides:
   - Tests bottom hinge axis identification, fold angles, base-pinned furniture overshoot, 100-scrub zero-drift assertions, and forward/reverse playback.
 - Visual browser QA: `scripts/qa-popup-papercraft.mjs`
   - Captures high-resolution screenshots across all animation stages, Cardstock mode, and Light/Dark themes in Headless Chrome.
+

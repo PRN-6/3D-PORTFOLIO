@@ -183,10 +183,13 @@
             analyze(root) {
                 const FOUNDATION = new Set(['FloatingIsland', 'Meadow', 'WaystonePath']);
                 const STRUCTURE = new Set(['BackBoundary', 'TimberFrame', 'PorchAndOakDoor', 'ShingledGables', 'FieldstoneChimney']);
+                const FLUID_STRETCH = new Set([
+                    'MainTree', 'WindwardFir', 'YoungFir',
+                    'Frieren', 'Himmel', 'Heiter', 'Eisen'
+                ]);
                 const PRIMARY = new Set([
                     'PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire',
-                    'Woodpile', 'GardenStool', 'MainTree', 'WindwardFir', 'YoungFir',
-                    'Frieren', 'Himmel', 'Heiter', 'Eisen'
+                    'Woodpile', 'GardenStool'
                 ]);
                 const PROPS = new Set([
                     'CropPatchCarrots', 'CropPatchCabbages', 'CropPatchSquash', 'Scarecrow',
@@ -196,7 +199,7 @@
                 ]);
                 const DECOR = new Set(['CliffIvyAndRoots', 'WildflowerBanks']);
 
-                const out = { foundation: [], structure: [], primaryFurniture: [], secondaryProps: [], decorations: [] };
+                const out = { foundation: [], structure: [], primaryFurniture: [], secondaryProps: [], decorations: [], fluidStretch: [] };
                 const charRoots = new Set();
                 root.traverse((o) => { if (['Frieren', 'Himmel', 'Heiter', 'Eisen'].includes(o.name)) charRoots.add(o); });
                 const underChar = (o) => { for (let p = o.parent; p; p = p.parent) if (charRoots.has(p)) return true; return false; };
@@ -205,6 +208,7 @@
                     if (obj === root || underChar(obj)) return;
                     if (FOUNDATION.has(obj.name)) out.foundation.push(obj);
                     else if (STRUCTURE.has(obj.name)) out.structure.push(obj);
+                    else if (FLUID_STRETCH.has(obj.name)) out.fluidStretch.push(obj);
                     else if (PRIMARY.has(obj.name)) out.primaryFurniture.push(obj);
                     else if (PROPS.has(obj.name)) out.secondaryProps.push(obj);
                     else if (DECOR.has(obj.name)) out.decorations.push(obj);
@@ -226,6 +230,7 @@
                 this.hinges = [];
                 this.pops = [];
                 this.foliage = [];
+                this.fluidStretch = [];
                 this.matBackups = new Map();
                 this.tmp = { x: 0, y: 0, z: 0 };
             }
@@ -234,6 +239,7 @@
                 this.hinges = [];
                 this.pops = [];
                 this.foliage = [];
+                this.fluidStretch = [];
                 this.matBackups.clear();
 
                 root.traverse((o) => {
@@ -282,14 +288,46 @@
                     this.hinges.push({ wrapper, spec });
                 });
 
-                const pOrder = ['PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire', 'Woodpile', 'GardenStool', 'MainTree', 'WindwardFir', 'YoungFir', 'Frieren', 'Himmel', 'Heiter', 'Eisen'];
+                // ON-THE-SPOT GENESIS: Trees & Characters are created right on their spots out of nothing
+                const stretchSpecs = {
+                    MainTree: { lift: 3.2, start: 16, end: 38 },
+                    WindwardFir: { lift: 2.6, start: 20, end: 42 },
+                    YoungFir: { lift: 2.4, start: 24, end: 45 },
+                    Frieren: { lift: 1.8, start: 30, end: 52 },
+                    Himmel: { lift: 1.8, start: 34, end: 54 },
+                    Heiter: { lift: 1.7, start: 37, end: 56 },
+                    Eisen: { lift: 1.6, start: 40, end: 58 }
+                };
+
+                cls.fluidStretch.forEach((obj) => {
+                    obj.updateMatrixWorld(true);
+                    box.setFromObject(obj);
+                    box.getCenter(center);
+                    const wrapper = this.tm.createPivotWrapper(obj, new THREE.Vector3(center.x, box.min.y, center.z), 'StretchPivot_' + obj.name);
+                    const basePos = wrapper.position.clone();
+                    const origRot = wrapper.quaternion.clone();
+                    const origScale = wrapper.scale.clone();
+                    const spec = stretchSpecs[obj.name] || { lift: 2.0, start: 22, end: 46 };
+
+                    this.fluidStretch.push({
+                        wrapper,
+                        basePos,
+                        origRot,
+                        origScale,
+                        start: spec.start,
+                        end: spec.end,
+                        lift: spec.lift
+                    });
+                });
+
+                const pOrder = ['PracticeYard', 'GardenSupplies', 'HearthsideSeats', 'Campfire', 'Woodpile', 'GardenStool'];
                 cls.primaryFurniture.sort((a, b) => pOrder.indexOf(a.name) - pOrder.indexOf(b.name));
                 cls.primaryFurniture.forEach((obj, idx) => {
                     obj.updateMatrixWorld(true);
                     box.setFromObject(obj);
                     box.getCenter(center);
                     const wrapper = this.tm.createPivotWrapper(obj, new THREE.Vector3(center.x, box.min.y, center.z), 'PrimPivot_' + obj.name);
-                    const start = Math.min(30, 12 + idx * 1.4);
+                    const start = Math.min(30, 12 + idx * 1.8);
                     this.pops.push({ wrapper, cat: 'PRIM', start, end: Math.min(40, start + 11), lift: 0.14, tilt: (idx % 2 === 0 ? 1 : -1) * 0.035, baseY: wrapper.position.y });
                 });
 
@@ -376,6 +414,62 @@
                     f.wrapper.scale.set(s, s, s);
                     const dec = 1 - eased, sway = dampedSway(t, 0.045, 2);
                     f.wrapper.rotation.set(f.rot0[0] * dec + sway * 0.5, f.rot0[1] * dec + sway, f.rot0[2] * dec + sway * 0.7);
+                }
+
+                // ON-THE-SPOT 3D GENESIS: Created out of nothing as a stretched stick -> blooms into 3D shape
+                for (const item of this.fluidStretch) {
+                    const t = frameRangeProgress(frame, item.start, item.end);
+                    if (t <= 0) {
+                        item.wrapper.visible = false;
+                        item.wrapper.scale.set(0.0001, 0.0001, 0.0001);
+                        continue;
+                    }
+                    item.wrapper.visible = true;
+                    if (t >= 1) {
+                        item.wrapper.position.copy(item.basePos);
+                        item.wrapper.quaternion.copy(item.origRot);
+                        item.wrapper.scale.copy(item.origScale);
+                        continue;
+                    }
+
+                    // Authentic Blender F-Curve easing
+                    const inv = 1 - t;
+                    const easedT = Math.min(1, 1 - inv * inv * inv * (1 + 2.4 * t));
+
+                    let sY = 1.0;
+                    let sXZ = 1.0;
+                    let currentY = item.basePos.y;
+
+                    if (easedT < 0.65) {
+                        // PHASE 1: Created on the spot out of nothing -> shoots up as stretched stick/spindle
+                        const shootT = easedT / 0.65;
+                        currentY = item.basePos.y + item.lift * (1.0 - Math.pow(1.0 - shootT, 2));
+                        sY = Math.min(3.6, shootT * 4.2);
+                        sXZ = Math.max(0.04, Math.min(0.28, shootT * 0.35));
+                    } else if (easedT < 0.88) {
+                        // PHASE 2: At the apex, right on the spot, blooms and expands into true 3D shape
+                        const bloomT = (easedT - 0.65) / 0.23;
+                        const smoothBloom = bloomT * bloomT * (3.0 - 2.0 * bloomT);
+                        currentY = item.basePos.y + item.lift * (1.0 - smoothBloom) * 0.35;
+                        sY = THREE.MathUtils.lerp(3.6, 0.90, smoothBloom);
+                        sXZ = THREE.MathUtils.lerp(0.28, 1.15, smoothBloom);
+                    } else {
+                        // PHASE 3: Touchdown impact squash & harmonic settle
+                        const settleT = (easedT - 0.88) / 0.12;
+                        const decay = Math.exp(-8.0 * settleT);
+                        const osc = Math.cos(settleT * Math.PI * 4.0);
+                        currentY = item.basePos.y;
+                        sY = 1.0 - 0.10 * decay * osc;
+                        sXZ = 1.0 + 0.06 * decay * osc;
+                    }
+
+                    item.wrapper.position.set(item.basePos.x, currentY, item.basePos.z);
+                    item.wrapper.quaternion.copy(item.origRot);
+                    item.wrapper.scale.set(
+                        item.origScale.x * sXZ,
+                        item.origScale.y * sY,
+                        item.origScale.z * sXZ
+                    );
                 }
             }
 
@@ -505,7 +599,7 @@
                         }
                     });
                 }
-                engine.evaluateAtProgress(0.05);
+                engine.evaluateAtProgress(0.0);
                 engine.direction = 1;
                 engine.isPlaying = true;
                 syncUI();
@@ -558,3 +652,4 @@
 </body>
 
 </html>
+

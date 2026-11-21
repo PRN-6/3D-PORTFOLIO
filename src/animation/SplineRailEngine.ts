@@ -393,43 +393,40 @@ export class SplineRailEngine {
     outObject.quaternion.copy(this.qResult);
 
     // -------------------------------------------------------------------------
-    // 5. VOLUME-PRESERVING SQUASH, STRETCH & IMPACT REBOUND
+    // 5. STRETCHED STICK TO 3D SHAPE REVEAL (Longitudinal Tangent Elongation)
     // -------------------------------------------------------------------------
-    let scaleMult = 1.0;
-    let squashDelta = 0.0;
+    let sParallel = 1.0;
+    let sPerp = 1.0;
 
-    const ss = preset.squashStretch;
-    if (ss.enabled && u > 1.0 - ss.arrivalWindow) {
-      const arrivalWindow = ss.arrivalWindow;
-      const tau = (u - (1.0 - arrivalWindow)) / arrivalWindow;
-
-      if (tau < 0.32) {
-        // Aerodynamic flight stretch before touchdown
-        const stretchT = tau / 0.32;
-        squashDelta = -ss.amplitude * 0.45 * Math.sin(stretchT * Math.PI);
-      } else {
-        // Ground impact & harmonic rebound
-        const impactTau = (tau - 0.32) / 0.68;
-        const decay = Math.exp(-ss.damping * impactTau);
-        const osc = Math.cos(ss.frequency * impactTau * Math.PI);
-        squashDelta = ss.amplitude * decay * osc * (1.0 - impactTau);
-      }
+    if (easedU < 0.70) {
+      // PHASE A: Pure Stretched Stick in mid-flight from far away
+      sParallel = 3.8;
+      sPerp = 0.32; // Volume-preserving radial compression
+    } else if (easedU < 0.90) {
+      // PHASE B: Decelerating & Blossoming into original 3D shape
+      const alpha = (easedU - 0.70) / 0.20;
+      const smoothAlpha = alpha * alpha * (3.0 - 2.0 * alpha);
+      sParallel = THREE.MathUtils.lerp(3.8, 0.88, smoothAlpha); // Impact compression
+      sPerp = THREE.MathUtils.lerp(0.32, 1.14, smoothAlpha);    // Lateral flare
+    } else {
+      // PHASE C: Touchdown rebound & settle
+      const settleT = (easedU - 0.90) / 0.10;
+      const decay = Math.exp(-9.0 * settleT);
+      const osc = Math.cos(settleT * Math.PI * 4.0);
+      sParallel = 1.0 - 0.12 * decay * osc;
+      sPerp = 1.0 + 0.08 * decay * osc;
     }
 
-    // Fast scale-in from zero to full size in initial 15% flight
-    const earlyScaleFactor = Math.min(1.0, u * 6.5);
-    scaleMult = earlyScaleFactor;
-
-    const sy = (1.0 - squashDelta) * scaleMult;
-    const sxz = (1.0 + 0.5 * squashDelta) * scaleMult;
+    // Fast scale-in from zero to full size in initial 5% flight
+    const earlyScaleFactor = Math.min(1.0, u * 12.0);
 
     this.vScale.set(
-      orig.localScale.x * sxz,
-      orig.localScale.y * sy,
-      orig.localScale.z * sxz
+      orig.localScale.x * sPerp * earlyScaleFactor,
+      orig.localScale.y * sParallel * earlyScaleFactor,
+      orig.localScale.z * sPerp * earlyScaleFactor
     );
 
     outObject.scale.copy(this.vScale);
-    outObject.visible = scaleMult > 0.01;
+    outObject.visible = earlyScaleFactor > 0.01;
   }
 }

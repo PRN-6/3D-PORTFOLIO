@@ -4,7 +4,7 @@ import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
-import { ModularExplodedTransition } from './Transitions/ModularExplodedTransition';
+import { BubbleIslandTransition } from './Transitions/BubbleIslandTransition';
 import { CinematicBackgroundTitle } from './Title/CinematicBackgroundTitle';
 import type { ProjectItem } from '../../data/projectsData';
 import type { GrimoireItem } from '../../data/archiveData';
@@ -107,13 +107,6 @@ export const Scene: React.FC<SceneProps> = ({
 
   const { isLight } = useTheme();
 
-  // Isolate 3D environment for About Me (Blue Flower Garden) by hiding background typography
-  const isForestSection =
-    worldState === 'FOREST_WORLD' ||
-    worldState === 'TRANSITION_ARCHIVE_TO_FOREST' ||
-    worldState === 'TRANSITION_FOREST_TO_ARCHIVE' ||
-    activeDestination === 'FOREST';
-
   return (
     <div
       className={`relative w-full h-full overflow-hidden select-none transition-colors duration-500 ${
@@ -121,8 +114,8 @@ export const Scene: React.FC<SceneProps> = ({
       }`}
       onWheel={(e) => e.preventDefault()}
     >
-      {/* 1. Fixed cinematic screen-space DOM typography layer (hidden cleanly in About Me garden) */}
-      <CinematicBackgroundTitle hidden={isForestSection} />
+      {/* 1. Fixed cinematic screen-space DOM typography layer across all worlds */}
+      <CinematicBackgroundTitle />
 
       {/* 2. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
       <Canvas
@@ -169,7 +162,7 @@ export const Scene: React.FC<SceneProps> = ({
               onTransitionFromForestToArchiveComplete={onTransitionFromForestToArchiveComplete}
             />
           ) : (
-            <ModularExplodedTransition
+            <BubbleIslandTransition
               worldState={worldState}
               activeDestination={activeDestination}
               resetSignal={resetSignal}

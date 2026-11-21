@@ -156,7 +156,7 @@ export const WorldC_ArchiveIsland: React.FC<WorldCArchiveIslandProps> = ({
       <ArchiveEnvironment />
 
       {/* 2. Floating Books & Turning Parchment Pages */}
-      <FloatingBooks />
+      <FloatingBooks isInspecting={!!selectedGrimoire} />
 
       {/* 3. Frieren Studious Reading in Sanctuary with Rotating Magic Circle */}
       <ArchiveFrieren

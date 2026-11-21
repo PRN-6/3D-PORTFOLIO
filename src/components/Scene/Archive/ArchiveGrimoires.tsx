@@ -33,6 +33,11 @@ function getGrimoireFromHit(obj: THREE.Object3D | null): GrimoireItem | undefine
 /**
  * Handles the 6 Skill Grimoires from `archive-grimoires.glb`
  * with built-in pedestal geometry, hover animations, hit detection, and magical highlights.
+ *
+ * Implements dramatic screen-space book levitation:
+ * - When any book is clicked, all books elevate off their pedestals and float in mid-air.
+ * - The selected book floats prominently forward toward the camera/screen with magical tilt and glow.
+ * - Smoothly docks back down to pedestals when inspection is closed.
  */
 const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
   selectedGrimoire,
@@ -41,8 +46,11 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
   const gltf = useGLTF('/models/archive/archive-grimoires.glb');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const runeRingsRef = useRef<Map<string, THREE.Mesh>>(new Map());
+  const bookWrappersRef = useRef<Map<string, THREE.Group>>(new Map());
+  const bookTiltsRef = useRef<Map<string, THREE.Group>>(new Map());
+  const bookHitGroupsRef = useRef<Map<string, THREE.Group>>(new Map());
 
-  // Clone scene cleanly so multiple instances or hot-reloads don't corrupt cached GLTF
+  // Clone scene cleanly and attach float wrappers for cinematic elevation
   const clonedScene = useMemo(() => {
     const clone = gltf.scene.clone(true);
     clone.traverse((child) => {
@@ -51,6 +59,31 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
         child.receiveShadow = true;
       }
     });
+
+    GRIMOIRES_DATA.forEach((grimoire) => {
+      const bookNode = clone.getObjectByName(grimoire.nodeName);
+      if (bookNode && bookNode.parent) {
+        const parent = bookNode.parent;
+
+        // 1. Outer wrapper for translation and scaling
+        const wrapper = new THREE.Group();
+        wrapper.name = `${grimoire.nodeName}_FloatWrapper`;
+        parent.remove(bookNode);
+        wrapper.add(bookNode);
+        parent.add(wrapper);
+        bookWrappersRef.current.set(grimoire.id, wrapper);
+
+        // 2. Inner tilt group for pure local rotation around the book's center
+        const tiltGroup = new THREE.Group();
+        tiltGroup.name = `${grimoire.nodeName}_TiltGroup`;
+        while (bookNode.children.length > 0) {
+          tiltGroup.add(bookNode.children[0]);
+        }
+        bookNode.add(tiltGroup);
+        bookTiltsRef.current.set(grimoire.id, tiltGroup);
+      }
+    });
+
     return clone;
   }, [gltf.scene]);
 
@@ -82,7 +115,7 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
               const mat = mesh.material as THREE.MeshStandardMaterial;
               if (isSelected) {
                 mat.emissive = new THREE.Color(grimoire.accentColor);
-                mat.emissiveIntensity = 0.85;
+                mat.emissiveIntensity = 0.95;
               } else if (isHovered) {
                 mat.emissive = new THREE.Color(grimoire.accentColor);
                 mat.emissiveIntensity = 0.45;
@@ -103,10 +136,72 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
     });
   }, [clonedScene, selectedGrimoire, hoveredId]);
 
-  // Rotate ground rune circles slowly in useFrame
-  useFrame((_, delta) => {
+  // Levitate books and rotate ground rune circles in useFrame
+  useFrame((state, delta) => {
+    // 1. Rotate ground rune circles slowly
     runeRingsRef.current.forEach((ring) => {
       ring.rotation.z += delta * 0.35;
+    });
+
+    const time = state.clock.getElapsedTime();
+    const isAnySelected = !!selectedGrimoire;
+
+    // 2. Levitate and float books on screen
+    GRIMOIRES_DATA.forEach((grimoire, index) => {
+      const wrapper = bookWrappersRef.current.get(grimoire.id);
+      const tiltGroup = bookTiltsRef.current.get(grimoire.id);
+      const hitGroup = bookHitGroupsRef.current.get(grimoire.id);
+      if (!wrapper) return;
+
+      const isSelected = selectedGrimoire?.id === grimoire.id;
+      const [gx, _gy, _gz] = grimoire.position;
+
+      let targetLiftY = 0.0;
+      let targetForwardZ = 0.0;
+      let targetShiftX = 0.0;
+      let targetScale = 1.0;
+      let targetTiltX = 0.0;
+      let targetYawY = 0.0;
+
+      if (isSelected) {
+        // SELECTED BOOK: Elevates prominently off its pedestal and floats forward toward the camera!
+        const bob = Math.sin(time * 2.6) * 0.12;
+        targetLiftY = 2.2 + bob;
+        targetForwardZ = 1.4;
+        targetShiftX = gx > 0 ? -0.4 : 0.4;
+        targetScale = 1.42;
+        // Tilt forward and yaw toward the camera for a dramatic hero presentation
+        targetTiltX = 0.38 + Math.sin(time * 1.8) * 0.04;
+        targetYawY = gx > 0 ? -0.25 : 0.25;
+      } else if (isAnySelected) {
+        // OTHER 5 BOOKS: Elevate off pedestals and float in mystical arc around the screen
+        const staggerBob = Math.sin(time * 2.0 + index * 1.1) * 0.10;
+        targetLiftY = 1.0 + staggerBob;
+        targetForwardZ = 0.40;
+        targetShiftX = 0.0;
+        targetScale = 1.05;
+        targetTiltX = 0.12;
+        targetYawY = 0.0;
+      }
+
+      // Smooth damping
+      wrapper.position.y = THREE.MathUtils.damp(wrapper.position.y, targetLiftY, 3.8, delta);
+      wrapper.position.z = THREE.MathUtils.damp(wrapper.position.z, targetForwardZ, 3.8, delta);
+      wrapper.position.x = THREE.MathUtils.damp(wrapper.position.x, targetShiftX, 3.8, delta);
+
+      const curScale = wrapper.scale.x;
+      const newScale = THREE.MathUtils.damp(curScale, targetScale, 3.8, delta);
+      wrapper.scale.set(newScale, newScale, newScale);
+
+      if (tiltGroup) {
+        tiltGroup.rotation.x = THREE.MathUtils.damp(tiltGroup.rotation.x, targetTiltX, 3.8, delta);
+        tiltGroup.rotation.y = THREE.MathUtils.damp(tiltGroup.rotation.y, targetYawY, 3.8, delta);
+      }
+
+      // Sync hit box and point light
+      if (hitGroup) {
+        hitGroup.position.set(wrapper.position.x, wrapper.position.y, wrapper.position.z);
+      }
     });
   });
 
@@ -162,23 +257,31 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
               />
             </mesh>
 
-            {/* Glowing Accent Point Light */}
-            <pointLight
-              position={[0, y, 0]}
-              color={grimoire.accentColor}
-              intensity={isSelected ? 2.6 : isHovered ? 1.6 : 0.6}
-              distance={3.8}
-              decay={2}
-            />
-
-            {/* Generous Hit Box for 100% Reliable Mobile/Desktop Raycasting */}
-            <mesh
-              position={[0, y, 0]}
-              userData={{ grimoireId: grimoire.id }}
+            {/* Floating Container for Hit Box & Point Light (moves with the book) */}
+            <group
+              ref={(el) => {
+                if (el) bookHitGroupsRef.current.set(grimoire.id, el);
+                else bookHitGroupsRef.current.delete(grimoire.id);
+              }}
             >
-              <boxGeometry args={[1.3, 1.4, 1.3]} />
-              <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-            </mesh>
+              {/* Glowing Accent Point Light */}
+              <pointLight
+                position={[0, y, 0]}
+                color={grimoire.accentColor}
+                intensity={isSelected ? 3.6 : isHovered ? 1.8 : 0.7}
+                distance={4.5}
+                decay={2}
+              />
+
+              {/* Generous Hit Box for 100% Reliable Mobile/Desktop Raycasting */}
+              <mesh
+                position={[0, y, 0]}
+                userData={{ grimoireId: grimoire.id }}
+              >
+                <boxGeometry args={[1.4, 1.5, 1.4]} />
+                <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+              </mesh>
+            </group>
           </group>
         );
       })}
@@ -197,4 +300,3 @@ export const ArchiveGrimoires: React.FC<ArchiveGrimoiresProps> = (props) => {
     </group>
   );
 };
-

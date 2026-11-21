@@ -4,6 +4,7 @@ import { TransformStore, type ComponentTransformSnapshot } from './TransformStor
 import { HingeAnimator } from './HingeAnimator.ts';
 import { PopScaleAnimator } from './PopScaleAnimator.ts';
 import { FoliageAnimator } from './FoliageAnimator.ts';
+import { FluidStretchFlightAnimator } from './FluidStretchFlightAnimator.ts';
 import { PapercraftMaterialManager } from './PapercraftMaterialManager.ts';
 
 export type PopUpCategory =
@@ -13,7 +14,8 @@ export type PopUpCategory =
   | 'SECONDARY_PROP'
   | 'FOLIAGE'
   | 'CHARACTER'
-  | 'EFFECT';
+  | 'EFFECT'
+  | 'FLUID_STRETCH';
 
 export interface PopUpComponentMeta {
   component: AnalyzedComponent;
@@ -195,7 +197,21 @@ export class PopUpAssemblyEngine {
         timingWindow = [0.20 + furnOffset, 0.62 + furnOffset];
       } else if (
         name.includes('tree') ||
-        name.includes('fir') ||
+        name.includes('fir')
+      ) {
+        category = 'FLUID_STRETCH';
+        const treeOffset = (i % 4) * 0.05;
+        timingWindow = [0.20 + treeOffset, 0.72 + treeOffset];
+      } else if (
+        name.includes('frieren') ||
+        name.includes('himmel') ||
+        name.includes('heiter') ||
+        name.includes('eisen')
+      ) {
+        category = 'FLUID_STRETCH';
+        const charOffset = (i % 4) * 0.04;
+        timingWindow = [0.40 + charOffset, 0.88 + charOffset];
+      } else if (
         name.includes('wildflower') ||
         name.includes('ivy') ||
         name.includes('flower') ||
@@ -205,14 +221,6 @@ export class PopUpAssemblyEngine {
         category = 'FOLIAGE';
         const folOffset = (i % 5) * 0.03;
         timingWindow = [0.25 + folOffset, 0.85 + folOffset];
-      } else if (
-        name.includes('frieren') ||
-        name.includes('himmel') ||
-        name.includes('heiter') ||
-        name.includes('eisen')
-      ) {
-        category = 'CHARACTER';
-        timingWindow = [0.45, 0.88];
       } else if (
         name.includes('wisp') ||
         name.includes('flame') ||
@@ -324,6 +332,9 @@ export class PopUpAssemblyEngine {
           break;
         case 'FOLIAGE':
           FoliageAnimator.evaluateFoliage(obj, orig, rawT);
+          break;
+        case 'FLUID_STRETCH':
+          FluidStretchFlightAnimator.evaluateFlight(obj, orig, rawT);
           break;
         case 'CHARACTER':
         case 'EFFECT':

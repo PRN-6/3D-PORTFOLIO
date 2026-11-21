@@ -85,3 +85,4 @@ export const IsometricStudioCamera: React.FC<IsometricStudioCameraProps> = ({ ac
     </>
   );
 };
+
