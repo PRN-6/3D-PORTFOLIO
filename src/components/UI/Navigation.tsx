@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RotateCcw, Menu, X } from 'lucide-react';
-import { NAV_ITEMS, type NavTabId } from './DestinationSelector';
+import { NAV_ITEMS, type NavTabId } from '../../config/navigationConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
 

@@ -5,7 +5,7 @@ import { Navigation } from '../components/UI/Navigation';
 import { Footer } from '../components/UI/Footer';
 import { MusicControls } from '../components/UI/MusicControls';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
-import type { NavTabId } from '../components/UI/DestinationSelector';
+import type { NavTabId } from '../config/navigationConfig';
 import { audioManager } from '../services/audioManager';
 import { ROUTES, getRouteFromPath, updatePageSEO } from '../routes';
 import { HeroSubtitle } from '../components/UI/HeroSubtitle';
@@ -295,8 +295,18 @@ export const Home: React.FC = () => {
         <>
           {/* Bottom Center Landmark Navigation Toolbar (Elevated above global destination bar) */}
           <div className="fixed bottom-20 sm:bottom-22 left-1/2 -translate-x-1/2 z-30 pointer-events-auto max-w-[95vw] overflow-x-auto no-scrollbar py-1">
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl bg-black/75 backdrop-blur-md border border-sky-500/30 shadow-[0_10px_30px_rgba(2,132,199,0.3)]">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-sky-400/90 px-2 hidden md:inline">
+            <div
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl backdrop-blur-md transition-colors ${
+                isLight
+                  ? 'bg-[#1c1a17]/90 text-[#f4eee0] border border-[#38332c] shadow-[0_10px_30px_rgba(0,0,0,0.3)]'
+                  : 'bg-black/75 border border-sky-500/30 shadow-[0_10px_30px_rgba(2,132,199,0.3)]'
+              }`}
+            >
+              <span
+                className={`text-[11px] font-mono uppercase tracking-wider px-2 hidden md:inline ${
+                  isLight ? 'text-[#c8bc9f]' : 'text-sky-400/90'
+                }`}
+              >
                 Blue Flower Garden:
               </span>
 
@@ -305,11 +315,15 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('overview')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'overview'
-                    ? 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Compass className="w-3.5 h-3.5 text-sky-400" />
+                <Compass className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-sky-400'}`} />
                 <span>Overview</span>
               </button>
 
@@ -318,11 +332,15 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('heiter')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'heiter'
-                    ? 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-sky-300" />
+                <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-sky-300'}`} />
                 <span>Himmel &amp; Frieren</span>
               </button>
 
@@ -334,11 +352,15 @@ export const Home: React.FC = () => {
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'biography'
-                    ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-purple-500/30 text-purple-200 border border-purple-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+                <BookOpen className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-purple-400'}`} />
                 <span>Biography Pedestal</span>
               </button>
 
@@ -347,11 +369,15 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('ancientTree')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'ancientTree'
-                    ? 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Trees className="w-3.5 h-3.5 text-sky-400" />
+                <Trees className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-sky-400'}`} />
                 <span>Flower Meadow</span>
               </button>
 
@@ -360,11 +386,15 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('pond')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'pond'
-                    ? 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Droplets className="w-3.5 h-3.5 text-cyan-400" />
+                <Droplets className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-cyan-400'}`} />
                 <span>Floating Rocks</span>
               </button>
             </div>

@@ -50,7 +50,11 @@ export interface SceneProps {
 
 const PerformanceProfiler: React.FC = () => {
   const { gl, camera, scene } = useThree();
+  const frameRef = React.useRef(0);
   useFrame(() => {
+    frameRef.current++;
+    if (frameRef.current % 30 !== 0) return;
+    if (typeof window === 'undefined') return;
     (window as any).__THREE_CAMERA__ = camera;
     (window as any).__THREE_SCENE__ = scene;
     (window as any).__THREE_STATS__ = {

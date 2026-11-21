@@ -105,9 +105,11 @@ function useVisitorCounter(): number {
  * - 100% stationary during 3D scene interaction and rotation
  * - Theme-aware styling: Dark mode subtle silver / Light mode dark vintage ink
  */
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const Footer: React.FC = () => {
   const { isLight } = useTheme();
-  const currentYear = new Date().getFullYear();
+  const currentYear = CURRENT_YEAR;
   const visitorCount = useVisitorCounter();
 
   return (

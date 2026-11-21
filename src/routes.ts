@@ -1,4 +1,4 @@
-import type { NavTabId } from './components/UI/DestinationSelector';
+import type { NavTabId } from './config/navigationConfig';
 import type { DestinationId } from './components/Scene/Transitions/explodedConfig';
 import type { WorldState } from './components/Scene/Scene';
 
