@@ -92,3 +92,4 @@ fs.writeFileSync(
 
 console.log('Successfully generated asset-inventory.json!');
 console.log(`Audited ${inventory.assets.length} assets.`);
+

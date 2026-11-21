@@ -23,26 +23,14 @@ const ArchiveFrierenModel: React.FC<ArchiveFrierenProps> = ({
   const eyeRef = useRef<THREE.Object3D | null>(null);
   const paintRef = useRef<ReturnType<ReturnType<typeof createPartyPalette>['dress']>>(undefined);
 
-  // Load standalone Frieren model, master island (for Frieren_Read animation clip & rest pose), and magic seal
+  // Load standalone Frieren model and magic seal
   const frierenGltf = useGLTF('/models/transition/frieren.glb');
-  const homeIslandGltf = useGLTF('/models/home-island.glb');
   const magicGltf = useGLTF('/models/transition/frieren-magic.glb');
 
   // Clone skeleton cleanly so skinned mesh animations operate independently
   const { clonedRoot, magicScene, dressed, eyeNode, paletteCleanup } = useMemo(() => {
     const clone = cloneSkeleton(frierenGltf.scene);
     const root = clone.getObjectByName('Frieren') || clone;
-
-    // Existing home clips omit bindings equal to their original rest pose.
-    // Restore that pose before applying Read to the standalone, identical rig.
-    root.traverse((node) => {
-      const original = homeIslandGltf.scene.getObjectByName(node.name);
-      if (original && (node as THREE.Bone).isBone) {
-        node.position.copy(original.position);
-        node.quaternion.copy(original.quaternion);
-        node.scale.copy(original.scale);
-      }
-    });
 
     // Apply exact toon cel paint and ink outline from existing party materials
     const palette = createPartyPalette();
@@ -81,7 +69,7 @@ const ArchiveFrierenModel: React.FC<ArchiveFrierenProps> = ({
         palette.dispose();
       },
     };
-  }, [frierenGltf.scene, homeIslandGltf.scene, magicGltf.scene]);
+  }, [frierenGltf.scene, magicGltf.scene]);
 
   // Set refs and clean up material resources
   useEffect(() => {
@@ -94,17 +82,17 @@ const ArchiveFrierenModel: React.FC<ArchiveFrierenProps> = ({
     };
   }, [paletteCleanup]);
 
-  // Bind animation mixer and play Frieren_Read
+  // Bind animation mixer and play frieren_read
   useEffect(() => {
     if (!clonedRoot) return;
 
     const mixer = new THREE.AnimationMixer(clonedRoot);
     mixerRef.current = mixer;
 
-    // Locate Frieren_Read animation clip from home-island.glb
-    const readClip = homeIslandGltf.animations.find(
-      (clip) => clip.name === 'Frieren_Read' || clip.name.toLowerCase() === 'frieren_read'
-    );
+    // Locate frieren_read animation clip from self-contained frieren.glb
+    const readClip =
+      frierenGltf.animations.find((clip) => clip.name.toLowerCase() === 'frieren_read') ||
+      frierenGltf.animations[0];
 
     if (readClip) {
       const action = mixer.clipAction(readClip);
@@ -117,7 +105,7 @@ const ArchiveFrierenModel: React.FC<ArchiveFrierenProps> = ({
       mixer.uncacheRoot(clonedRoot);
       mixerRef.current = null;
     };
-  }, [clonedRoot, homeIslandGltf.animations]);
+  }, [clonedRoot, frierenGltf.animations]);
 
   // Advance animation mixer and synchronize blinking on each frame
   useFrame((state, delta) => {

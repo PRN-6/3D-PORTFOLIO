@@ -5,7 +5,7 @@ import { Navigation } from '../components/UI/Navigation';
 import { Footer } from '../components/UI/Footer';
 import { MusicControls } from '../components/UI/MusicControls';
 import { LoadingScreen } from '../components/UI/LoadingScreen';
-import type { NavTabId } from '../components/UI/DestinationSelector';
+import type { NavTabId } from '../config/navigationConfig';
 import { audioManager } from '../services/audioManager';
 import { ROUTES, getRouteFromPath, updatePageSEO } from '../routes';
 import { HeroSubtitle } from '../components/UI/HeroSubtitle';
@@ -16,6 +16,7 @@ import { ProductsModal } from '../components/UI/ProductsModal';
 import { ProjectDetailModal } from '../components/UI/ProjectDetailModal';
 import { GrimoireDetailModal } from '../components/UI/GrimoireDetailModal';
 import { ArchiveScrollModal } from '../components/UI/ArchiveScrollModal';
+import { AnimationControls } from '../components/UI/AnimationControls';
 import { useModelInteraction } from '../hooks/useModelInteraction';
 import { useTheme } from '../context/ThemeContext';
 import type { ProjectItem } from '../data/projectsData';
@@ -143,6 +144,12 @@ export const Home: React.FC = () => {
     setResetSignal((prev) => prev + 1);
   }, []);
 
+  const handleTransitionToWorkshopComplete = useCallback(() => {
+    setActiveDestination('WORKSHOP');
+    setWorldState('WORKSHOP_WORLD');
+    setResetSignal((prev) => prev + 1);
+  }, []);
+
   const handleSelectProject = useCallback((project: ProjectItem) => {
     setSelectedProject(project);
   }, []);
@@ -222,12 +229,15 @@ export const Home: React.FC = () => {
     if (route.tabId === 'CONTACT') {
       setIsContactOpen(true);
       setIsFunOpen(false);
+      setIsScrollOpen(false);
     } else if (route.tabId === 'FUN') {
       setIsContactOpen(false);
       setIsFunOpen(true);
+      setIsScrollOpen(false);
     } else {
       setIsContactOpen(false);
       setIsFunOpen(false);
+      setIsScrollOpen(false);
 
       if (route.destination !== activeDestination) {
         handleSelectDestination(route.destination);
@@ -267,6 +277,7 @@ export const Home: React.FC = () => {
         onTransitionFromArchiveToHomeComplete={handleTransitionFromArchiveToHomeComplete}
         onTransitionToForestComplete={handleTransitionToForestComplete}
         onTransitionFromForestToArchiveComplete={handleTransitionFromForestToArchiveComplete}
+        onTransitionToWorkshopComplete={handleTransitionToWorkshopComplete}
         onDestinationReached={handleDestinationReached}
       />
 
@@ -287,15 +298,24 @@ export const Home: React.FC = () => {
 
 
 
-      {/* WORLD D (WHISPERING FOREST): Landmark Exploration & Biography Pedestal */}
+      {/* WORLD D (BLUE FLOWER GARDEN): Landmark Exploration & Biography Pedestal */}
       {worldState === 'FOREST_WORLD' && (
         <>
-
           {/* Bottom Center Landmark Navigation Toolbar (Elevated above global destination bar) */}
           <div className="fixed bottom-20 sm:bottom-22 left-1/2 -translate-x-1/2 z-30 pointer-events-auto max-w-[95vw] overflow-x-auto no-scrollbar py-1">
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl bg-black/75 backdrop-blur-md border border-emerald-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400/90 px-2 hidden md:inline">
-                Whispering Forest:
+            <div
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl backdrop-blur-md transition-colors ${
+                isLight
+                  ? 'bg-[#1c1a17]/90 text-[#f4eee0] border border-[#38332c] shadow-[0_10px_30px_rgba(0,0,0,0.3)]'
+                  : 'bg-black/75 border border-sky-500/30 shadow-[0_10px_30px_rgba(2,132,199,0.3)]'
+              }`}
+            >
+              <span
+                className={`text-[11px] font-mono uppercase tracking-wider px-2 hidden md:inline ${
+                  isLight ? 'text-[#c8bc9f]' : 'text-sky-400/90'
+                }`}
+              >
+                Blue Flower Garden:
               </span>
 
               <button
@@ -303,25 +323,16 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('overview')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'overview'
-                    ? 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Compass className="w-3.5 h-3.5 text-emerald-400" />
+                <Compass className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-sky-400'}`} />
                 <span>Overview</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFocusedForestLandmark('biography')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                  focusedForestLandmark === 'biography'
-                    ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50 shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <BookOpen className="w-3.5 h-3.5 text-purple-400" />
-                <span>Biography Pedestal</span>
               </button>
 
               <button
@@ -329,12 +340,36 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('heiter')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'heiter'
-                    ? 'bg-amber-500/30 text-amber-200 border border-amber-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Heiter's Haven</span>
+                <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-sky-300'}`} />
+                <span>Himmel &amp; Frieren</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setFocusedForestLandmark('biography');
+                  setIsScrollOpen(true);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                  focusedForestLandmark === 'biography'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-purple-500/30 text-purple-200 border border-purple-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <BookOpen className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-purple-400'}`} />
+                <span>Biography Pedestal</span>
               </button>
 
               <button
@@ -342,12 +377,16 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('ancientTree')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'ancientTree'
-                    ? 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-sky-500/30 text-sky-200 border border-sky-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Trees className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Ancient Tree</span>
+                <Trees className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-sky-400'}`} />
+                <span>Flower Meadow</span>
               </button>
 
               <button
@@ -355,12 +394,16 @@ export const Home: React.FC = () => {
                 onClick={() => setFocusedForestLandmark('pond')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                   focusedForestLandmark === 'pond'
-                    ? 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 shadow-sm'
+                    ? isLight
+                      ? 'bg-[#f4eee0] text-[#1c1a17] shadow-sm font-semibold'
+                      : 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 shadow-sm'
+                    : isLight
+                    ? 'text-[#c8bc9f] hover:text-[#f4eee0] hover:bg-white/10'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Droplets className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Enchanted Pond</span>
+                <Droplets className={`w-3.5 h-3.5 ${isLight ? 'text-amber-700' : 'text-cyan-400'}`} />
+                <span>Floating Rocks</span>
               </button>
             </div>
           </div>
@@ -424,6 +467,12 @@ export const Home: React.FC = () => {
         isOpen={isFunOpen}
         onClose={handleCloseFun}
         onTriggerOrbit={handleResetCamera}
+      />
+
+      {/* Floating Cinematic Assembly Controls (Viscous Realm Level 3 Interactive Showcase) */}
+      <AnimationControls
+        onResetCamera={handleResetCamera}
+        className="bottom-20 right-4 sm:bottom-16 sm:right-6 md:right-8"
       />
 
       {/* Fixed Bottom Footer (Desktop: Left Icons + Right Vis Counter; Mobile: Responsive Safe Insets) */}

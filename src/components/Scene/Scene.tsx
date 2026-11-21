@@ -50,7 +50,11 @@ export interface SceneProps {
 
 const PerformanceProfiler: React.FC = () => {
   const { gl, camera, scene } = useThree();
+  const frameRef = React.useRef(0);
   useFrame(() => {
+    frameRef.current++;
+    if (frameRef.current % 30 !== 0) return;
+    if (typeof window === 'undefined') return;
     (window as any).__THREE_CAMERA__ = camera;
     (window as any).__THREE_SCENE__ = scene;
     (window as any).__THREE_STATS__ = {
@@ -103,6 +107,13 @@ export const Scene: React.FC<SceneProps> = ({
 
   const { isLight } = useTheme();
 
+  // Isolate 3D environment for About Me (Blue Flower Garden) by hiding background typography
+  const isForestSection =
+    worldState === 'FOREST_WORLD' ||
+    worldState === 'TRANSITION_ARCHIVE_TO_FOREST' ||
+    worldState === 'TRANSITION_FOREST_TO_ARCHIVE' ||
+    activeDestination === 'FOREST';
+
   return (
     <div
       className={`relative w-full h-full overflow-hidden select-none transition-colors duration-500 ${
@@ -110,8 +121,8 @@ export const Scene: React.FC<SceneProps> = ({
       }`}
       onWheel={(e) => e.preventDefault()}
     >
-      {/* 1. Fixed cinematic screen-space DOM typography layer */}
-      <CinematicBackgroundTitle />
+      {/* 1. Fixed cinematic screen-space DOM typography layer (hidden cleanly in About Me garden) */}
+      <CinematicBackgroundTitle hidden={isForestSection} />
 
       {/* 2. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
       <Canvas

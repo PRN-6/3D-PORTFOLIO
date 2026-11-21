@@ -1,4 +1,4 @@
-import type { NavTabId } from '../components/UI/DestinationSelector';
+import type { NavTabId } from '../config/navigationConfig';
 
 export interface AudioTrackConfig {
   id: NavTabId;

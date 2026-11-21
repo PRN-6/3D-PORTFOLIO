@@ -43,7 +43,6 @@ WORKSHOP_MODELS.forEach((path) => {
   useGLTF.preload(`/models/rune-workshop/${path}`);
 });
 useGLTF.preload('/models/transition/eisen.glb');
-useGLTF.preload('/models/home-island.glb');
 
 // ---------------------------------------------------------------------------
 // Modular Workshop Object
@@ -142,20 +141,12 @@ const WorkshopEisen: React.FC = () => {
   const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
   const eisenGltf = useGLTF('/models/transition/eisen.glb');
-  const homeIslandGltf = useGLTF('/models/home-island.glb');
 
   const { clonedRoot, dressed } = useMemo(() => {
     const clone = cloneSkeleton(eisenGltf.scene);
     const root = clone.getObjectByName('Eisen') || clone;
 
-    // Restore rest pose
     root.traverse((node) => {
-      const original = homeIslandGltf.scene.getObjectByName(node.name);
-      if (original && (node as THREE.Bone).isBone) {
-        node.position.copy(original.position);
-        node.quaternion.copy(original.quaternion);
-        node.scale.copy(original.scale);
-      }
       if ((node as THREE.Mesh).isMesh) {
         node.castShadow = true;
         node.receiveShadow = true;
@@ -166,7 +157,7 @@ const WorkshopEisen: React.FC = () => {
     const dressed = palette.dress(root);
 
     return { clonedRoot: clone, dressed };
-  }, [eisenGltf.scene, homeIslandGltf.scene]);
+  }, [eisenGltf.scene]);
 
   useEffect(() => {
     if (!clonedRoot) return;
@@ -174,7 +165,9 @@ const WorkshopEisen: React.FC = () => {
     mixerRef.current = mixer;
 
     const clip =
-      homeIslandGltf.animations.find((c) => c.name.toLowerCase().includes('eisen')) ||
+      eisenGltf.animations.find((c) => c.name.toLowerCase() === 'eisen_craft') ||
+      eisenGltf.animations.find((c) => c.name.toLowerCase() === 'eisen_chop') ||
+      eisenGltf.animations.find((c) => c.name.toLowerCase().includes('eisen')) ||
       eisenGltf.animations[0];
 
     if (clip) {
@@ -185,7 +178,7 @@ const WorkshopEisen: React.FC = () => {
       mixer.stopAllAction();
       dressed?.dispose();
     };
-  }, [clonedRoot, homeIslandGltf.animations, eisenGltf.animations, dressed]);
+  }, [clonedRoot, eisenGltf.animations, dressed]);
 
   useFrame((_, delta) => {
     if (mixerRef.current) mixerRef.current.update(delta);

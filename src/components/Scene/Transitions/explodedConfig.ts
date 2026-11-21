@@ -37,8 +37,8 @@ export const ISLAND_DISPLAY_TRANSFORMS: Record<DestinationId, IslandDisplayTrans
     position: [-0.85, -0.45, -0.2],
   },
   FOREST: {
-    scale: [0.61, 0.61, 0.61],
-    position: [-0.70, 0.05, 0.0],
+    scale: [0.58, 0.58, 0.58],
+    position: [0.0, 0.50, 0.0],
   },
   WORKSHOP: {
     scale: [0.59, 0.59, 0.59],
@@ -209,10 +209,30 @@ export const ARCHIVE_EXPLODED_PROFILE: IslandExplodedProfile = {
  */
 export const FOREST_EXPLODED_PROFILE: IslandExplodedProfile = {
   islandId: 'FOREST',
-  displayName: 'Whispering Forest',
+  displayName: 'Blue Flower Garden',
   disassemblyDuration: 1.8,
   reassemblyDuration: 2.2,
   components: [
+    // --- Level 05: Blue Flower Garden Characters & Wreaths ---
+    { name: 'HimmelRoot', offset: [0, 3, 0], explodedScale: 0, timing: [0.0, 0.45] },
+    { name: 'FrierenRoot', offset: [0, 3, 0], explodedScale: 0, timing: [0.0, 0.45] },
+    { name: 'flower-wreath-himmel', offset: [0, 3.5, 0], explodedScale: 0, timing: [0.05, 0.5] },
+    { name: 'flower-wreath-frieren', offset: [0, 3.5, 0], explodedScale: 0, timing: [0.05, 0.5] },
+
+    // --- Floating Petals, Magical Motes & Satellite Rocks ---
+    { name: 'floating-petals', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
+    { name: 'magical-motes', offset: [0, 9, 0], explodedScale: 0, timing: [0.0, 0.5] },
+    { name: 'floating-rocks', offset: [0, -5, 0], explodedScale: 0.1, timing: [0.1, 0.6] },
+
+    // --- Garden Environment Nodes (Island, Meadow, Trees, Clouds) ---
+    { name: 'DreamyClouds', offset: [0, 10, 0], explodedScale: 0, timing: [0.05, 0.5] },
+    { name: 'FloweringTrees', offset: [5, 4, 3], explodedScale: 0, timing: [0.15, 0.65] },
+    { name: 'GardenShrubs', offset: [-4, 3, -3], explodedScale: 0, timing: [0.2, 0.7] },
+    { name: 'ForegroundFlowers', offset: [0, 2, 2], explodedScale: 0, timing: [0.1, 0.55] },
+    { name: 'DenseFlowerMeadow', offset: [0, 1.5, 0], explodedScale: 0.5, timing: [0.2, 0.75] },
+    { name: 'IslandTerrain', offset: [0, -6, 0], explodedScale: 0.2, timing: [0.25, 0.85] },
+    { name: 'BlueFlowerGarden_Complete', offset: [0, -4, 0], explodedScale: 0.2, timing: [0.2, 0.8] },
+
     // --- Character & Forest Effects (Gentle fade, atomic) ---
     { name: 'ForestHeiterContainer', offset: [0, 2.5, 0], explodedScale: 0, timing: [0.0, 0.45] },
     { name: 'forest-effects', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
@@ -310,7 +330,6 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     // --- Character & Motes ---
     { name: 'EisenContainer', offset: [0, 2.5, 0], explodedScale: 0, timing: [0.0, 0.45] },
     { name: 'workshop-motes', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
-    { name: 'WorkshopMotes', offset: [0, 8, 0], explodedScale: 0, timing: [0.0, 0.5] },
 
     // --- Floating Ring Pivots & Arcane Rings ---
     { name: 'RingPivot_0', offset: [0.55, 6, -0.5], explodedScale: 0, timing: [0.2, 0.7] },
@@ -318,7 +337,6 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     { name: 'RingPivot_2', offset: [0.55, 8, -0.5], explodedScale: 0, timing: [0.24, 0.74] },
     { name: 'arcane-rings', offset: [0.55, 6, -0.5], explodedScale: 0, timing: [0.25, 0.75] },
     { name: 'rune-symbol', offset: [0, 8, -3.5], explodedScale: 0, timing: [0.3, 0.8] },
-    { name: 'FloatingRune', offset: [0, 8, -3.5], explodedScale: 0, timing: [0.3, 0.8] },
 
     // --- 5 Interactive Project Display Stations & Artifacts ---
     { name: 'Artifact_01', offset: [-6.4, 4.5, 1.55], explodedScale: 0, timing: [0.06, 0.52] },
@@ -340,24 +358,18 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
 
     // --- Workshop Furnishings & Arcane Objects ---
     { name: 'crafting-tools', offset: [3.45, 3.0, -2.9], explodedScale: 0, timing: [0.15, 0.65] },
-    { name: 'CraftingEquipment', offset: [3.45, 3.0, -2.9], explodedScale: 0, timing: [0.15, 0.65] },
     { name: 'enchanted-scroll', offset: [-3.2, 4.0, -2.9], explodedScale: 0, timing: [0.18, 0.68] },
     { name: 'floating-tome', offset: [3.55, 4.0, -2.8], explodedScale: 0, timing: [0.2, 0.7] },
     { name: 'decorative-artifacts', offset: [-4.5, 3.0, -2.9], explodedScale: 0, timing: [0.2, 0.7] },
     { name: 'rune-crafting-table', offset: [0.55, 4.0, -0.5], explodedScale: 0.1, timing: [0.3, 0.8] },
-    { name: 'CentralCraftingTable', offset: [0.55, 4.0, -0.5], explodedScale: 0.1, timing: [0.3, 0.8] },
     { name: 'shelves-and-benches', offset: [0, 5.0, -2.5], explodedScale: 0.1, timing: [0.35, 0.85] },
-    { name: 'WorkshopFurnishings', offset: [0, 5.0, -2.5], explodedScale: 0.1, timing: [0.35, 0.85] },
 
     // --- Architecture Pavilion ---
-    { name: 'rune-workshop', offset: [0, 9.0, -2.0], rotation: [0.06, 0, 0], explodedScale: 0.1, timing: [0.4, 0.9] },
-    { name: 'RuneWorkshopPavilion', offset: [0, 9.0, -2.0], rotation: [0.06, 0, 0], explodedScale: 0.1, timing: [0.4, 0.9] },
+    { name: 'rune-workshop', offset: [4.5, 9.5, -4.5], rotation: [0.18, 0.35, -0.12], explodedScale: 0.1, timing: [0.35, 0.85] },
 
     // --- Floor Circle & Landscaping ---
     { name: 'rune-floor-circle', offset: [0.55, -2.5, -0.5], explodedScale: 0.1, timing: [0.45, 0.9] },
-    { name: 'CraftingFloorCircle', offset: [0.55, -2.5, -0.5], explodedScale: 0.1, timing: [0.45, 0.9] },
     { name: 'island-landscaping', offset: [0, -4.0, 0], explodedScale: 0.2, timing: [0.5, 0.95] },
-    { name: 'WorkshopLandscaping', offset: [0, -4.0, 0], explodedScale: 0.2, timing: [0.5, 0.95] },
 
     // --- 6 Satellite Rocks ---
     { name: 'SatelliteRock_0', offset: [6, 2, -5], explodedScale: 0, timing: [0.48, 0.92] },
@@ -368,8 +380,7 @@ export const WORKSHOP_EXPLODED_PROFILE: IslandExplodedProfile = {
     { name: 'SatelliteRock_5', offset: [5, 4, 0], explodedScale: 0, timing: [0.58, 0.98] },
 
     // --- Island Base ---
-    { name: 'workshop-island', offset: [0, -12.0, 0], explodedScale: 0.1, timing: [0.6, 1.0] },
-    { name: 'WorkshopIsland', offset: [0, -12.0, 0], explodedScale: 0.1, timing: [0.6, 1.0] },
+    { name: 'workshop-island', offset: [0, -10.0, 0], explodedScale: 0.1, timing: [0.55, 1.0] },
   ],
 };
 
@@ -496,7 +507,9 @@ function easeInOutCubic(x: number): number {
 }
 
 /**
- * Applies exploded interpolation to an object based on progress (0.0 = assembled, 1.0 = exploded)
+ * Applies exploded interpolation to an object based on progress (0.0 = assembled, 1.0 = exploded).
+ * Enhanced with Viscous Realm Level 3 3D curved spiral trajectories, orbital rotations,
+ * and volume-preserving arrival settling.
  */
 export function applyExplodedTransform(
   obj: THREE.Object3D,
@@ -504,34 +517,87 @@ export function applyExplodedTransform(
   config: ExplodedComponentConfig,
   progress: number
 ) {
+  // CRITICAL: Absolute mathematical identity guarantee at progress <= 0.00001
+  if (progress <= 0.00001) {
+    obj.position.copy(orig.position);
+    obj.rotation.copy(orig.rotation);
+    obj.scale.copy(orig.scale);
+    obj.visible = true;
+    return;
+  }
+
   // Staggered timing clamp
   const [tStart, tEnd] = config.timing;
   const rawT = THREE.MathUtils.clamp((progress - tStart) / (tEnd - tStart), 0, 1);
   const factor = easeInOutCubic(rawT);
 
-  // Position
+  if (factor <= 0.00001) {
+    obj.position.copy(orig.position);
+    obj.rotation.copy(orig.rotation);
+    obj.scale.copy(orig.scale);
+    obj.visible = true;
+    return;
+  }
+
+  // 1. 3D Curved Arc & Orbital Spline Trajectory (Level 3 Viscous Realm Looping Splines)
+  const isArchitecture =
+    config.name.toLowerCase().includes('roof') ||
+    config.name.toLowerCase().includes('gable') ||
+    config.name.toLowerCase().includes('chimney') ||
+    config.name.toLowerCase().includes('workshop') ||
+    config.name.toLowerCase().includes('timber') ||
+    config.name.toLowerCase().includes('porch');
+
+  // Parabolic overhead looping arc matching Blender NURBS curves
+  const loopLift = Math.sin(Math.PI * factor) * (isArchitecture ? 8.5 : 4.5);
+  const loopFlareX = Math.sin(Math.PI * factor * 1.2) * (config.offset[0] >= 0 ? 3.0 : -3.0);
+  const loopFlareZ = Math.cos(Math.PI * factor) * 2.5;
+
+  const spiralRadius = 4.2 * Math.pow(factor, 1.25);
+  const baseAngle = Math.atan2(config.offset[2], config.offset[0]) || 0.5;
+  const spiralAngle = baseAngle + factor * Math.PI * 2.2;
+  const spiralX = spiralRadius * Math.cos(spiralAngle);
+  const spiralZ = spiralRadius * Math.sin(spiralAngle);
+
+  // Position along 3D looping curve
   obj.position.set(
-    orig.position.x + config.offset[0] * factor,
-    orig.position.y + config.offset[1] * factor,
-    orig.position.z + config.offset[2] * factor
+    orig.position.x + config.offset[0] * factor + loopFlareX + spiralX * 0.7,
+    orig.position.y + config.offset[1] * factor + loopLift,
+    orig.position.z + config.offset[2] * factor + loopFlareZ + spiralZ * 0.7
   );
 
-  // Rotation
+  // 2. Tangential Banking and Orbital Rotation
   if (config.rotation) {
+    const bankTumble = Math.sin(Math.PI * factor) * 0.45;
     obj.rotation.set(
-      orig.rotation.x + config.rotation[0] * factor,
-      orig.rotation.y + config.rotation[1] * factor,
-      orig.rotation.z + config.rotation[2] * factor
+      orig.rotation.x + config.rotation[0] * factor + bankTumble,
+      orig.rotation.y + config.rotation[1] * factor + factor * 0.65,
+      orig.rotation.z + config.rotation[2] * factor - bankTumble * 0.5
     );
   }
 
-  // Scale
+  // Scale with tactile arrival squash & stretch
   const targetScale = config.explodedScale !== undefined ? config.explodedScale : 0.0;
-  const curScale = THREE.MathUtils.lerp(1.0, targetScale, factor);
+  let curScale = THREE.MathUtils.lerp(1.0, targetScale, factor);
+
+  let scaleY = curScale;
+  let scaleXZ = curScale;
+
+  // Damped harmonic bounce as object docks into position (factor < 0.18)
+  if (factor > 0.0001 && factor < 0.18) {
+    const tau = (0.18 - factor) / 0.18; // 0 (start settle) to 1 (touchdown)
+    const decay = Math.exp(-6.0 * tau);
+    const osc = Math.cos(16.0 * tau * Math.PI);
+    const bounce = 0.09 * decay * osc * (1.0 - tau);
+
+    scaleY = Math.max(0.01, curScale * (1.0 - bounce));
+    scaleXZ = Math.max(0.01, curScale * (1.0 + 0.5 * bounce));
+  }
+
   obj.scale.set(
-    orig.scale.x * curScale,
-    orig.scale.y * curScale,
-    orig.scale.z * curScale
+    orig.scale.x * scaleXZ,
+    orig.scale.y * scaleY,
+    orig.scale.z * scaleXZ
   );
 
   obj.visible = curScale > 0.005;

@@ -163,14 +163,28 @@ class Asset {
       if (emission) {
         material.emissiveFactor = new T.Color(emission).toArray();
       }
+      if (
+        name.startsWith('flower') ||
+        name.startsWith('leaf') ||
+        name.startsWith('stem') ||
+        name === 'darkLeaf' ||
+        name.startsWith('cloud')
+      ) {
+        material.doubleSided = true;
+      }
       this.materials[name] = this.glb.json.materials.length;
       this.glb.json.materials.push(material);
     }
   }
 
-  group(name, position = [0, 0, 0], extras = {}, parent = null) {
+  group(name, position = [0, 0, 0], extras = {}, parent = null, rotation = null) {
     const id = this.glb.json.nodes.length;
-    this.glb.json.nodes.push({ name, translation: position, extras, children: [] });
+    const node = { name, translation: position, extras, children: [] };
+    if (rotation) {
+      const q = new T.Quaternion().setFromEuler(new T.Euler(...rotation));
+      node.rotation = [q.x, q.y, q.z, q.w];
+    }
+    this.glb.json.nodes.push(node);
     if (parent === null) {
       this.glb.json.scenes[0].nodes.push(id);
     } else {
@@ -334,69 +348,104 @@ function makeCrystal(asset, root, p, s = 0.5, mat = 'manaCrystal') {
 }
 
 /**
- * Ultra-Lush Blue Flower with broad basal leaves and 5 flared petals
+ * Ultra-Lush Blue Flower with broad basal leaves and 5 flared petals (Low-Poly Stylized Blossom)
  */
 function addLushFlower(asset, root, x, z, scale = 1.0, colorKey = 'flowerBlue1') {
   const y = terrainHeight(x, z);
-  const stemH = (0.20 + rnd() * 0.12) * scale;
-  const leanX = (rnd() - 0.35) * 0.05 * scale;
-  const leanZ = (rnd() - 0.35) * 0.05 * scale;
+  const stemH = (0.18 + rnd() * 0.10) * scale;
+  const leanX = (rnd() - 0.35) * 0.04 * scale;
+  const leanZ = (rnd() - 0.35) * 0.04 * scale;
 
-  // 1. Broad Basal Leaves (Clover / Leaf Rosette carpeting ground)
+  // 1. Basal Rosette Leaves (6 triangles)
+  const leafPositions = [];
   const leafCount = 3;
+  const rLeaf = 0.095 * scale;
   for (let l = 0; l < leafCount; l++) {
-    const lAngle = (l / leafCount) * Math.PI * 2 + rnd() * 0.5;
-    const lDist = 0.07 * scale;
-    const lx = x + Math.cos(lAngle) * lDist;
-    const lz = z + Math.sin(lAngle) * lDist;
-    const leafGeo = new T.BoxGeometry(0.09 * scale, 0.008 * scale, 0.13 * scale);
-    asset.add(root, leafGeo, 'darkLeaf', [lx, y + 0.015 * scale, lz], [0.15, lAngle, 0.25]);
-  }
+    const angle = (l / leafCount) * Math.PI * 2 + rnd() * 0.4;
+    const aL = angle - 0.42;
+    const aR = angle + 0.42;
+    const lx = x + Math.cos(aL) * rLeaf * 0.6;
+    const lz = z + Math.sin(aL) * rLeaf * 0.6;
+    const tx = x + Math.cos(angle) * rLeaf;
+    const tz = z + Math.sin(angle) * rLeaf;
+    const rx = x + Math.cos(aR) * rLeaf * 0.6;
+    const rz = z + Math.sin(aR) * rLeaf * 0.6;
+    const ly = y + 0.012 * scale;
+    const ty = y + 0.022 * scale;
 
-  // 2. Slender Green Stem
-  asset.rod(root, [x, y, z], [x + leanX, y + stemH, z + leanZ], 0.009 * scale, 'stemGreen', 5);
-
-  // 3. Flower Head
-  const headPos = [x + leanX, y + stemH, z + leanZ];
-  const flowerTilt = [(rnd() - 0.5) * 0.3, rnd() * Math.PI * 2, (rnd() - 0.5) * 0.3];
-
-  // 5 Broad Flared Petals (overlapping to form a dense blanket)
-  const petalCount = 5;
-  const petalR = 0.095 * scale;
-  for (let i = 0; i < petalCount; i++) {
-    const angle = (i / petalCount) * Math.PI * 2;
-    const px = headPos[0] + Math.cos(angle) * petalR * 0.58;
-    const pz = headPos[2] + Math.sin(angle) * petalR * 0.58;
-    const py = headPos[1] + 0.016 * scale;
-
-    const petalGeo = new T.SphereGeometry(petalR * 0.55, 6, 4);
-    asset.add(
-      root,
-      petalGeo,
-      colorKey,
-      [px, py, pz],
-      [flowerTilt[0], angle, flowerTilt[2] + 0.28],
-      [1.15, 0.22, 1.55]
+    leafPositions.push(
+      x, y + 0.008 * scale, z,
+      lx, ly, lz,
+      tx, ty, tz,
+      x, y + 0.008 * scale, z,
+      tx, ty, tz,
+      rx, ly, rz
     );
   }
+  const leafGeo = new T.BufferGeometry();
+  leafGeo.setAttribute('position', new T.Float32BufferAttribute(leafPositions, 3));
+  leafGeo.computeVertexNormals();
+  asset.add(root, leafGeo, 'darkLeaf');
 
-  // White inner throat ring
-  asset.add(
-    root,
-    new T.CylinderGeometry(petalR * 0.35, petalR * 0.28, 0.012 * scale, 6),
-    'flowerCenterWhite',
-    [headPos[0], headPos[1] + 0.018 * scale, headPos[2]],
-    flowerTilt
-  );
+  // 2. Slender Green Stem (6 triangles)
+  const stemGeo = new T.CylinderGeometry(0.006 * scale, 0.008 * scale, stemH, 3, 1, true);
+  asset.add(root, stemGeo, 'stemGreen', [x + leanX * 0.5, y + stemH * 0.5, z + leanZ * 0.5], [leanZ * 2, 0, -leanX * 2]);
 
-  // Golden stamen dome
-  asset.add(
-    root,
-    new T.SphereGeometry(petalR * 0.28, 6, 4, 0, Math.PI * 2, 0, Math.PI * 0.55),
-    'flowerCenterGold',
-    [headPos[0], headPos[1] + 0.024 * scale, headPos[2]],
-    flowerTilt
-  );
+  // 3. 5-Petal Nemophila Blossom (10 triangles)
+  const headPos = [x + leanX, y + stemH, z + leanZ];
+  const rotY = rnd() * Math.PI * 2;
+  const tiltX = (rnd() - 0.5) * 0.22;
+  const tiltZ = (rnd() - 0.5) * 0.22;
+  const petalPositions = [];
+  const petalCount = 5;
+  const rTip = 0.115 * scale;
+  const rSide = 0.082 * scale;
+  const delta = (Math.PI / petalCount) * 0.72;
+
+  for (let i = 0; i < petalCount; i++) {
+    const theta = (i / petalCount) * Math.PI * 2;
+    const lx = Math.cos(theta - delta) * rSide;
+    const lz = Math.sin(theta - delta) * rSide;
+    const ly = 0.016 * scale;
+    const tx = Math.cos(theta) * rTip;
+    const tz = Math.sin(theta) * rTip;
+    const ty = 0.028 * scale;
+    const rx = Math.cos(theta + delta) * rSide;
+    const rz = Math.sin(theta + delta) * rSide;
+    const ry = 0.016 * scale;
+
+    petalPositions.push(
+      0, 0, 0,
+      lx, ly, lz,
+      tx, ty, tz,
+      0, 0, 0,
+      tx, ty, tz,
+      rx, ry, rz
+    );
+  }
+  const petalGeo = new T.BufferGeometry();
+  petalGeo.setAttribute('position', new T.Float32BufferAttribute(petalPositions, 3));
+  petalGeo.computeVertexNormals();
+  asset.add(root, petalGeo, colorKey, headPos, [tiltX, rotY, tiltZ]);
+
+  // 4. Golden / White Center Eye (5 triangles)
+  const centerPositions = [];
+  const sides = 5;
+  const rCenter = 0.036 * scale;
+  const eyeY = 0.020 * scale;
+  for (let i = 0; i < sides; i++) {
+    const a1 = (i / sides) * Math.PI * 2;
+    const a2 = ((i + 1) / sides) * Math.PI * 2;
+    centerPositions.push(
+      0, eyeY + 0.005 * scale, 0,
+      Math.cos(a1) * rCenter, eyeY, Math.sin(a1) * rCenter,
+      Math.cos(a2) * rCenter, eyeY, Math.sin(a2) * rCenter
+    );
+  }
+  const centerGeo = new T.BufferGeometry();
+  centerGeo.setAttribute('position', new T.Float32BufferAttribute(centerPositions, 3));
+  centerGeo.computeVertexNormals();
+  asset.add(root, centerGeo, 'flowerCenterGold', headPos, [tiltX, rotY, tiltZ]);
 }
 
 /**
@@ -569,24 +618,33 @@ function makeFloweringTree(asset, root, x, y, z, size = 1.0, foliageColor = 'tre
 }
 
 /**
- * Towering Cumulus Cloud Bank (matching the anime sky of the reference image)
+ * Towering Cumulus Cloud Bank (Constrained to Perimeter r >= 11.0, y in [-2.0, 4.0])
  */
 function makeCloudBank(asset, root, center, scale = 1.0, width = 8.0, height = 4.5) {
   const [cx, cy, cz] = center;
-  const puffCount = 12;
+  const puffCount = 8;
 
   for (let i = 0; i < puffCount; i++) {
     const u = (i / (puffCount - 1)) - 0.5;
-    const px = cx + u * width * scale;
-    const py = cy + Math.sin((i / (puffCount - 1)) * Math.PI) * height * scale + (rnd() - 0.5) * 0.6 * scale;
-    const pz = cz + (rnd() - 0.5) * 2.0 * scale;
+    let px = cx + u * width * scale;
+    let py = cy + Math.sin((i / (puffCount - 1)) * Math.PI) * height * scale + (rnd() - 0.5) * 0.4 * scale;
+    let pz = cz + (rnd() - 0.5) * 1.5 * scale;
 
-    const r = (2.0 + Math.sin((i / (puffCount - 1)) * Math.PI) * 2.5 + rnd() * 0.6) * scale;
+    // Enforce perimeter constraints: distance from center >= 11.0, altitude y in [-2.0, 3.8]
+    const horizDist = Math.hypot(px, pz);
+    if (horizDist < 11.2) {
+      const pushFactor = 11.4 / Math.max(0.1, horizDist);
+      px *= pushFactor;
+      pz *= pushFactor;
+    }
+    py = Math.max(-2.0, Math.min(3.8, py));
+
+    const r = (1.8 + Math.sin((i / (puffCount - 1)) * Math.PI) * 2.0 + rnd() * 0.5) * scale;
 
     // 1. Bright Sunlit Cloud Top
     asset.add(
       root,
-      new T.SphereGeometry(r, 7, 5),
+      new T.SphereGeometry(r, 6, 4),
       'cloudWhite',
       [px, py, pz],
       [rnd() * 0.2, rnd() * Math.PI, 0],
@@ -596,9 +654,9 @@ function makeCloudBank(asset, root, center, scale = 1.0, width = 8.0, height = 4
     // 2. Warm Sunlight Blush (mid-lower cloud body)
     asset.add(
       root,
-      new T.SphereGeometry(r * 0.90, 6, 4),
+      new T.SphereGeometry(r * 0.88, 5, 4),
       'cloudPink',
-      [px + 0.25 * scale, py - r * 0.32, pz + 0.25 * scale],
+      [px + 0.25 * scale, py - r * 0.28, pz + 0.25 * scale],
       [0, rnd() * Math.PI, 0],
       [1.3, 0.85, 1.2]
     );
@@ -606,9 +664,9 @@ function makeCloudBank(asset, root, center, scale = 1.0, width = 8.0, height = 4
     // 3. Lavender Atmospheric Shadow Underside
     asset.add(
       root,
-      new T.SphereGeometry(r * 0.85, 6, 4),
+      new T.SphereGeometry(r * 0.82, 5, 4),
       'cloudLavender',
-      [px - 0.15 * scale, py - r * 0.68, pz - 0.25 * scale],
+      [px - 0.15 * scale, py - r * 0.60, pz - 0.25 * scale],
       [0, rnd() * Math.PI, 0],
       [1.35, 0.7, 1.25]
     );
@@ -750,6 +808,11 @@ console.log('--- Generating Level 05: Blue Flower Garden Assets (Optimized) ---'
     makeRock(asset, islandNode, [rx, ry, rz], [0.65 + rnd() * 0.4, 0.38 + rnd() * 0.3, 0.65 + rnd() * 0.4], 'rockHighlight', 0);
   }
 
+  // Baked empty locators for Himmel, Frieren, and Biography interaction marker
+  asset.group('Locator_Himmel', [-0.48, 0.42, 0.12], { yaw: 0.15 }, islandNode, [0, 0.15, 0]);
+  asset.group('Locator_Frieren', [0.48, 0.40, 0.08], { yaw: -0.15 }, islandNode, [0, -0.15, 0]);
+  asset.group('Locator_Biography', [0, 0.45, 1.8], {}, islandNode);
+
   asset.save('island/flower-garden-island.glb');
 }
 
@@ -781,7 +844,7 @@ console.log('--- Generating Level 05: Blue Flower Garden Assets (Optimized) ---'
 }
 
 // 3. ULTRA-DENSE FLOWER MEADOW (flowers/dense-flower-meadow.glb)
-// 4,800 lush flowers with broad basal leaves and flared blossoms covering the entire island
+// 3,600 lush flowers with broad basal leaves and flared blossoms covering the entire island
 {
   const asset = new Asset();
   const meadowNode = asset.group('DenseFlowerMeadow', [0, 0, 0]);
@@ -798,7 +861,7 @@ console.log('--- Generating Level 05: Blue Flower Garden Assets (Optimized) ---'
     'flowerPink'       // 4% Delicate Blush Pink
   ];
 
-  const totalFlowers = 4800;
+  const totalFlowers = 3600;
   for (let i = 0; i < totalFlowers; i++) {
     const theta = rnd() * Math.PI * 2;
     const maxR = islandRadius(theta) - 0.32;
@@ -978,15 +1041,13 @@ console.log('--- Generating Level 05: Blue Flower Garden Assets (Optimized) ---'
     const root = asset.group('DreamyClouds', [0, 0, 0]);
 
     const cloudBanks = [
-      // Central majestic cloud bank rising high behind Himmel & Frieren
-      { center: [0, 5.5, -12.5], scale: 1.5, width: 11.0, height: 5.5 },
-      { center: [0, 9.8, -15.0], scale: 1.8, width: 14.0, height: 6.5 },
-      // Lateral sweeping cloud masses
-      { center: [-11.5, 4.5, -7.5], scale: 1.35, width: 9.0, height: 4.8 },
-      { center: [12.0, 5.0, -7.0], scale: 1.40, width: 9.5, height: 5.0 },
-      // Distant towering puffs
-      { center: [-7.0, 8.5, -18.0], scale: 1.9, width: 13.0, height: 7.0 },
-      { center: [7.5, 9.2, -18.5], scale: 2.0, width: 14.0, height: 7.5 },
+      // Perimeter clouds behind island at r >= 11.5, altitude y in [-0.5, 3.5]
+      { center: [0, 2.0, -13.0], scale: 1.25, width: 10.0, height: 3.5 },
+      { center: [0, 3.2, -16.0], scale: 1.45, width: 12.0, height: 3.8 },
+      { center: [-12.0, 1.8, -8.0], scale: 1.2, width: 8.5, height: 3.2 },
+      { center: [12.0, 1.8, -7.5], scale: 1.2, width: 8.5, height: 3.2 },
+      { center: [-8.0, 2.8, -17.5], scale: 1.4, width: 11.0, height: 3.5 },
+      { center: [8.0, 2.8, -17.5], scale: 1.4, width: 11.0, height: 3.5 },
     ];
 
     cloudBanks.forEach(cb => {
@@ -1131,10 +1192,10 @@ console.log('--- Generating Level 05: Blue Flower Garden Assets (Optimized) ---'
     makeRock(asset, islandNode, [Math.cos(angle) * r, terrainHeight(Math.cos(angle) * r, Math.sin(angle) * r) - 0.1, Math.sin(angle) * r], [0.6, 0.32, 0.6], 'rockHighlight', 0);
   }
 
-  // B. Dense Flower Meadow (3,500 flowers in master build)
+  // B. Dense Flower Meadow (3,200 flowers in master build)
   const flowersNode = asset.group('DenseFlowerMeadow', [0, 0, 0], {}, gardenRoot);
   const flowerPaletteKeys = ['flowerBlue1', 'flowerBlue1', 'flowerBlue2', 'flowerCyan', 'flowerCyan', 'flowerLavender', 'flowerViolet', 'flowerWhite', 'flowerPink'];
-  for (let i = 0; i < 3500; i++) {
+  for (let i = 0; i < 3200; i++) {
     const theta = rnd() * Math.PI * 2;
     const r = Math.sqrt(rnd()) * (islandRadius(theta) - 0.32);
     const x = Math.cos(theta) * r, z = Math.sin(theta) * r;
@@ -1169,19 +1230,64 @@ console.log('--- Generating Level 05: Blue Flower Garden Assets (Optimized) ---'
     asset.add(shrubsNode, new T.SphereGeometry(s, 6, 5), 'shrubGreen', [sx, sy + s * 0.35, sz], [0, rnd() * Math.PI, 0], [1.2, 0.7, 1.1]);
   }
 
-  // F. Towering Anime Cumulus Clouds
+  // F. Towering Anime Cumulus Clouds (Perimeter r >= 11.5, altitude y in [1.2, 3.5])
   const cloudsNode = asset.group('DreamyClouds', [0, 0, 0], {}, gardenRoot);
-  makeCloudBank(asset, cloudsNode, [0, 5.5, -12.5], 1.5, 11.0, 5.5);
-  makeCloudBank(asset, cloudsNode, [0, 9.8, -15.0], 1.8, 14.0, 6.5);
-  makeCloudBank(asset, cloudsNode, [-11.5, 4.5, -7.5], 1.35, 9.0, 4.8);
-  makeCloudBank(asset, cloudsNode, [12.0, 5.0, -7.0], 1.40, 9.5, 5.0);
+  makeCloudBank(asset, cloudsNode, [0, 2.0, -13.0], 1.25, 10.0, 3.5);
+  makeCloudBank(asset, cloudsNode, [0, 3.2, -16.0], 1.45, 12.0, 3.8);
+  makeCloudBank(asset, cloudsNode, [-12.0, 1.8, -8.0], 1.2, 8.5, 3.2);
+  makeCloudBank(asset, cloudsNode, [12.0, 1.8, -7.5], 1.2, 8.5, 3.2);
 
-  // G. Character Placement Anchor
+  // G. Empty Locators & Character Placement Anchor
+  asset.group('Locator_Himmel', [-0.48, 0.42, 0.12], { yaw: 0.15 }, gardenRoot, [0, 0.15, 0]);
+  asset.group('Locator_Frieren', [0.48, 0.40, 0.08], { yaw: -0.15 }, gardenRoot, [0, -0.15, 0]);
+  asset.group('Locator_Biography', [0, 0.45, 1.8], {}, gardenRoot);
+
   const anchorNode = asset.group('Himmel_Frieren_Anchor', [0, 0.42, 0.10], {
     description: 'Center staging knoll for Himmel and Frieren standing together in the blue flower meadow',
     himmel: { position: [-0.48, 0.0, 0.02], yaw: 0.15 },
     frieren: { position: [0.48, 0.0, -0.02], yaw: -0.15 }
   }, gardenRoot);
+
+  // H. Satellite Floating Rocks with Glowing Mana Crystals
+  const satGroup = asset.group('FloatingRocksGroup', [0, 0, 0], {}, gardenRoot);
+  const satRocks = [
+    { pos: [-9.5, -2.4, 3.2], s: [1.2, 1.5, 1.1], cScale: 0.8 },
+    { pos: [9.8, -2.8, -2.5], s: [1.4, 1.8, 1.3], cScale: 0.9 },
+    { pos: [-6.8, -4.2, -7.5], s: [1.0, 1.4, 0.9], cScale: 0.7 },
+    { pos: [7.2, -3.8, 6.8], s: [1.1, 1.3, 1.0], cScale: 0.75 },
+    { pos: [-3.5, -5.8, 4.5], s: [0.8, 1.1, 0.8], cScale: 0.6 },
+    { pos: [4.2, -5.5, -4.2], s: [0.9, 1.2, 0.85], cScale: 0.65 },
+  ];
+  satRocks.forEach((rd, idx) => {
+    const rn = asset.group(`FloatingRock_${idx}`, rd.pos, {}, satGroup);
+    makeRock(asset, rn, [0, 0, 0], rd.s, 'rockSurface', 0);
+    makeCrystal(asset, rn, [0, rd.s[1] * 0.45, 0], rd.cScale, 'manaCrystal');
+    asset.animateFloat(rn, `RockFloat_${idx}`, 4.0 + idx * 0.5, 0.15, 0.06);
+  });
+
+  // I. Floating Petals & Magical Motes
+  const petalsRoot = asset.group('FloatingPetalsGroup', [0, 0, 0], {}, gardenRoot);
+  const pColors = ['flowerBlue1', 'flowerCyan', 'flowerLavender', 'flowerWhite'];
+  for (let i = 0; i < 28; i++) {
+    const angle = rnd() * Math.PI * 2;
+    const r = 1.0 + rnd() * 6.5;
+    const px = Math.cos(angle) * r, pz = Math.sin(angle) * r, py = 0.4 + rnd() * 2.8;
+    const pNode = asset.group(`Petal_${i}`, [px, py, pz], {}, petalsRoot);
+    const pColor = pColors[i % pColors.length];
+    asset.add(pNode, new T.BoxGeometry(0.045, 0.004, 0.065), pColor, [0, 0, 0], [rnd() * 0.5, rnd() * Math.PI, rnd() * 0.5]);
+    asset.animateFloat(pNode, `PetalDrift_${i}`, 3.0 + (i % 5) * 0.6, 0.18, 0.12);
+  }
+
+  const motesRoot = asset.group('MagicalMotesGroup', [0, 0, 0], {}, gardenRoot);
+  for (let i = 0; i < 36; i++) {
+    const angle = rnd() * Math.PI * 2;
+    const r = 0.5 + rnd() * 7.0;
+    const mx = Math.cos(angle) * r, mz = Math.sin(angle) * r, my = 0.2 + rnd() * 3.2;
+    const mNode = asset.group(`Mote_${i}`, [mx, my, mz], {}, motesRoot);
+    const mSize = 0.016 + rnd() * 0.024;
+    asset.add(mNode, new T.SphereGeometry(mSize, 4, 3), i % 2 === 0 ? 'manaCrystal' : 'flowerCenterGold');
+    asset.animateFloat(mNode, `MoteFloat_${i}`, 2.5 + (i % 4) * 0.8, 0.08, 0.04);
+  }
 
   asset.save('blue-flower-garden-complete.glb');
 }

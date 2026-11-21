@@ -146,3 +146,4 @@ Start the Vite dev server (`npm run dev`) and navigate to:
 http://localhost:5173/models/blue-flower-garden/preview.html
 ```
 The preview scene features full OrbitControls, interactive camera preset buttons, live lighting, and animated Himmel and Frieren characters.
+

@@ -6,6 +6,9 @@ import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
+import { assemblyEngine } from '../../../animation/AssemblyEngine';
+import { SplineGuideRails } from '../../../animation/SplineGuideRails';
+import { IsometricStudioCamera } from '../IsometricStudioCamera';
 import {
   HERO_HOME_EXPLODED_PROFILE,
   ARCHIVE_EXPLODED_PROFILE,
@@ -80,6 +83,17 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 }) => {
   const { camera, gl } = useThree();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [visibleIsland, setVisibleIsland] = useState<DestinationId>(() => activeDestination || 'HOME');
+  const [showRails, setShowRails] = useState(() => assemblyEngine.getState().showRails);
+  const [isIsometricCamera, setIsIsometricCamera] = useState(() => assemblyEngine.getState().isIsometricCamera);
+
+  useEffect(() => {
+    const unsub = assemblyEngine.subscribe((state) => {
+      setShowRails(state.showRails);
+      setIsIsometricCamera(state.isIsometricCamera);
+    });
+    return unsub;
+  }, []);
 
   const homeGroupRef = useRef<THREE.Group>(null);
   const archiveGroupRef = useRef<THREE.Group>(null);
@@ -186,6 +200,11 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
 
       if (!fromGroup || !toGroup) return;
 
+      if (assemblyEngine.getState().isPlaying) {
+        assemblyEngine.pause();
+        assemblyEngine.restoreOriginals();
+      }
+
       outgoingProfileRef.current = fromProfile;
       incomingProfileRef.current = toProfile;
       outgoingGroupRef.current = fromGroup;
@@ -196,6 +215,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       frozenCamPos.current.copy(camera.position);
       frozenCamRot.current.copy(camera.rotation);
 
+      setVisibleIsland(fromId);
       fromGroup.visible = true;
       toGroup.visible = false;
 
@@ -228,9 +248,11 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     if (worldState === 'HOME_IDLE') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'HOME';
+      setVisibleIsland('HOME');
       if (homeGroupRef.current) {
         homeGroupRef.current.visible = true;
         if (homeOriginalsRef.current) restoreOriginalTransforms(homeGroupRef.current, homeOriginalsRef.current);
+        assemblyEngine.init(homeGroupRef.current, 'HOME');
       }
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
@@ -239,10 +261,12 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     } else if (worldState === 'ARCHIVE_WORLD') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'ARCHIVE';
+      setVisibleIsland('ARCHIVE');
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) {
         archiveGroupRef.current.visible = true;
         if (archiveOriginalsRef.current) restoreOriginalTransforms(archiveGroupRef.current, archiveOriginalsRef.current);
+        assemblyEngine.init(archiveGroupRef.current, 'ARCHIVE');
       }
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
@@ -250,23 +274,27 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     } else if (worldState === 'FOREST_WORLD') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'FOREST';
+      setVisibleIsland('FOREST');
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) {
         forestGroupRef.current.visible = true;
         if (forestOriginalsRef.current) restoreOriginalTransforms(forestGroupRef.current, forestOriginalsRef.current);
+        assemblyEngine.init(forestGroupRef.current, 'FOREST');
       }
       if (workshopGroupRef.current) workshopGroupRef.current.visible = false;
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'WORKSHOP_WORLD') {
       phaseRef.current = 'IDLE';
       currentActiveIslandRef.current = 'WORKSHOP';
+      setVisibleIsland('WORKSHOP');
       if (homeGroupRef.current) homeGroupRef.current.visible = false;
       if (archiveGroupRef.current) archiveGroupRef.current.visible = false;
       if (forestGroupRef.current) forestGroupRef.current.visible = false;
       if (workshopGroupRef.current) {
         workshopGroupRef.current.visible = true;
         if (workshopOriginalsRef.current) restoreOriginalTransforms(workshopGroupRef.current, workshopOriginalsRef.current);
+        assemblyEngine.init(workshopGroupRef.current, 'WORKSHOP');
       }
       if (gl.shadowMap) gl.shadowMap.autoUpdate = true;
     } else if (worldState === 'TRANSITION_HOME_TO_ARCHIVE') {
@@ -297,8 +325,11 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
   // ---------------------------------------------------------------------------
   // Frame Animation Loop (Pure Three.js Mutation, Zero React Re-renders)
   // ---------------------------------------------------------------------------
-  useFrame((state) => {
-    if (phaseRef.current === 'IDLE') return;
+  useFrame((state, delta) => {
+    if (phaseRef.current === 'IDLE') {
+      assemblyEngine.update(Math.min(delta, 0.1));
+      return;
+    }
 
     // CRITICAL: Camera remains 100% stationary throughout the transition
     camera.position.copy(frozenCamPos.current);
@@ -354,6 +385,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
         // Disassembly complete -> hide outgoing island and restore its components
         outgoingGroup.visible = false;
         if (originals) restoreOriginalTransforms(outgoingGroup, originals);
+        if (incomingProfile) setVisibleIsland(incomingProfile.islandId);
 
         // Advance to brief PAUSE in empty presentation space
         phaseRef.current = 'PAUSE';
@@ -447,6 +479,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
       setIsAnimating(false);
       const targetId = targetDestinationRef.current;
       currentActiveIslandRef.current = targetId;
+      setVisibleIsland(targetId);
 
       if (typeof window !== 'undefined') {
         (window as any).__CURRENT_ACTIVE_ISLAND__ = targetId;
@@ -484,24 +517,40 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
     worldState === 'TRANSITION_FOREST_TO_ARCHIVE' ||
     worldState === 'TRANSITIONING_ISLAND';
 
+  const isIslandVisible = (islandId: DestinationId) => {
+    return visibleIsland === islandId;
+  };
+
   return (
     <>
+      {/* LOCKED ORTHOGRAPHIC ISOMETRIC STUDIO CAMERA (Papercraft Diorama Mode) */}
+      <IsometricStudioCamera active={isIsometricCamera} />
+
       {/* UNIFIED PRESENTATION CAMERA CONTROLLER (Stationary During Transitions, Zero Zoom) */}
-      <UnifiedPresentationCameraController
-        isTransitioning={isTransitioning}
-        resetSignal={resetSignal}
-        onResetComplete={onResetComplete}
-      />
+      {!isIsometricCamera && (worldState !== 'FOREST_WORLD' || isTransitioning) && (
+        <UnifiedPresentationCameraController
+          isTransitioning={isTransitioning}
+          resetSignal={resetSignal}
+          onResetComplete={onResetComplete}
+        />
+      )}
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
       <group name="PresentationAnchorGroup" position={[0, 0, 0]}>
+        {/* 3D Spline Guide Rails (Blender Viewport Trajectory Tracks) */}
+        <group
+          position={ISLAND_DISPLAY_TRANSFORMS[visibleIsland].position}
+          scale={ISLAND_DISPLAY_TRANSFORMS[visibleIsland].scale}
+        >
+          <SplineGuideRails visible={showRails || isAnimating} />
+        </group>
         {/* DESTINATION 1: Hero's Home */}
         <group
           ref={homeGroupRef}
           name="ExplodedHomeGroup"
           position={ISLAND_DISPLAY_TRANSFORMS.HOME.position}
           scale={ISLAND_DISPLAY_TRANSFORMS.HOME.scale}
-          visible={worldState === 'HOME_IDLE'}
+          visible={isIslandVisible('HOME')}
         >
           <WorldA_HeroIsland
             disableCamera={true}
@@ -519,7 +568,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
           name="ExplodedArchiveGroup"
           position={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.position}
           scale={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.scale}
-          visible={worldState === 'ARCHIVE_WORLD'}
+          visible={isIslandVisible('ARCHIVE')}
         >
           <WorldC_ArchiveIsland
             disableCamera={true}
@@ -536,10 +585,10 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
           name="ExplodedForestGroup"
           position={ISLAND_DISPLAY_TRANSFORMS.FOREST.position}
           scale={ISLAND_DISPLAY_TRANSFORMS.FOREST.scale}
-          visible={worldState === 'FOREST_WORLD'}
+          visible={isIslandVisible('FOREST')}
         >
           <WorldD_WhisperingForest
-            disableCamera={true}
+            disableCamera={isTransitioning || worldState !== 'FOREST_WORLD'}
             onOpenAboutModal={onOpenAboutModal}
             isModalOpen={isAboutModalOpen}
             resetSignal={resetSignal}
@@ -554,7 +603,7 @@ export const ModularExplodedTransition: React.FC<ModularExplodedTransitionProps>
           name="ExplodedWorkshopGroup"
           position={ISLAND_DISPLAY_TRANSFORMS.WORKSHOP.position}
           scale={ISLAND_DISPLAY_TRANSFORMS.WORKSHOP.scale}
-          visible={worldState === 'WORKSHOP_WORLD'}
+          visible={isIslandVisible('WORKSHOP')}
         >
           <WorldE_RuneWorkshop
             disableCamera={true}

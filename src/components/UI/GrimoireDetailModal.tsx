@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Sparkles, BookOpen } from 'lucide-react';
 import type { GrimoireItem } from '../../data/archiveData';
+import { useTheme } from '../../context/ThemeContext';
 
 export interface GrimoireDetailModalProps {
   grimoire: GrimoireItem | null;
@@ -11,6 +12,8 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
   grimoire,
   onClose,
 }) => {
+  const { isLight } = useTheme();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -37,7 +40,13 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
 
       {/* Slide-in Grimoire Details Drawer */}
       <aside className="relative z-50 w-full max-w-[92vw] sm:max-w-[500px] h-full max-h-[90vh] flex flex-col pointer-events-auto select-text animate-in fade-in slide-in-from-right-6 duration-300">
-        <div className="relative flex flex-col h-full overflow-hidden rounded-2xl bg-[#080a14]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
+        <div
+          className={`relative flex flex-col h-full overflow-hidden rounded-2xl backdrop-blur-xl ${
+            isLight
+              ? 'bg-[#f4eee0]/95 border border-[#c8bc9f] text-[#2c2823] shadow-[0_20px_50px_rgba(180,160,130,0.35)]'
+              : 'bg-[#080a14]/90 border border-white/10 text-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.7)]'
+          }`}
+        >
           {/* Top Magical Glowing Edge */}
           <div
             className="absolute top-0 left-0 right-0 h-1.5"
@@ -48,7 +57,11 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
           />
 
           {/* Header */}
-          <div className="flex items-center justify-between p-5 pb-3 border-b border-white/5">
+          <div
+            className={`flex items-center justify-between p-5 pb-3 border-b ${
+              isLight ? 'border-[#c8bc9f]' : 'border-white/5'
+            }`}
+          >
             <div className="flex items-center gap-2.5">
               <span
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold shadow-md"
@@ -61,10 +74,18 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
                 {grimoire.runeSymbol}
               </span>
               <div>
-                <span className="text-[11px] font-mono tracking-widest uppercase text-slate-400 block">
+                <span
+                  className={`text-[11px] font-mono tracking-widest uppercase block ${
+                    isLight ? 'text-[#7a6f5d]' : 'text-slate-400'
+                  }`}
+                >
                   {grimoire.category}
                 </span>
-                <span className="text-[10px] text-slate-500 font-mono">
+                <span
+                  className={`text-[10px] font-mono ${
+                    isLight ? 'text-[#9a8e7b]' : 'text-slate-500'
+                  }`}
+                >
                   ARCHIVE CODEX • 02
                 </span>
               </div>
@@ -74,7 +95,11 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
               onClick={onClose}
               type="button"
               aria-label="Close grimoire modal"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                isLight
+                  ? 'text-[#5c5446] hover:text-[#1c1a17] hover:bg-black/5'
+                  : 'text-slate-400 hover:text-white hover:bg-white/10'
+              }`}
             >
               <X className="w-5 h-5" />
             </button>
@@ -84,16 +109,30 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
           <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5 custom-scrollbar">
             {/* Title & Tagline */}
             <div>
-              <h2 className="font-fantasy text-xl sm:text-2xl font-bold text-white tracking-wider">
+              <h2
+                className={`font-fantasy text-xl sm:text-2xl font-bold tracking-wider ${
+                  isLight ? 'text-[#1c1a17]' : 'text-white'
+                }`}
+              >
                 {grimoire.title}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 font-medium leading-relaxed">
+              <p
+                className={`text-xs sm:text-sm mt-1 font-medium leading-relaxed ${
+                  isLight ? 'text-[#5c5446]' : 'text-slate-300'
+                }`}
+              >
                 {grimoire.tagline}
               </p>
             </div>
 
             {/* Ancient Lore Banner */}
-            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/5 text-xs text-slate-400 italic leading-relaxed flex items-start gap-2.5">
+            <div
+              className={`p-3.5 rounded-xl border text-xs italic leading-relaxed flex items-start gap-2.5 ${
+                isLight
+                  ? 'bg-[#eae1cf] border-[#cfc3a9] text-[#4d4436]'
+                  : 'bg-white/[0.03] border-white/5 text-slate-400'
+              }`}
+            >
               <Sparkles
                 className="w-4 h-4 shrink-0 mt-0.5"
                 style={{ color: grimoire.accentColor }}
@@ -103,19 +142,31 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
 
             {/* Spells / Skills Section */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <div
+                className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${
+                  isLight ? 'text-[#7a6f5d]' : 'text-slate-400'
+                }`}
+              >
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>Inscribed Spells & Proficiencies</span>
+                <span>Inscribed Spells &amp; Proficiencies</span>
               </div>
 
               <div className="space-y-3">
                 {grimoire.spells.map((spell) => (
                   <div
                     key={spell.id}
-                    className="p-3.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 transition-all duration-200"
+                    className={`p-3.5 rounded-xl border transition-all duration-200 ${
+                      isLight
+                        ? 'bg-[#eae1cf] hover:bg-[#e2d7c2] border-[#cfc3a9]'
+                        : 'bg-white/[0.02] hover:bg-white/[0.04] border-white/5'
+                    }`}
                   >
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <h4 className="text-sm font-semibold text-white tracking-wide">
+                      <h4
+                        className={`text-sm font-semibold tracking-wide ${
+                          isLight ? 'text-[#1c1a17]' : 'text-white'
+                        }`}
+                      >
                         {spell.name}
                       </h4>
                       <span
@@ -130,7 +181,11 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-400 leading-relaxed mb-2.5">
+                    <p
+                      className={`text-xs leading-relaxed mb-2.5 ${
+                        isLight ? 'text-[#4d4436]' : 'text-slate-400'
+                      }`}
+                    >
                       {spell.description}
                     </p>
 
@@ -138,7 +193,11 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
                       {spell.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300 border border-white/5"
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                            isLight
+                              ? 'bg-[#d8cbb2] text-[#3d372e] border-[#c8bc9f]'
+                              : 'bg-white/5 text-slate-300 border-white/5'
+                          }`}
                         >
                           {tag}
                         </span>
@@ -151,13 +210,20 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
           </div>
 
           {/* Footer note */}
-          <div className="p-4 border-t border-white/5 bg-black/20 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+          <div
+            className={`p-4 border-t flex items-center justify-between text-[11px] font-mono ${
+              isLight
+                ? 'border-[#c8bc9f] bg-[#eae1cf] text-[#7a6f5d]'
+                : 'border-white/5 bg-black/20 text-slate-500'
+            }`}
+          >
             <span>ISLAND 02 • GRAND MAGE ARCHIVE</span>
-            <span className="text-slate-400">CLICK OUTSIDE TO DISMISS</span>
+            <span className={isLight ? 'text-[#5c5446]' : 'text-slate-400'}>
+              CLICK OUTSIDE TO DISMISS
+            </span>
           </div>
         </div>
       </aside>
     </div>
   );
 };
-

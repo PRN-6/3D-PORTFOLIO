@@ -124,7 +124,13 @@ const JapanesePosterDecorations: React.FC = () => {
  * - Light Mode: Warm cream vintage parchment background (#f4eee0), Japanese vintage poster aesthetic,
  *   deep charcoal typography, red concentric orbital lines, and Hanko stamps.
  */
-export const CinematicBackgroundTitle: React.FC = () => {
+export interface CinematicBackgroundTitleProps {
+  hidden?: boolean;
+}
+
+export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> = ({
+  hidden = false,
+}) => {
   const { isLight, theme } = useTheme();
 
   useEffect(() => {
@@ -181,40 +187,59 @@ export const CinematicBackgroundTitle: React.FC = () => {
         }`}
       />
 
-      {/* 2. Light Mode: Japanese Vintage Poster Red Circles & Stamps */}
-      {isLight && <JapanesePosterDecorations />}
-
-      {/* 3. Dark Mode: Delicate Campfire Amber Embers / Glowing Particles */}
-      {!isLight && (
-        <div aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-[2] overflow-hidden">
-          {ATMOSPHERIC_EMBERS.map((ember) => (
-            <span
-              key={ember.id}
-              className={`absolute rounded-full pointer-events-none ${ember.anim}`}
-              style={{
-                left: ember.left,
-                top: ember.top,
-                width: `${ember.size}px`,
-                height: `${ember.size}px`,
-                backgroundColor: ember.color,
-                boxShadow: `0 0 6px ${ember.color}, 0 0 14px rgba(245, 158, 11, 0.45)`,
-                animationDelay: ember.delay,
-              }}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* 4. Soft Ambient Depth Shadow directly behind the 3D Island */}
+      {/* 1b. Clean Dreamy Atmospheric Backdrop when typography is isolated for 3D worlds (About Me) */}
       <div
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vh] max-w-[680px] max-h-[680px] rounded-full pointer-events-none z-[2] transition-opacity duration-500"
+        className={`absolute inset-0 w-full h-full pointer-events-none z-[1] transition-opacity duration-700 ${
+          hidden ? 'opacity-100' : 'opacity-0'
+        }`}
         style={{
           background: isLight
-            ? 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(160, 135, 100, 0.38) 0%, rgba(190, 170, 140, 0.18) 50%, rgba(244, 238, 224, 0) 75%)'
-            : 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0) 72%)',
+            ? 'radial-gradient(ellipse 90% 70% at 50% 36%, #e8f4fc 0%, #f4eee0 55%, #ecdcc8 100%)'
+            : 'radial-gradient(ellipse 90% 70% at 50% 36%, #0f1c3f 0%, #070c1c 52%, #000000 100%)',
         }}
       />
+
+      {/* TYPOGRAPHY & DECORATIVE POSTER ELEMENTS (Fades out when hidden) */}
+      <div
+        className={`w-full h-full flex flex-col transition-opacity duration-700 ${
+          hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      >
+        {/* 2. Light Mode: Japanese Vintage Poster Red Circles & Stamps */}
+        {isLight && <JapanesePosterDecorations />}
+
+        {/* 3. Dark Mode: Delicate Campfire Amber Embers / Glowing Particles */}
+        {!isLight && (
+          <div aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none z-[2] overflow-hidden">
+            {ATMOSPHERIC_EMBERS.map((ember) => (
+              <span
+                key={ember.id}
+                className={`absolute rounded-full pointer-events-none ${ember.anim}`}
+                style={{
+                  left: ember.left,
+                  top: ember.top,
+                  width: `${ember.size}px`,
+                  height: `${ember.size}px`,
+                  backgroundColor: ember.color,
+                  boxShadow: `0 0 6px ${ember.color}, 0 0 14px rgba(245, 158, 11, 0.45)`,
+                  animationDelay: ember.delay,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* 4. Soft Ambient Depth Shadow directly behind the 3D Island */}
+        <div
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[72vw] h-[72vh] max-w-[680px] max-h-[680px] rounded-full pointer-events-none z-[2] transition-opacity duration-500"
+          style={{
+            background: isLight
+              ? 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(160, 135, 100, 0.38) 0%, rgba(190, 170, 140, 0.18) 50%, rgba(244, 238, 224, 0) 75%)'
+              : 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0) 72%)',
+          }}
+        />
 
       {/* ========================================================================= */}
       {/* DESKTOP LAYOUT (>= 768px): PRINSON (Upper, Dominant) + ROYAL NAZARETH (Lower) */}
@@ -377,6 +402,7 @@ export const CinematicBackgroundTitle: React.FC = () => {
             </text>
           </svg>
         </div>
+      </div>
       </div>
     </div>
   );
