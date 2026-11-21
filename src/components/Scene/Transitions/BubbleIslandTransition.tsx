@@ -188,10 +188,9 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     // -------------------------------------------------------------------------
     const now = performance.now() / 1000;
 
-    // Island model remains stationary at default position and visible at all times
+    // Island model remains stationary at default position [0, 0, 0]
     if (archiveElevateGroupRef.current) {
       archiveElevateGroupRef.current.position.set(0, 0, 0);
-      archiveElevateGroupRef.current.visible = true;
     }
 
     if (bookBubblePhaseRef.current === 'FORMING') {
@@ -201,14 +200,30 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       const p = t * t * (3.0 - 2.0 * t);
       setBookBubbleProgress(p);
 
+      // Model gently contracts inside the forming bubble so bounds stay inside
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = true;
+        const squeeze = 1.0 - t * 0.12;
+        archiveElevateGroupRef.current.scale.set(squeeze, squeeze, squeeze);
+      }
+
       if (t >= 1.0) {
         bookBubblePhaseRef.current = 'SEALED';
         setBookBubblePhase('SEALED');
         setBookBubbleMode('SEALED');
         setBookBubbleProgress(1.0);
+
+        // After this happens: the 3D model disappears inside the bubble
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.visible = false;
+        }
       }
     } else if (bookBubblePhaseRef.current === 'SEALED') {
       setBookBubbleProgress(1.0);
+      // Ensure the 3D model is completely disappeared inside the sealed bubble
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = false;
+      }
     } else if (bookBubblePhaseRef.current === 'TEARING') {
       const TEARING_DURATION = 0.45; // Exact same duration as other page transitions
       const elapsed = now - bookBubbleStartTime.current;
@@ -216,10 +231,27 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       const p = Math.pow(t, 1.3);
       setBookBubbleProgress(p);
 
+      // When tearing open, restore model visibility
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = true;
+        const s = 0.88 + t * 0.12;
+        archiveElevateGroupRef.current.scale.set(s, s, s);
+      }
+
       if (t >= 1.0) {
         bookBubblePhaseRef.current = 'IDLE';
         setBookBubblePhase('IDLE');
         setBookBubbleProgress(0.0);
+        if (archiveElevateGroupRef.current) {
+          archiveElevateGroupRef.current.visible = true;
+          archiveElevateGroupRef.current.scale.set(1, 1, 1);
+        }
+      }
+    } else {
+      // Default resting state: island fully visible and at 1.0 scale
+      if (archiveElevateGroupRef.current) {
+        archiveElevateGroupRef.current.visible = true;
+        archiveElevateGroupRef.current.scale.set(1, 1, 1);
       }
     }
 
