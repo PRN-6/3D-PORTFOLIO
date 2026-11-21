@@ -45,10 +45,9 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
       aria-modal="true"
       aria-label={grimoire.title}
     >
-      {/* Invisible backdrop to allow click-outside dismissal */}
+      {/* Backdrop passes pointer events through to 3D canvas so floating books & bubbles are clickable */}
       <div
-        className="fixed inset-0 pointer-events-auto transition-opacity"
-        onClick={onClose}
+        className="fixed inset-0 pointer-events-none"
         aria-hidden="true"
       />
 

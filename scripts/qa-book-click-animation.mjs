@@ -7,7 +7,7 @@ const outDir = 'C:\\Users\\prins\\.gemini\\antigravity\\brain\\e4c6333e-6fb0-498
 fs.mkdirSync(outDir, { recursive: true });
 
 async function run() {
-  console.log('--- TESTING BUBBLE RELEASE AND SHRINKING ANIMATION ---');
+  console.log('--- TESTING BUBBLE RELEASE, SELF-POP, AND 6 REVEALED BOOKS ---');
   const browser = await puppeteer.launch({
     executablePath: chromePath,
     headless: 'new',
@@ -43,19 +43,29 @@ async function run() {
   await page.screenshot({ path: path.join(outDir, '04_bubble_releasing_and_shrinking.png') });
   console.log('Captured 04_bubble_releasing_and_shrinking.png');
 
-  // 4. Main bubble fully shrunk away, small bubbles floating across screen (1100ms more -> 2800ms)
-  await new Promise(r => setTimeout(r, 1100));
-  await page.screenshot({ path: path.join(outDir, '05_bubbles_floating_across_screen.png') });
-  console.log('Captured 05_bubbles_floating_across_screen.png');
+  // 4. Main bubble fully shrunk away, 6 bubbles floating in hexagonal ring (950ms more -> 2650ms)
+  await new Promise(r => setTimeout(r, 950));
+  await page.screenshot({ path: path.join(outDir, '05_bubbles_floating_in_ring.png') });
+  console.log('Captured 05_bubbles_floating_in_ring.png');
 
-  // 5. Dismiss (Escape key) -> Returns back to normal island
+  // 5. Bubbles self-popping mid-cascade with sparkling bursts (500ms more -> 3150ms)
+  await new Promise(r => setTimeout(r, 500));
+  await page.screenshot({ path: path.join(outDir, '06_bubbles_popping_mid_cascade.png') });
+  console.log('Captured 06_bubbles_popping_mid_cascade.png');
+
+  // 6. All 6 bubbles popped, revealing all 6 3D grimoire books floating with glowing rune rings! (1300ms more -> 4450ms)
+  await new Promise(r => setTimeout(r, 1300));
+  await page.screenshot({ path: path.join(outDir, '07_all_6_books_revealed_and_floating.png') });
+  console.log('Captured 07_all_6_books_revealed_and_floating.png');
+
+  // 7. Dismiss (Escape key) -> Returns back to normal island
   console.log('Dismissing via Escape key...');
   await page.keyboard.press('Escape');
   await new Promise(r => setTimeout(r, 1200));
-  await page.screenshot({ path: path.join(outDir, '06_restored_back_to_island.png') });
-  console.log('Captured 06_restored_back_to_island.png');
+  await page.screenshot({ path: path.join(outDir, '08_restored_back_to_island.png') });
+  console.log('Captured 08_restored_back_to_island.png');
 
-  console.log('QA Bubble Release and Shrinking test complete!');
+  console.log('QA Bubble Pop and 6 Revealed Books test complete!');
   await browser.close();
 }
 

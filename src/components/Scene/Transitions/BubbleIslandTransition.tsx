@@ -609,6 +609,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
             active={true}
             releaseProgress={releaseProgress}
             isTearing={bookBubblePhase === 'TEARING'}
+            onSelectGrimoire={onSelectGrimoire}
+            selectedGrimoire={selectedGrimoire}
           />
         )}
       </group>

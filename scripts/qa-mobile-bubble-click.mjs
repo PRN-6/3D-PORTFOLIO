@@ -7,7 +7,7 @@ const outDir = 'C:\\Users\\prins\\.gemini\\antigravity\\brain\\e4c6333e-6fb0-498
 fs.mkdirSync(outDir, { recursive: true });
 
 async function run() {
-  console.log('--- TESTING MOBILE BUBBLE ANIMATION (390x844) ---');
+  console.log('--- TESTING MOBILE BUBBLE ANIMATION & 6 REVEALED BOOKS (390x844) ---');
   const browser = await puppeteer.launch({
     executablePath: chromePath,
     headless: 'new',
@@ -43,17 +43,27 @@ async function run() {
   await page.screenshot({ path: path.join(outDir, '04_mobile_bubble_releasing_and_shrinking.png') });
   console.log('Captured 04_mobile_bubble_releasing_and_shrinking.png');
 
-  // 4. Mobile small bubbles floating in vertical serpentine cascade (1100ms more -> 2800ms)
-  await new Promise(r => setTimeout(r, 1100));
+  // 4. Mobile 6 bubbles floating in organic constellation (950ms more -> 2650ms)
+  await new Promise(r => setTimeout(r, 950));
   await page.screenshot({ path: path.join(outDir, '05_mobile_bubbles_floating.png') });
   console.log('Captured 05_mobile_bubbles_floating.png');
 
-  // 5. Dismiss via Escape
+  // 5. Bubbles self-popping in cascade with glowing bursts (500ms more -> 3150ms)
+  await new Promise(r => setTimeout(r, 500));
+  await page.screenshot({ path: path.join(outDir, '06_mobile_bubbles_popping.png') });
+  console.log('Captured 06_mobile_bubbles_popping.png');
+
+  // 6. All 6 books revealed and floating across mobile screen! (1300ms more -> 4450ms)
+  await new Promise(r => setTimeout(r, 1300));
+  await page.screenshot({ path: path.join(outDir, '07_mobile_all_6_books_revealed.png') });
+  console.log('Captured 07_mobile_all_6_books_revealed.png');
+
+  // 7. Dismiss via Escape
   console.log('Tapping Return to Island...');
   await page.keyboard.press('Escape');
   await new Promise(r => setTimeout(r, 1200));
-  await page.screenshot({ path: path.join(outDir, '06_mobile_restored.png') });
-  console.log('Captured 06_mobile_restored.png');
+  await page.screenshot({ path: path.join(outDir, '08_mobile_restored.png') });
+  console.log('Captured 08_mobile_restored.png');
 
   console.log('Mobile QA test complete!');
   await browser.close();
