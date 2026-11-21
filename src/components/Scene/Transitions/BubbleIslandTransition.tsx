@@ -6,8 +6,8 @@ import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
-import { SoapBubbleMesh } from './SoapBubbleMesh';
-import { BubblePopBurstParticles } from './BubblePopBurstParticles';
+import { BlackBubbleMesh, type BubbleAnimationMode } from './BlackBubbleMesh';
+import { BlackBubbleRimDroplets } from './BlackBubbleRimDroplets';
 import {
   ISLAND_DISPLAY_TRANSFORMS,
   type DestinationId,
@@ -41,10 +41,10 @@ export interface BubbleIslandTransitionProps {
   onDestinationReached?: (dest: DestinationId) => void;
 }
 
-type TransitionPhase = 'IDLE' | 'ENCLOSE' | 'POP' | 'REVEAL';
+type TransitionPhase = 'IDLE' | 'FORMING' | 'SEALED' | 'TEARING' | 'REVEAL';
 
 /**
- * Synthesizes a gentle, bubbly liquid "pop" sound using Web Audio.
+ * Synthesizes a crisp, liquid bubble pop and tear sound using Web Audio.
  */
 function playBubblePopSound() {
   try {
@@ -56,18 +56,18 @@ function playBubblePopSound() {
 
     osc.type = 'sine';
     const now = ctx.currentTime;
-    osc.frequency.setValueAtTime(320, now);
-    osc.frequency.exponentialRampToValueAtTime(920, now + 0.04);
-    osc.frequency.exponentialRampToValueAtTime(160, now + 0.12);
+    osc.frequency.setValueAtTime(260, now);
+    osc.frequency.exponentialRampToValueAtTime(1050, now + 0.05);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.16);
 
-    gain.gain.setValueAtTime(0.22, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    gain.gain.setValueAtTime(0.26, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.15);
+    osc.stop(now + 0.19);
   } catch {
     // Audio might be muted or blocked until user interaction
   }
@@ -76,14 +76,17 @@ function playBubblePopSound() {
 /**
  * BubbleIslandTransition
  *
- * Replaces all exploded/staircase transitions with a magical Soap Bubble Pop Reveal:
- * 1. An iridescent soap bubble forms and expands around the current 3D island, enclosing it.
- * 2. The bubble reaches peak size and tension, wobbling like a delicate liquid sphere.
- * 3. The bubble POPS with a burst of sparkling rainbow droplets!
- * 4. Beneath the burst, the new 3D island is revealed, springing smoothly into place.
+ * Implements the Full Black Sweeping Bubble Formation & Tear Transition
+ * based on the user's reference sprite sheet:
+ * 1. FORMING: A full black glossy liquid bubble sweeps across from bottom-right,
+ *    wrapping over the outgoing model with liquid droplet beads along the advancing rim.
+ * 2. SEALED: Briefly forms a 100% enclosed solid black sphere concealing the model.
+ * 3. TEARING: The black bubble ruptures and tears open from bottom-right (Frame 1 -> 8),
+ *    spraying droplets along the receding boundary while revealing the new 3D island!
+ * 4. REVEAL: The newly revealed island springs smoothly into place with elastic settle.
  */
 export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
-  worldState,
+  worldState: _worldState,
   activeDestination = 'HOME',
   resetSignal,
   onResetComplete,
@@ -115,10 +118,10 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const [currentPhase, setCurrentPhase] = useState<TransitionPhase>('IDLE');
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Bubble animation state
-  const [bubbleRadius, setBubbleRadius] = useState(0);
-  const [bubbleOpacity, setBubbleOpacity] = useState(0);
-  const [burstActive, setBurstActive] = useState(false);
+  // Black Bubble Sweep Animation State
+  const [bubbleMode, setBubbleMode] = useState<BubbleAnimationMode>('FORMING');
+  const [bubbleProgress, setBubbleProgress] = useState(0);
+  const [showBubble, setShowBubble] = useState(false);
 
   const phaseRef = useRef<TransitionPhase>('IDLE');
   const phaseStartTimeRef = useRef(0);
@@ -152,13 +155,13 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       if (fromGroup) fromGroup.visible = true;
       if (toGroup) toGroup.visible = false;
 
-      phaseRef.current = 'ENCLOSE';
-      setCurrentPhase('ENCLOSE');
+      phaseRef.current = 'FORMING';
+      setCurrentPhase('FORMING');
+      setBubbleMode('FORMING');
+      setBubbleProgress(0.0);
+      setShowBubble(true);
       phaseStartTimeRef.current = performance.now() / 1000;
       setIsTransitioning(true);
-      setBurstActive(false);
-      setBubbleRadius(0.1);
-      setBubbleOpacity(0.85);
     },
     []
   );
@@ -185,91 +188,118 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     const inBase = getBaseScale(incomingIslandRef.current);
 
     // =========================================================================
-    // PHASE 1: BUBBLE ENCLOSE (0.0s -> 0.48s)
+    // PHASE 1: FULL BLACK BUBBLE FORMATION (0.0s -> 0.70s)
+    // Sweeps across from bottom-right (Frame 8 -> Frame 1), enclosing island
     // =========================================================================
-    if (phase === 'ENCLOSE') {
-      const ENCLOSE_DURATION = 0.48;
-      const t = Math.min(1.0, elapsed / ENCLOSE_DURATION);
+    if (phase === 'FORMING') {
+      const FORMING_DURATION = 0.70;
+      const t = Math.min(1.0, elapsed / FORMING_DURATION);
 
-      // Bubble expands from 0 to 10.2 units (encapsulating island and trees)
-      // easeOutBack overshoot
-      const s = 1.25;
-      const inv = t - 1.0;
-      const easedR = (inv * inv * ((s + 1.0) * inv + s) + 1.0) * 10.2;
-      setBubbleRadius(Math.max(0.01, easedR));
-      setBubbleOpacity(Math.min(0.88, t * 1.8));
+      // Smooth cubic curve for natural fluid sweep
+      const p = t * t * (3.0 - 2.0 * t);
+      setBubbleProgress(p);
 
-      // Outgoing island gently contracts inside the bubble
+      // Outgoing island gently contracts inside the forming black bubble
       if (outgoingGroup) {
         outgoingGroup.visible = true;
-        const squeeze = 1.0 - t * 0.12;
+        const squeeze = 1.0 - t * 0.10;
         outgoingGroup.scale.set(outBase[0] * squeeze, outBase[1] * squeeze, outBase[2] * squeeze);
       }
       if (incomingGroup) {
         incomingGroup.visible = false;
       }
 
-      if (elapsed >= ENCLOSE_DURATION) {
-        // TRIGGER THE POP!
-        phaseRef.current = 'POP';
-        setCurrentPhase('POP');
+      if (elapsed >= FORMING_DURATION) {
+        // Complete enclosure, switch to SEALED
+        phaseRef.current = 'SEALED';
+        setCurrentPhase('SEALED');
+        setBubbleMode('SEALED');
+        setBubbleProgress(1.0);
         phaseStartTimeRef.current = now;
       }
     }
 
     // =========================================================================
-    // PHASE 2: BUBBLE POP & BURST (Instantaneous switch at 0.48s)
+    // PHASE 2: SEALED BLACK BUBBLE (0.70s -> 0.86s, 160ms pause)
+    // The island is completely inside the 100% black glossy sphere
     // =========================================================================
-    else if (phase === 'POP') {
-      // 1. Vanish the bubble sphere
-      setBubbleRadius(0);
-      setBubbleOpacity(0);
+    else if (phase === 'SEALED') {
+      const SEALED_DURATION = 0.16;
 
-      // 2. Hide outgoing, display incoming inside the burst
       if (outgoingGroup) {
         outgoingGroup.visible = false;
         outgoingGroup.scale.set(outBase[0], outBase[1], outBase[2]);
       }
-
       if (incomingGroup) {
+        // Prepare incoming island inside the black sphere
         incomingGroup.visible = true;
-        // Start incoming island slightly smaller, ready to spring out
-        incomingGroup.scale.set(inBase[0] * 0.75, inBase[1] * 0.75, inBase[2] * 0.75);
+        incomingGroup.scale.set(inBase[0] * 0.82, inBase[1] * 0.82, inBase[2] * 0.82);
       }
 
-      // 3. Trigger droplet particle explosion & cute sound
-      setBurstActive(true);
-      playBubblePopSound();
-
-      // Proceed immediately to REVEAL
-      phaseRef.current = 'REVEAL';
-      setCurrentPhase('REVEAL');
-      phaseStartTimeRef.current = now;
+      if (elapsed >= SEALED_DURATION) {
+        // TRIGGER TEAR & POP!
+        phaseRef.current = 'TEARING';
+        setCurrentPhase('TEARING');
+        setBubbleMode('TEARING');
+        setBubbleProgress(0.0);
+        phaseStartTimeRef.current = now;
+        playBubblePopSound();
+      }
     }
 
     // =========================================================================
-    // PHASE 3: REVEAL & JUICY SPRING SETTLE (0.0s -> 0.55s after pop)
+    // PHASE 3: TEARING & RUPTURE POP (0.0s -> 0.45s after sealed)
+    // Tears open from bottom-right (Frame 1 -> Frame 8), peeling away black shell
     // =========================================================================
-    else if (phase === 'REVEAL') {
-      const REVEAL_DURATION = 0.55;
-      const t = Math.min(1.0, elapsed / REVEAL_DURATION);
+    else if (phase === 'TEARING') {
+      const TEAR_DURATION = 0.45;
+      const t = Math.min(1.0, elapsed / TEAR_DURATION);
 
-      // Juicy elastic spring reveal: 0.75 -> 1.06 -> 0.98 -> 1.00
-      const decay = Math.exp(-6.5 * t);
-      const osc = Math.cos(t * Math.PI * 3.5);
-      const spring = 1.0 - 0.25 * decay * osc;
+      // Accelerated rip curve
+      const p = Math.pow(t, 1.3);
+      setBubbleProgress(p);
 
+      // Incoming island scales up as the black shell peels back
+      if (incomingGroup) {
+        incomingGroup.visible = true;
+        const s = 0.82 + t * 0.16;
+        incomingGroup.scale.set(inBase[0] * s, inBase[1] * s, inBase[2] * s);
+      }
       if (outgoingGroup) {
         outgoingGroup.visible = false;
       }
+
+      if (elapsed >= TEAR_DURATION) {
+        // Bubble is now 100% torn away
+        setShowBubble(false);
+        phaseRef.current = 'REVEAL';
+        setCurrentPhase('REVEAL');
+        phaseStartTimeRef.current = now;
+      }
+    }
+
+    // =========================================================================
+    // PHASE 4: JUICY ELASTIC SETTLE (0.0s -> 0.40s after tear)
+    // Island settles into position with bounce
+    // =========================================================================
+    else if (phase === 'REVEAL') {
+      const REVEAL_DURATION = 0.40;
+      const t = Math.min(1.0, elapsed / REVEAL_DURATION);
+
+      // Juicy elastic bounce: 0.98 -> 1.05 -> 0.99 -> 1.00
+      const decay = Math.exp(-7.0 * t);
+      const osc = Math.cos(t * Math.PI * 3.5);
+      const spring = 1.0 - 0.16 * decay * osc;
 
       if (incomingGroup) {
         incomingGroup.visible = true;
         incomingGroup.scale.set(inBase[0] * spring, inBase[1] * spring, inBase[2] * spring);
       }
+      if (outgoingGroup) {
+        outgoingGroup.visible = false;
+      }
 
       if (t >= 1.0) {
-        // Complete transition
         if (incomingGroup) {
           incomingGroup.visible = true;
           incomingGroup.scale.set(inBase[0], inBase[1], inBase[2]);
@@ -281,7 +311,6 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         const targetId = incomingIslandRef.current;
         setCurrentIsland(targetId);
         setIsTransitioning(false);
-        setBurstActive(false);
         phaseRef.current = 'IDLE';
         setCurrentPhase('IDLE');
 
@@ -306,8 +335,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
   const isIslandVisible = (id: DestinationId): boolean => {
     if (currentPhase === 'IDLE') return currentIsland === id;
-    if (currentPhase === 'ENCLOSE') return id === outgoingIslandRef.current;
-    // POP or REVEAL: only the incoming new island is visible!
+    if (currentPhase === 'FORMING') return id === outgoingIslandRef.current;
+    // SEALED, TEARING, REVEAL: only the incoming island is visible!
     return id === incomingIslandRef.current;
   };
 
@@ -365,7 +394,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           visible={isIslandVisible('FOREST')}
         >
           <WorldD_WhisperingForest
-            disableCamera={isTransitioning || worldState !== 'FOREST_WORLD'}
+            disableCamera={isTransitioning || _worldState !== 'FOREST_WORLD'}
             onOpenAboutModal={onOpenAboutModal || (() => {})}
             isModalOpen={isAboutModalOpen}
             resetSignal={resetSignal}
@@ -389,21 +418,23 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           />
         </group>
 
-        {/* THE SHIMMERING SOAP BUBBLE */}
-        {bubbleRadius > 0.05 && (
-          <SoapBubbleMesh
-            radius={bubbleRadius}
-            opacity={bubbleOpacity}
-            position={[0, 0.5, 0]}
-          />
+        {/* THE FULL BLACK SWEEPING BUBBLE (Reference Sprite Animation) */}
+        {showBubble && (
+          <>
+            <BlackBubbleMesh
+              radius={10.2}
+              progress={bubbleProgress}
+              mode={bubbleMode}
+              position={[0, 0.5, 0]}
+            />
+            <BlackBubbleRimDroplets
+              radius={10.2}
+              progress={bubbleProgress}
+              mode={bubbleMode}
+              position={[0, 0.5, 0]}
+            />
+          </>
         )}
-
-        {/* BUBBLE POP BURST DROPLETS & SHOCKWAVE RING */}
-        <BubblePopBurstParticles
-          active={burstActive}
-          center={[0, 0.5, 0]}
-          burstRadius={10.0}
-        />
       </group>
     </>
   );
