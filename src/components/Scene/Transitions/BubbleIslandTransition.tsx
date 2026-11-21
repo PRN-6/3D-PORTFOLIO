@@ -212,9 +212,14 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
       // Model gently contracts inside the forming bubble so bounds stay inside
       if (archiveElevateGroupRef.current) {
-        archiveElevateGroupRef.current.visible = true;
-        const squeeze = 1.0 - t * 0.12;
-        archiveElevateGroupRef.current.scale.set(squeeze, squeeze, squeeze);
+        if (t >= 0.82) {
+          // Model disappears completely inside before seal reaches absolute edge
+          archiveElevateGroupRef.current.visible = false;
+        } else {
+          archiveElevateGroupRef.current.visible = true;
+          const squeeze = Math.max(0.2, 1.0 - t * 0.35);
+          archiveElevateGroupRef.current.scale.set(squeeze, squeeze, squeeze);
+        }
       }
 
       if (t >= 1.0) {
@@ -281,9 +286,13 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
       // When tearing open, restore model visibility
       if (archiveElevateGroupRef.current) {
-        archiveElevateGroupRef.current.visible = true;
-        const s = 0.88 + t * 0.12;
-        archiveElevateGroupRef.current.scale.set(s, s, s);
+        if (t < 0.12) {
+          archiveElevateGroupRef.current.visible = false;
+        } else {
+          archiveElevateGroupRef.current.visible = true;
+          const s = THREE.MathUtils.lerp(0.65, 1.0, (t - 0.12) / 0.88);
+          archiveElevateGroupRef.current.scale.set(s, s, s);
+        }
       }
 
       if (t >= 1.0) {
@@ -580,13 +589,13 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         {bookBubblePhase !== 'IDLE' && mainBubbleScale > 0.001 && (
           <group position={[0, 0.7, 0]} scale={[mainBubbleScale, mainBubbleScale, mainBubbleScale]}>
             <BlackBubbleMesh
-              radius={6.9}
+              radius={7.4}
               progress={bookBubbleProgress}
               mode={bookBubbleMode}
               position={[0, 0, 0]}
             />
             <BlackBubbleRimDroplets
-              radius={6.9}
+              radius={7.4}
               progress={bookBubbleProgress}
               mode={bookBubbleMode}
               position={[0, 0, 0]}
