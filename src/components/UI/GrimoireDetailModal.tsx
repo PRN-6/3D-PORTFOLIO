@@ -92,7 +92,7 @@ export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
             {grimoire.runeSymbol}
           </span>
           <span className="text-xs font-mono uppercase tracking-widest">
-            Floating Codices Realm
+            {grimoire.title}
           </span>
         </div>
 

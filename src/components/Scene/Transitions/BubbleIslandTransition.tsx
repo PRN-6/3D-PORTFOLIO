@@ -149,27 +149,27 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
 
   useFrame((_, delta) => {
     // -------------------------------------------------------------------------
-    // Cinematic Book Inspection: Archive Island elevates UP OUT OF THE SCREEN (Y -> +80)
-    // while camera descends DOWN to the Floating Books Realm (Y -> -10)
+    // Cinematic Book Inspection: Archive Island elevates UP OUT OF THE SCREEN (Y -> +24)
+    // Smooth, majestic levitation where user clearly sees the 3D model float up and away
     // -------------------------------------------------------------------------
     const isInspectingArchive = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
-    const targetElevateY = isInspectingArchive ? 80.0 : 0.0;
+    const targetElevateY = isInspectingArchive ? 24.0 : 0.0;
 
     if (archiveElevateGroupRef.current) {
       archiveElevateGroupRef.current.position.y = THREE.MathUtils.damp(
         archiveElevateGroupRef.current.position.y,
         targetElevateY,
-        4.5,
+        2.0,
         delta
       );
       archiveElevateGroupRef.current.position.x = THREE.MathUtils.damp(
         archiveElevateGroupRef.current.position.x,
         0.0,
-        4.5,
+        2.0,
         delta
       );
       // Cleanly hide island once completely offscreen above viewport
-      archiveElevateGroupRef.current.visible = archiveElevateGroupRef.current.position.y < 45.0;
+      archiveElevateGroupRef.current.visible = archiveElevateGroupRef.current.position.y < 23.0;
     }
 
     const phase = phaseRef.current;
@@ -384,11 +384,11 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
             />
           </group>
 
-          {/* THE FLOATING BOOKS PAGE REALM (Located below at Y = -10 where camera moves down) */}
+          {/* THE FLOATING BOOKS PAGE REALM (Disabled for now: only 3D model goes up) */}
           <FloatingBooksRealm
             selectedGrimoire={selectedGrimoire || null}
             onSelectGrimoire={onSelectGrimoire || (() => {})}
-            active={currentIsland === 'ARCHIVE' && !!selectedGrimoire}
+            active={false}
           />
         </group>
 
