@@ -44,36 +44,6 @@ export interface BubbleIslandTransitionProps {
 type TransitionPhase = 'IDLE' | 'FORMING' | 'SEALED' | 'TEARING' | 'REVEAL';
 
 /**
- * Synthesizes a crisp, liquid bubble pop and tear sound using Web Audio.
- */
-function playBubblePopSound() {
-  try {
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'sine';
-    const now = ctx.currentTime;
-    osc.frequency.setValueAtTime(260, now);
-    osc.frequency.exponentialRampToValueAtTime(1050, now + 0.05);
-    osc.frequency.exponentialRampToValueAtTime(120, now + 0.16);
-
-    gain.gain.setValueAtTime(0.26, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 0.19);
-  } catch {
-    // Audio might be muted or blocked until user interaction
-  }
-}
-
-/**
  * BubbleIslandTransition
  *
  * Implements the Full Black Sweeping Bubble Formation & Tear Transition
@@ -237,13 +207,12 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       }
 
       if (elapsed >= SEALED_DURATION) {
-        // TRIGGER TEAR & POP!
+        // TRIGGER TEAR & POP (Silent transition, no audio effect)
         phaseRef.current = 'TEARING';
         setCurrentPhase('TEARING');
         setBubbleMode('TEARING');
         setBubbleProgress(0.0);
         phaseStartTimeRef.current = now;
-        playBubblePopSound();
       }
     }
 
