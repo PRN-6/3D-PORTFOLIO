@@ -188,3 +188,4 @@ export const BubblePopBurstParticles: React.FC<BubblePopBurstParticlesProps> = (
     </group>
   );
 };
+

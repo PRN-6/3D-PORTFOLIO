@@ -133,3 +133,4 @@ export const SoapBubbleMesh: React.FC<SoapBubbleMeshProps> = ({
     </mesh>
   );
 };
+

@@ -96,3 +96,4 @@ if (atEnd.pos.distanceTo(origPos) > 0.00001 || Math.abs(atEnd.scale.y - 1.0) > 0
 }
 
 console.log('\nSUCCESS: On-the-spot creation kinematics verified!');
+

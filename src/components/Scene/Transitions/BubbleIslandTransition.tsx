@@ -97,6 +97,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const phaseStartTimeRef = useRef(0);
   const outgoingIslandRef = useRef<DestinationId>(activeDestination);
   const incomingIslandRef = useRef<DestinationId>(activeDestination);
+  const archiveElevateGroupRef = useRef<THREE.Group>(null);
 
   const getIslandGroup = (id: DestinationId): THREE.Group | null => {
     switch (id) {
@@ -145,7 +146,29 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     }
   }, [activeDestination, currentIsland, startBubbleTransition]);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
+    // -------------------------------------------------------------------------
+    // Cinematic Book Inspection: Archive Island elevates UP and frames left when a book is clicked
+    // -------------------------------------------------------------------------
+    const isInspectingArchive = currentIsland === 'ARCHIVE' && !!selectedGrimoire;
+    const targetElevateY = isInspectingArchive ? 2.8 : 0.0;
+    const targetShiftX = isInspectingArchive ? -2.2 : 0.0;
+
+    if (archiveElevateGroupRef.current) {
+      archiveElevateGroupRef.current.position.y = THREE.MathUtils.damp(
+        archiveElevateGroupRef.current.position.y,
+        targetElevateY,
+        3.5,
+        delta
+      );
+      archiveElevateGroupRef.current.position.x = THREE.MathUtils.damp(
+        archiveElevateGroupRef.current.position.x,
+        targetShiftX,
+        3.5,
+        delta
+      );
+    }
+
     const phase = phaseRef.current;
     if (phase === 'IDLE') return;
 
@@ -315,6 +338,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         isTransitioning={isTransitioning}
         resetSignal={resetSignal}
         onResetComplete={onResetComplete}
+        selectedGrimoire={selectedGrimoire}
+        activeIsland={currentIsland}
       />
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
@@ -345,13 +370,15 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           scale={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.scale}
           visible={isIslandVisible('ARCHIVE')}
         >
-          <WorldC_ArchiveIsland
-            disableCamera={true}
-            selectedGrimoire={selectedGrimoire || null}
-            onSelectGrimoire={onSelectGrimoire || (() => {})}
-            resetSignal={resetSignal}
-            onResetComplete={onResetComplete}
-          />
+          <group ref={archiveElevateGroupRef} name="ArchiveElevationContainer">
+            <WorldC_ArchiveIsland
+              disableCamera={true}
+              selectedGrimoire={selectedGrimoire || null}
+              onSelectGrimoire={onSelectGrimoire || (() => {})}
+              resetSignal={resetSignal}
+              onResetComplete={onResetComplete}
+            />
+          </group>
         </group>
 
         {/* DESTINATION 3: Whispering Forest */}
