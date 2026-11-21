@@ -21,30 +21,40 @@ async function run() {
   await page.goto('http://127.0.0.1:5175/projects', { waitUntil: 'networkidle0' });
   await new Promise(r => setTimeout(r, 2200));
 
-  await page.screenshot({ path: path.join(outDir, '01_archive_before_click.png') });
-  console.log('Captured 01_archive_before_click.png');
+  await page.screenshot({ path: path.join(outDir, '01_archive_island_initial.png') });
+  console.log('Captured 01_archive_island_initial.png');
 
   // 2. Click a grimoire book on the island (Grimoire 5 at x: 680, y: 450)
   console.log('Clicking book on canvas...');
   await page.mouse.click(680, 450);
 
-  // STAGE 1: Mid-descent (350ms after click) -> ONLY this book shown while moving down!
-  await new Promise(r => setTimeout(r, 350));
-  await page.screenshot({ path: path.join(outDir, '02_archive_moving_down_only_this_book.png') });
-  console.log('Captured 02_archive_moving_down_only_this_book.png');
+  // 1. Black liquid bubble forms and wraps over model (250ms)
+  await new Promise(r => setTimeout(r, 250));
+  await page.screenshot({ path: path.join(outDir, '02_bubble_forming_over_model.png') });
+  console.log('Captured 02_bubble_forming_over_model.png');
 
-  // STAGE 2: Arrived at bottom (1800ms after click) -> THEN show all books fanned out!
-  await new Promise(r => setTimeout(r, 1500));
-  await page.screenshot({ path: path.join(outDir, '03_archive_arrived_then_show_books.png') });
-  console.log('Captured 03_archive_arrived_then_show_books.png');
+  // 2. Sealed bubble sinks down, camera follows it down, marquee fades out (800ms)
+  await new Promise(r => setTimeout(r, 650));
+  await page.screenshot({ path: path.join(outDir, '03_bubble_descending_with_camera.png') });
+  console.log('Captured 03_bubble_descending_with_camera.png');
 
-  // 3. Dismiss modal (Escape key)
+  // 3. Bubble tears open at bottom page (800ms)
+  await new Promise(r => setTimeout(r, 850));
+  await page.screenshot({ path: path.join(outDir, '04_bubble_tearing_at_new_page.png') });
+  console.log('Captured 04_bubble_tearing_at_new_page.png');
+
+  // 4. Arrived at new page: floating books on clean black background (600ms)
+  await new Promise(r => setTimeout(r, 600));
+  await page.screenshot({ path: path.join(outDir, '05_new_page_clean_background.png') });
+  console.log('Captured 05_new_page_clean_background.png');
+
+  // 5. Dismiss modal (Escape key) -> Returns camera and island back up!
   console.log('Closing modal via Escape key...');
   await page.keyboard.press('Escape');
   await new Promise(r => setTimeout(r, 1500));
 
-  await page.screenshot({ path: path.join(outDir, '04_archive_book_closed_restored.png') });
-  console.log('Captured 04_archive_book_closed_restored.png');
+  await page.screenshot({ path: path.join(outDir, '06_restored_back_to_island.png') });
+  console.log('Captured 06_restored_back_to_island.png');
 
   console.log('Staged QA Book Click test complete!');
   await browser.close();

@@ -115,7 +115,7 @@ export const Scene: React.FC<SceneProps> = ({
       onWheel={(e) => e.preventDefault()}
     >
       {/* 1. Fixed cinematic screen-space DOM typography layer across all worlds */}
-      <CinematicBackgroundTitle />
+      <CinematicBackgroundTitle hidden={!!selectedGrimoire} />
 
       {/* 2. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
       <Canvas

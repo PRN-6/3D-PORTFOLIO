@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useEffect, useState, Suspense } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { useAnimations, useGLTF } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import { GRIMOIRES_DATA, type GrimoireItem } from '../../../data/archiveData';
 import { ModelErrorBoundary } from '../ModelErrorBoundary';
 
@@ -10,85 +10,6 @@ export interface FloatingBooksRealmProps {
   onSelectGrimoire: (grimoire: GrimoireItem) => void;
   active: boolean;
 }
-
-/**
- * Ambient floating books with animated turning parchment pages from archive-floating-books.glb
- */
-const AmbientFloatingBooksLayer: React.FC<{ revealProgress: number }> = ({ revealProgress }) => {
-  const gltf = useGLTF('/models/archive/archive-floating-books.glb');
-  const groupRef = useRef<THREE.Group>(null);
-
-  const clonedScene = useMemo(() => {
-    const clone = gltf.scene.clone(true);
-    clone.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    return clone;
-  }, [gltf.scene]);
-
-  const { actions } = useAnimations(gltf.animations, clonedScene);
-
-  useEffect(() => {
-    const loops = Object.values(actions).filter((action) => action !== null);
-    loops.forEach((action) => {
-      action.reset().fadeIn(0.6).play();
-    });
-    return () => {
-      loops.forEach((action) => action?.fadeOut(0.3));
-    };
-  }, [actions]);
-
-  useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    const s = THREE.MathUtils.damp(groupRef.current.scale.x, revealProgress * 1.25, 4.0, delta);
-    groupRef.current.scale.set(s, s, s);
-    groupRef.current.visible = s > 0.05;
-  });
-
-  return (
-    <group ref={groupRef} position={[0, 0.5, -1.5]} scale={0}>
-      <primitive object={clonedScene} />
-    </group>
-  );
-};
-
-/**
- * Floating Open Grimoire with hover animation
- */
-const AmbientOpenBook: React.FC<{
-  position: [number, number, number];
-  rotation?: [number, number, number];
-  revealProgress: number;
-}> = ({ position, rotation = [0, 0, 0], revealProgress }) => {
-  const gltf = useGLTF('/models/archive/floating-open-book.glb');
-  const groupRef = useRef<THREE.Group>(null);
-  const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
-  const { actions } = useAnimations(gltf.animations, scene);
-
-  useEffect(() => {
-    const action = actions['BookHover'];
-    if (action) action.reset().fadeIn(0.5).play();
-    return () => {
-      action?.fadeOut(0.3);
-    };
-  }, [actions]);
-
-  useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    const s = THREE.MathUtils.damp(groupRef.current.scale.x, revealProgress * 1.1, 4.0, delta);
-    groupRef.current.scale.set(s, s, s);
-    groupRef.current.visible = s > 0.05;
-  });
-
-  return (
-    <group ref={groupRef} position={position} rotation={rotation} scale={0}>
-      <primitive object={scene} />
-    </group>
-  );
-};
 
 /**
  * Individual Interactive Floating Grimoire in the Arcane Realm
@@ -380,8 +301,8 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
     if (!realmGroupRef.current) return;
     const camY = state.camera.position.y;
 
-    // The camera has completed moving down when camY reaches <= -8.5
-    const isArrivedAtBottom = active && camY <= -8.5;
+    // The camera has completed moving down when camY reaches <= 1.5 (from starting 10.0 down with -10.0 offset)
+    const isArrivedAtBottom = active && camY <= 1.5;
     const targetReveal = isArrivedAtBottom ? 1.0 : 0.0;
 
     revealProgressRef.current = THREE.MathUtils.damp(
@@ -411,30 +332,7 @@ export const FloatingBooksRealm: React.FC<FloatingBooksRealmProps> = ({
       <directionalLight position={[6, 12, 8]} intensity={1.3} color="#a6c5ff" />
       <directionalLight position={[-6, 6, -6]} intensity={0.8} color="#818cf8" />
 
-      {/* 1. Ambient Floating Books with Turning Parchment Pages (Reveals after moving down) */}
-      <ModelErrorBoundary fallback={null}>
-        <Suspense fallback={null}>
-          <AmbientFloatingBooksLayer revealProgress={revealProgress} />
-        </Suspense>
-      </ModelErrorBoundary>
-
-      {/* 2. Floating Open & Closed Decorative Books (Reveals after moving down) */}
-      <ModelErrorBoundary fallback={null}>
-        <Suspense fallback={null}>
-          <AmbientOpenBook
-            position={[-4.2, -0.6, 2.2]}
-            rotation={[0.2, 0.4, 0]}
-            revealProgress={revealProgress}
-          />
-          <AmbientOpenBook
-            position={[4.2, -0.6, 2.2]}
-            rotation={[0.2, -0.4, 0]}
-            revealProgress={revealProgress}
-          />
-        </Suspense>
-      </ModelErrorBoundary>
-
-      {/* 3. The 6 Interactive Master Skill Grimoires */}
+      {/* The 6 Interactive Master Skill Grimoires */}
       {/* HERO BOOK IS SHOWN FIRST! Other books fan out after descent! */}
       <ModelErrorBoundary fallback={null}>
         <Suspense fallback={null}>

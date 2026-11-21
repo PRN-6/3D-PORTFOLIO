@@ -129,7 +129,7 @@ export interface CinematicBackgroundTitleProps {
 }
 
 export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> = ({
-  hidden: _hidden = false,
+  hidden = false,
 }) => {
   const { isLight, theme } = useTheme();
 
@@ -188,7 +188,7 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
       />
 
       {/* TYPOGRAPHY & DECORATIVE POSTER ELEMENTS */}
-      <div className="w-full h-full flex flex-col">
+      <div className={`w-full h-full flex flex-col transition-opacity duration-700 ease-out ${hidden ? 'opacity-0' : 'opacity-100'}`}>
         {/* 2. Light Mode: Japanese Vintage Poster Red Circles & Stamps */}
         {isLight && <JapanesePosterDecorations />}
 
