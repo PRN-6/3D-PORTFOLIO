@@ -129,7 +129,7 @@ export interface CinematicBackgroundTitleProps {
 }
 
 export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> = ({
-  hidden = false,
+  hidden: _hidden = false,
 }) => {
   const { isLight, theme } = useTheme();
 
@@ -187,25 +187,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
         }`}
       />
 
-      {/* 1b. Clean Dreamy Atmospheric Backdrop when typography is isolated for 3D worlds (About Me) */}
-      <div
-        aria-hidden="true"
-        className={`absolute inset-0 w-full h-full pointer-events-none z-[1] transition-opacity duration-700 ${
-          hidden ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          background: isLight
-            ? 'radial-gradient(ellipse 90% 70% at 50% 36%, #e8f4fc 0%, #f4eee0 55%, #ecdcc8 100%)'
-            : 'radial-gradient(ellipse 90% 70% at 50% 36%, #0f1c3f 0%, #070c1c 52%, #000000 100%)',
-        }}
-      />
-
-      {/* TYPOGRAPHY & DECORATIVE POSTER ELEMENTS (Fades out when hidden) */}
-      <div
-        className={`w-full h-full flex flex-col transition-opacity duration-700 ${
-          hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
-      >
+      {/* TYPOGRAPHY & DECORATIVE POSTER ELEMENTS */}
+      <div className="w-full h-full flex flex-col">
         {/* 2. Light Mode: Japanese Vintage Poster Red Circles & Stamps */}
         {isLight && <JapanesePosterDecorations />}
 
