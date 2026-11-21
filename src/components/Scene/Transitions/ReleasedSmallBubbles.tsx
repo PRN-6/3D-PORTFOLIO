@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, Html } from '@react-three/drei';
 import { BlackBubbleMesh } from './BlackBubbleMesh';
 import { GRIMOIRES_DATA, type GrimoireItem } from '../../../data/archiveData';
+import { PROJECTS_DATA, type ProjectItem } from '../../../data/projectsData';
 
 // Preload all 6 individual grimoire 3D models for instant pop-reveal transitions
 GRIMOIRES_DATA.forEach((grimoire) => {
@@ -23,32 +24,32 @@ export interface SmallBubbleItem {
 
 /** Desktop widescreen balanced 6-bubble distribution */
 export const BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -7.5, screenY:  3.2, depth:  0.4, radius: 2.10, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  0.0, screenY:  4.8, depth: -0.6, radius: 1.95, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX:  7.5, screenY:  3.2, depth:  0.5, radius: 2.20, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX:  7.5, screenY: -3.0, depth: -0.5, radius: 2.15, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX:  0.0, screenY: -4.5, depth:  0.3, radius: 2.35, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX: -7.5, screenY: -3.0, depth: -0.4, radius: 2.05, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
+  { id: 0, screenX: -7.2, screenY:  2.8, depth:  0.4, radius: 2.10, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  0.0, screenY:  4.2, depth: -0.6, radius: 1.95, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX:  7.2, screenY:  2.8, depth:  0.5, radius: 2.20, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX:  7.2, screenY: -2.3, depth: -0.5, radius: 2.15, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX:  0.0, screenY: -3.5, depth:  0.3, radius: 2.35, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX: -7.2, screenY: -2.3, depth: -0.4, radius: 2.05, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
 ];
 
 /** Tablet (4:3 / medium width) balanced 6-bubble distribution */
 export const TABLET_BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -5.2, screenY:  2.8, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
-  { id: 1, screenX:  0.0, screenY:  4.5, depth: -0.6, radius: 1.75, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
-  { id: 2, screenX:  5.2, screenY:  2.8, depth:  0.5, radius: 1.95, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
-  { id: 3, screenX:  5.2, screenY: -2.8, depth: -0.5, radius: 1.90, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
-  { id: 4, screenX:  0.0, screenY: -4.4, depth:  0.3, radius: 2.05, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
-  { id: 5, screenX: -5.2, screenY: -2.8, depth: -0.4, radius: 1.80, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
+  { id: 0, screenX: -5.0, screenY:  2.5, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.3, phase: 0.0 },
+  { id: 1, screenX:  0.0, screenY:  4.0, depth: -0.6, radius: 1.75, delay: 0.16, wobbleSpeed: 1.5, phase: 1.1 },
+  { id: 2, screenX:  5.0, screenY:  2.5, depth:  0.5, radius: 1.95, delay: 0.32, wobbleSpeed: 1.1, phase: 2.3 },
+  { id: 3, screenX:  5.0, screenY: -2.3, depth: -0.5, radius: 1.90, delay: 0.48, wobbleSpeed: 1.4, phase: 3.5 },
+  { id: 4, screenX:  0.0, screenY: -3.6, depth:  0.3, radius: 2.05, delay: 0.64, wobbleSpeed: 1.0, phase: 4.4 },
+  { id: 5, screenX: -5.0, screenY: -2.3, depth: -0.4, radius: 1.80, delay: 0.80, wobbleSpeed: 1.6, phase: 5.2 },
 ];
 
 /** Mobile portrait organic constellation 6-bubble distribution (full screen coverage) */
 export const MOBILE_BUBBLE_PRESETS: SmallBubbleItem[] = [
-  { id: 0, screenX: -2.6, screenY:  8.8, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.2, phase: 0.0 },
-  { id: 1, screenX:  2.4, screenY:  6.8, depth: -0.5, radius: 1.95, delay: 0.16, wobbleSpeed: 1.4, phase: 1.2 },
-  { id: 2, screenX: -0.8, screenY:  2.6, depth:  0.8, radius: 2.15, delay: 0.32, wobbleSpeed: 1.0, phase: 2.5 },
-  { id: 3, screenX:  2.8, screenY: -1.2, depth: -0.6, radius: 1.85, delay: 0.48, wobbleSpeed: 1.5, phase: 3.7 },
-  { id: 4, screenX: -2.6, screenY: -4.8, depth:  0.4, radius: 1.95, delay: 0.64, wobbleSpeed: 1.1, phase: 4.8 },
-  { id: 5, screenX:  1.2, screenY: -8.8, depth: -0.3, radius: 1.80, delay: 0.80, wobbleSpeed: 1.3, phase: 5.6 },
+  { id: 0, screenX: -2.4, screenY:  7.6, depth:  0.4, radius: 1.85, delay: 0.00, wobbleSpeed: 1.2, phase: 0.0 },
+  { id: 1, screenX:  2.2, screenY:  5.8, depth: -0.5, radius: 1.95, delay: 0.16, wobbleSpeed: 1.4, phase: 1.2 },
+  { id: 2, screenX: -0.6, screenY:  2.2, depth:  0.8, radius: 2.15, delay: 0.32, wobbleSpeed: 1.0, phase: 2.5 },
+  { id: 3, screenX:  2.5, screenY: -1.2, depth: -0.6, radius: 1.85, delay: 0.48, wobbleSpeed: 1.5, phase: 3.7 },
+  { id: 4, screenX: -2.4, screenY: -4.3, depth:  0.4, radius: 1.95, delay: 0.64, wobbleSpeed: 1.1, phase: 4.8 },
+  { id: 5, screenX:  1.0, screenY: -7.4, depth: -0.3, radius: 1.80, delay: 0.80, wobbleSpeed: 1.3, phase: 5.6 },
 ];
 
 // ============================================================================
@@ -184,6 +185,7 @@ const PopBurstEffect: React.FC<PopBurstEffectProps> = ({
 // ============================================================================
 interface RevealedGrimoireBookProps {
   grimoire: GrimoireItem;
+  project: ProjectItem;
   index: number;
   baseScale: number;
   isPopped: boolean;
@@ -197,6 +199,7 @@ interface RevealedGrimoireBookProps {
 
 const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
   grimoire,
+  project,
   index,
   baseScale,
   isPopped,
@@ -296,10 +299,10 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
       {/* Delicate Rotating Arcane Aura Ring Beneath Floating Book */}
       <mesh
         ref={ringRef}
-        position={[0, -0.65, 0]}
+        position={[0, -0.55, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
       >
-        <ringGeometry args={[0.52, 0.62, 48]} />
+        <ringGeometry args={[0.38, 0.46, 48]} />
         <meshBasicMaterial
           color={grimoire.accentColor}
           transparent
@@ -326,15 +329,75 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
         decay={2}
       />
 
-      {/* Hover Floating Title Badge */}
-      {isHovered && (
-        <Html position={[0, 1.35, 0]} center pointerEvents="none">
-          <div className="px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md border border-white/20 text-xs font-mono text-white whitespace-nowrap shadow-2xl flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-150">
-            <span style={{ color: grimoire.accentColor }} className="font-bold">{grimoire.runeSymbol}</span>
-            <span>{grimoire.title}</span>
+      {/* 3D Floating Project Name Plate (Always visible once popped) */}
+      <Html
+        position={[0, -1.18, 0]}
+        center
+        distanceFactor={18}
+        className="pointer-events-auto select-none"
+      >
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            onPointerOver();
+          }}
+          onPointerOut={(e) => {
+            e.stopPropagation();
+            onPointerOut();
+          }}
+          className={`flex flex-col items-center cursor-pointer transition-all duration-300 ${
+            isPopped ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75 pointer-events-none'
+          }`}
+        >
+          {/* Main Project Name Pill */}
+          <div
+            className={`flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-2xl ${
+              isHovered
+                ? 'bg-black/95 scale-105'
+                : 'bg-black/85 hover:bg-black/90'
+            }`}
+            style={{
+              borderColor: isHovered ? project.accentColor : 'rgba(255, 255, 255, 0.22)',
+              boxShadow: isHovered
+                ? `0 0 24px ${project.accentColor}77, 0 8px 32px rgba(0,0,0,0.85)`
+                : '0 4px 20px rgba(0, 0, 0, 0.65)',
+            }}
+          >
+            {/* Glowing Accent Gem */}
+            <span
+              className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse"
+              style={{
+                backgroundColor: project.accentColor,
+                boxShadow: `0 0 8px ${project.accentColor}`,
+              }}
+            />
+
+            {/* Project Name */}
+            <span
+              className="text-xs sm:text-sm font-mono font-bold tracking-widest text-white whitespace-nowrap uppercase"
+              style={{
+                textShadow: isHovered ? `0 0 12px ${project.accentColor}` : undefined,
+              }}
+            >
+              {project.title}
+            </span>
           </div>
-        </Html>
-      )}
+
+          {/* Subtitle / Category Tagline */}
+          <span
+            className="text-[9px] sm:text-[10px] font-mono tracking-wider uppercase mt-1 px-1.5 py-0.5 rounded transition-colors duration-200 whitespace-nowrap"
+            style={{
+              color: isHovered ? project.accentColor : 'rgba(255, 255, 255, 0.65)',
+            }}
+          >
+            {project.category}
+          </span>
+        </div>
+      </Html>
 
       {/* Generous Interactive Hit Box for Pointer Events */}
       <mesh
@@ -369,6 +432,8 @@ export interface ReleasedSmallBubblesProps {
   isTearing?: boolean;
   onSelectGrimoire?: (grimoire: GrimoireItem) => void;
   selectedGrimoire?: GrimoireItem | null;
+  onSelectProject?: (project: ProjectItem) => void;
+  selectedProject?: ProjectItem | null;
 }
 
 export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
@@ -377,6 +442,8 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
   isTearing = false,
   onSelectGrimoire,
   selectedGrimoire: _selectedGrimoire,
+  onSelectProject,
+  selectedProject: _selectedProject,
 }) => {
   const { camera, size } = useThree();
   const isMobile = size.width < 768;
@@ -552,6 +619,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
 
       {activePresets.map((b, index) => {
         const grimoire = GRIMOIRES_DATA[index] || GRIMOIRES_DATA[0];
+        const project = PROJECTS_DATA[index] || PROJECTS_DATA[0];
         const isPopped = poppedMask[index];
         const popTime = popTimesRef.current[index];
 
@@ -611,6 +679,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
             {/* 3. REVEALED 3D GRIMOIRE BOOK (FRAME DRIVEN) */}
             <RevealedGrimoireBook
               grimoire={grimoire}
+              project={project}
               index={index}
               baseScale={baseBookScale}
               isPopped={isPopped}
@@ -619,7 +688,10 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
               isHovered={hoveredIndex === index}
               onPointerOver={() => setHoveredIndex(index)}
               onPointerOut={() => setHoveredIndex(null)}
-              onClick={() => onSelectGrimoire?.(grimoire)}
+              onClick={() => {
+                onSelectGrimoire?.(grimoire);
+                onSelectProject?.(project);
+              }}
             />
           </group>
         );
