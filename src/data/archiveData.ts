@@ -66,16 +66,16 @@ export interface MageProfile {
 }
 
 // ---------------------------------------------------------------------------
-// 6 Interactive Skill Grimoires (Coordinates matched to archive-grimoires arc)
+// 6 Interactive Skill Grimoires / Projects (Coordinates matched to archive-grimoires arc)
 // ---------------------------------------------------------------------------
 export const GRIMOIRES_DATA: GrimoireItem[] = [
   {
     id: 'frontend',
     nodeName: 'Grimoire_1',
     modelFile: '/models/archive/grimoire-frontend.glb',
-    title: 'Grimoire of Radiant Interfaces',
-    category: 'Frontend Magic',
-    tagline: 'Weaving reactive user experiences, performant DOM hierarchies, and tactile micro-interactions.',
+    title: 'PRIVACY68',
+    category: 'AI & Autonomous Systems',
+    tagline: 'Autonomous 100% Local Voice Assistant & OS Automation',
     accentColor: '#38bdf8', // Cyan / Electric Sky
     glowColor: 'rgba(56, 189, 248, 0.45)',
     runeSymbol: '✦',
@@ -117,9 +117,9 @@ export const GRIMOIRES_DATA: GrimoireItem[] = [
     id: 'backend',
     nodeName: 'Grimoire_2',
     modelFile: '/models/archive/grimoire-backend.glb',
-    title: 'Grimoire of Alchemy & Distributed Cores',
-    category: 'Backend Alchemy',
-    tagline: 'Constructing resilient high-throughput APIs, fault-tolerant persistence layers, and real-time streams.',
+    title: 'CUBIX68',
+    category: 'Web & 3D Interactive',
+    tagline: 'Interactive Twisty-Puzzle Scanning & Solving Platform',
     accentColor: '#10b981', // Emerald Green
     glowColor: 'rgba(16, 185, 129, 0.45)',
     runeSymbol: '☿',
@@ -161,9 +161,9 @@ export const GRIMOIRES_DATA: GrimoireItem[] = [
     id: 'ai-agents',
     nodeName: 'Grimoire_3',
     modelFile: '/models/archive/grimoire-ai-agents.glb',
-    title: 'Grimoire of Autonomous Familiars',
-    category: 'AI and Autonomous Agents',
-    tagline: 'Breathing agency into language models, multi-agent swarms, local audio biometrics, and neural vision.',
+    title: 'code68',
+    category: 'Developer Tools & AI',
+    tagline: 'Autonomous Terminal AI Coding Agent',
     accentColor: '#818cf8', // Indigo / Celestial Violet
     glowColor: 'rgba(129, 140, 248, 0.45)',
     runeSymbol: '◈',
@@ -205,9 +205,9 @@ export const GRIMOIRES_DATA: GrimoireItem[] = [
     id: 'systems',
     nodeName: 'Grimoire_4',
     modelFile: '/models/archive/grimoire-systems.glb',
-    title: 'Grimoire of Iron & Fundamental Runes',
-    category: 'Systems and Programming',
-    tagline: 'Manipulating low-level system kernels, OS automation, memory safety, and native hardware interfaces.',
+    title: 'swarm66',
+    category: 'Simulations & AI',
+    tagline: 'Autonomous AI Cursor Swarm DOM Reconstructor',
     accentColor: '#3b82f6', // Sapphire Blue
     glowColor: 'rgba(59, 130, 246, 0.45)',
     runeSymbol: '⚙',
@@ -249,9 +249,9 @@ export const GRIMOIRES_DATA: GrimoireItem[] = [
     id: 'creative-3d',
     nodeName: 'Grimoire_5',
     modelFile: '/models/archive/grimoire-creative-3d.glb',
-    title: 'Grimoire of Phantasms & Dimensions',
-    category: '3D and Creative Technology',
-    tagline: 'Summoning real-time 3D realms, custom GLSL shaders, cel-shading pipelines, and interactive spatial artifacts.',
+    title: 'Harry Potter 3D',
+    category: 'Web & 3D Interactive',
+    tagline: 'Interactive Procedural 3D Great Hall Experience',
     accentColor: '#f43f5e', // Crimson / Arcane Rose
     glowColor: 'rgba(244, 63, 94, 0.45)',
     runeSymbol: '◇',
@@ -293,9 +293,9 @@ export const GRIMOIRES_DATA: GrimoireItem[] = [
     id: 'tools',
     nodeName: 'Grimoire_6',
     modelFile: '/models/archive/grimoire-tools.glb',
-    title: 'Grimoire of the Grand Forge',
-    category: 'Tools and Technologies',
-    tagline: 'Harnessing the anvils of modern software engineering: version control, containerization, and continuous delivery.',
+    title: 'programmer66',
+    category: 'Simulations & Games',
+    tagline: '3D Agricultural Drone Simulator & Python Arena',
     accentColor: '#f59e0b', // Amber Gold
     glowColor: 'rgba(245, 158, 11, 0.45)',
     runeSymbol: '⚡',

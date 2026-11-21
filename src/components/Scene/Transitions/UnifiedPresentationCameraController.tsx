@@ -25,17 +25,14 @@ export interface UnifiedPresentationCameraControllerProps {
  * 2. Strict fixed distance lock across all 4 islands (zero zoom).
  * 3. Smooth 360° rotation around the shared presentation anchor [0, 0.8, 0].
  * 4. Zero teleportation or position jumps between islands.
- * 5. Dramatic Cinematic Book Inspection: When a grimoire book is clicked on the Archive island,
- *    camera glides smoothly DOWN to a heroic low-angle upward tilt while the island rises and books float.
- *    Smoothly restores back to standard presentation framing when closed.
  */
 export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCameraControllerProps> = ({
   isTransitioning = false,
   resetSignal = 0,
   onResetComplete,
-  selectedGrimoire = null,
-  activeIsland = 'HOME',
-  inspectDescentY = 0,
+  selectedGrimoire: _selectedGrimoire = null,
+  activeIsland: _activeIsland = 'HOME',
+  inspectDescentY: _inspectDescentY = 0,
 }) => {
   const { camera, size } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
@@ -43,8 +40,7 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
   const isTablet = size.width >= 768 && size.width < 1024;
 
   const isResetting = useRef(false);
-  const isReturningFromInspect = useRef(false);
-  const currentLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0.8, 0));
+
 
   // Responsive focal length adjustments consistent with established framing
   useLayoutEffect(() => {
@@ -75,17 +71,6 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
     return { defaultCamPos, presentationTarget, fixedDistance };
   }, [isMobile, isTablet]);
 
-  const isInspecting = activeIsland === 'ARCHIVE' && !!selectedGrimoire;
-  const prevInspectingRef = useRef(isInspecting);
-
-  // Detect when inspection modal closes to smoothly return camera back UP
-  useEffect(() => {
-    if (prevInspectingRef.current && !isInspecting) {
-      isReturningFromInspect.current = true;
-    }
-    prevInspectingRef.current = isInspecting;
-  }, [isInspecting]);
-
   // Handle camera reset signal
   useEffect(() => {
     if (resetSignal > 0) {
@@ -105,72 +90,7 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
     if (!controlsRef.current) return;
 
     // =========================================================================
-    // 1. BOOK INSPECTION ANIMATION: Camera follows the bubble down to front eye-level!
-    // =========================================================================
-    if (isInspecting) {
-      controlsRef.current.enabled = false;
-
-      // Progress from 0 (at island) to 1 (at new page Y = -10.0)
-      const progress = THREE.MathUtils.clamp(-inspectDescentY / 10.0, 0.0, 1.0);
-
-      // Target front framing at new page: [0, -10.0, 16.5], looking at [0, -10.0, 0]
-      const frontCamX = 0.0;
-      const frontCamY = -10.0;
-      const frontCamZ = isMobile ? 18.0 : 16.5;
-
-      const frontLookX = 0.0;
-      const frontLookY = -10.0;
-      const frontLookZ = 0.0;
-
-      const targetCamX = THREE.MathUtils.lerp(defaultCamPos.x, frontCamX, progress);
-      const targetCamY = THREE.MathUtils.lerp(defaultCamPos.y, frontCamY, progress);
-      const targetCamZ = THREE.MathUtils.lerp(defaultCamPos.z, frontCamZ, progress);
-
-      const targetLookX = THREE.MathUtils.lerp(presentationTarget.x, frontLookX, progress);
-      const targetLookY = THREE.MathUtils.lerp(presentationTarget.y, frontLookY, progress);
-      const targetLookZ = THREE.MathUtils.lerp(presentationTarget.z, frontLookZ, progress);
-
-      camera.position.x = THREE.MathUtils.damp(camera.position.x, targetCamX, 3.5, delta);
-      camera.position.y = THREE.MathUtils.damp(camera.position.y, targetCamY, 3.5, delta);
-      camera.position.z = THREE.MathUtils.damp(camera.position.z, targetCamZ, 3.5, delta);
-
-      currentLookAtRef.current.x = THREE.MathUtils.damp(currentLookAtRef.current.x, targetLookX, 3.5, delta);
-      currentLookAtRef.current.y = THREE.MathUtils.damp(currentLookAtRef.current.y, targetLookY, 3.5, delta);
-      currentLookAtRef.current.z = THREE.MathUtils.damp(currentLookAtRef.current.z, targetLookZ, 3.5, delta);
-
-      camera.lookAt(currentLookAtRef.current);
-      return;
-    }
-
-    // =========================================================================
-    // 2. RETURNING FROM INSPECTION: Camera returns back UP to resting framing
-    // =========================================================================
-    if (isReturningFromInspect.current) {
-      controlsRef.current.enabled = false;
-
-      camera.position.x = THREE.MathUtils.damp(camera.position.x, defaultCamPos.x, 3.5, delta);
-      camera.position.y = THREE.MathUtils.damp(camera.position.y, defaultCamPos.y, 3.5, delta);
-      camera.position.z = THREE.MathUtils.damp(camera.position.z, defaultCamPos.z, 3.5, delta);
-
-      currentLookAtRef.current.x = THREE.MathUtils.damp(currentLookAtRef.current.x, presentationTarget.x, 3.5, delta);
-      currentLookAtRef.current.y = THREE.MathUtils.damp(currentLookAtRef.current.y, presentationTarget.y, 3.5, delta);
-      currentLookAtRef.current.z = THREE.MathUtils.damp(currentLookAtRef.current.z, presentationTarget.z, 3.5, delta);
-
-      camera.lookAt(currentLookAtRef.current);
-
-      const distPos = camera.position.distanceTo(defaultCamPos);
-      if (distPos < 0.08) {
-        camera.position.copy(defaultCamPos);
-        controlsRef.current.target.copy(presentationTarget);
-        controlsRef.current.update();
-        controlsRef.current.enabled = true;
-        isReturningFromInspect.current = false;
-      }
-      return;
-    }
-
-    // =========================================================================
-    // 3. RESET CAMERA SIGNAL
+    // RESET CAMERA SIGNAL
     // =========================================================================
     if (isResetting.current) {
       controlsRef.current.enabled = false;
@@ -193,7 +113,7 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
     }
 
     // =========================================================================
-    // 4. STANDARD PRESENTATION ORBIT CONTROLS
+    // STANDARD PRESENTATION ORBIT CONTROLS
     // =========================================================================
     controlsRef.current.enabled = true;
     enforceFixedDistance(camera, controlsRef.current.target, fixedDistance, 2.5);
@@ -215,7 +135,7 @@ export const UnifiedPresentationCameraController: React.FC<UnifiedPresentationCa
       touches={GLOBAL_ORBIT_CONFIG.touches}
       mouseButtons={GLOBAL_ORBIT_CONFIG.mouseButtons}
       target={[presentationTarget.x, presentationTarget.y, presentationTarget.z]}
-      enabled={!isTransitioning && !isInspecting && !isReturningFromInspect.current}
+      enabled={!isTransitioning}
     />
   );
 };

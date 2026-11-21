@@ -49,6 +49,7 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
   const bookWrappersRef = useRef<Map<string, THREE.Group>>(new Map());
   const bookTiltsRef = useRef<Map<string, THREE.Group>>(new Map());
   const bookHitGroupsRef = useRef<Map<string, THREE.Group>>(new Map());
+  const pointerDownPos = useRef({ x: 0, y: 0 });
 
   // Clone scene cleanly and attach float wrappers for cinematic elevation
   const clonedScene = useMemo(() => {
@@ -219,6 +220,20 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
       onPointerOut={() => {
         setHoveredId(null);
         document.body.style.cursor = 'auto';
+      }}
+      onPointerDown={(e) => {
+        pointerDownPos.current = { x: e.clientX, y: e.clientY };
+      }}
+      onPointerUp={(e) => {
+        const dx = e.clientX - pointerDownPos.current.x;
+        const dy = e.clientY - pointerDownPos.current.y;
+        if (Math.hypot(dx, dy) < 18) {
+          const hitGrimoire = getGrimoireFromHit(e.object);
+          if (hitGrimoire) {
+            e.stopPropagation();
+            onSelectGrimoire(hitGrimoire);
+          }
+        }
       }}
       onClick={(e) => {
         const hitGrimoire = getGrimoireFromHit(e.object);
