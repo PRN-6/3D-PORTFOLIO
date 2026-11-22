@@ -291,8 +291,8 @@ export const Home: React.FC = () => {
       {/* HERO SUBTITLE: Just a Developer */}
       {worldState === 'HOME_IDLE' && <HeroSubtitle />}
 
-      {/* Selected Project Information Panel (Interactive stations in WORKSHOP_WORLD) */}
-      {selectedProject && worldState !== 'ARCHIVE_WORLD' && (
+      {/* Selected Project Information Panel (Interactive 5-column capsules on /projects and workshop stations) */}
+      {selectedProject && (
         <ProjectDetailModal
           project={selectedProject}
           onClose={handleCloseProject}

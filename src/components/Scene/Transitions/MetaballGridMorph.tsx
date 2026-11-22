@@ -57,7 +57,6 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
   const { isLight } = useTheme();
 
   const isMobile = size.width < 768;
-  const isTablet = size.width >= 768 && size.width < 1024;
 
   const timeRef = useRef(0);
   const morphTimeRef = useRef(0);
@@ -67,29 +66,29 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
   // Center anchor in 3D camera space
   const centerAnchor = useMemo(() => new THREE.Vector3(0, 0.7, 0), []);
 
-  // Compute camera basis vectors
-  const { rightVec, upVec, lookVec } = useMemo(() => {
-    const look = new THREE.Vector3().subVectors(centerAnchor, camera.position).normalize();
-    const right = new THREE.Vector3().crossVectors(look, camera.up).normalize();
-    const up = new THREE.Vector3().crossVectors(right, look).normalize();
-    return { rightVec: right, upVec: up, lookVec: look };
-  }, [camera, centerAnchor]);
-
   // Viewport responsive dimensions matching reference image exact aspect ratio and gaps
   const { totalHeight, capsuleRadius, cylinderHeight, colPositions } =
     useMemo(() => {
-      const scaleFactor = isMobile ? 0.65 : isTablet ? 0.88 : 1.0;
-      // 5 columns spanning across the negative space between nav and footer with tight gaps
-      const colWidth = (isMobile ? 2.65 : isTablet ? 3.5 : 4.35) * scaleFactor;
-      const gap = (isMobile ? 0.12 : isTablet ? 0.15 : 0.18) * scaleFactor;
-      const height = (isMobile ? 12.2 : isTablet ? 10.8 : 10.4) * scaleFactor;
-      const radius = colWidth * 0.49;
+      // Presentation camera fixed distance is 21.83 (from [14, 10, 14] to [0, 0.8, 0])
+      const aspect = size.width / Math.max(1, size.height);
+      const fixedDistance = isMobile ? 21.6 : 21.83;
+      // SCENE_CONFIG.camera.fov is 45
+      const vFov = THREE.MathUtils.degToRad(45);
+      const frustumHeight = 2 * Math.tan(vFov / 2) * fixedDistance;
+      const frustumWidth = frustumHeight * aspect;
+
+      // 5 columns spanning 96% of screen width with clean margins (~2%) and tight gaps (~12px)
+      const targetSpan = frustumWidth * (isMobile ? 0.94 : 0.96);
+      const gap = frustumWidth * (isMobile ? 0.010 : 0.009);
+      const width = (targetSpan - 4 * gap) / 5;
+      const height = frustumHeight * (isMobile ? 0.74 : 0.82);
+      const radius = width * 0.495;
       const cylHeight = Math.max(0.1, height - 2 * radius);
 
       // 5 Column centers along X axis (-2, -1, 0, +1, +2)
       const positions: number[] = [];
       for (let i = -2; i <= 2; i++) {
-        positions.push(i * (colWidth + gap));
+        positions.push(i * (width + gap));
       }
 
       return {
@@ -98,45 +97,55 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
         cylinderHeight: cylHeight,
         colPositions: positions,
       };
-    }, [isMobile, isTablet]);
+    }, [size.width, size.height, isMobile]);
 
   // Initial 6 bubble resting positions (in camera coordinates)
   const initialBubblePos = useMemo(() => {
+    const aspect = size.width / Math.max(1, size.height);
+    const fixedDistance = isMobile ? 21.6 : 21.83;
+    const vFov = THREE.MathUtils.degToRad(45);
+    const frustumHeight = 2 * Math.tan(vFov / 2) * fixedDistance;
+    const frustumWidth = frustumHeight * aspect;
+
+    const spreadX = frustumWidth * 0.28;
+    const spreadY = frustumHeight * 0.24;
     return [
-      new THREE.Vector3(-7.2, 2.8, 0.4),  // 0: top left
-      new THREE.Vector3(0.0, 4.2, -0.6),   // 1: top center
-      new THREE.Vector3(7.2, 2.8, 0.5),   // 2: top right
-      new THREE.Vector3(7.2, -2.3, -0.5),  // 3: bottom right
-      new THREE.Vector3(0.0, -3.5, 0.3),   // 4: bottom center
-      new THREE.Vector3(-7.2, -2.3, -0.4), // 5: bottom left
+      new THREE.Vector3(-spreadX,  spreadY,  0.4),  // 0: top left
+      new THREE.Vector3(0.0,      spreadY * 1.35, -0.6), // 1: top center
+      new THREE.Vector3(spreadX,   spreadY,  0.5),  // 2: top right
+      new THREE.Vector3(spreadX,  -spreadY, -0.5),  // 3: bottom right
+      new THREE.Vector3(0.0,     -spreadY * 1.35,  0.3), // 4: bottom center
+      new THREE.Vector3(-spreadX, -spreadY, -0.4),  // 5: bottom left
     ];
-  }, []);
+  }, [size.width, size.height, isMobile]);
 
   // Target positions for the droplets in Phase 2
   const dropletTargets = useMemo(() => {
+    const yTop = totalHeight * 0.26;
+    const yBot = -totalHeight * 0.26;
     return [
-      new THREE.Vector3(colPositions[0], 2.4, 0.0),   // 0 -> Col 0 Top
-      new THREE.Vector3(colPositions[1], 0.0, 0.0),   // 1 -> Col 1 Mid
-      new THREE.Vector3(colPositions[4], 2.4, 0.0),   // 2 -> Col 4 Top
-      new THREE.Vector3(colPositions[4], -2.4, 0.0),  // 3 -> Col 4 Bot
-      new THREE.Vector3(colPositions[3], 0.0, 0.0),   // 4 -> Col 3 Mid
-      new THREE.Vector3(colPositions[0], -2.4, 0.0),  // 5 -> Col 0 Bot
-      new THREE.Vector3(colPositions[2], 0.0, 0.0),   // 6 -> Col 2 Mid (center)
+      new THREE.Vector3(colPositions[0], yTop, 0.0),   // 0 -> Col 0 Top
+      new THREE.Vector3(colPositions[1], 0.0,  0.0),   // 1 -> Col 1 Mid
+      new THREE.Vector3(colPositions[4], yTop, 0.0),   // 2 -> Col 4 Top
+      new THREE.Vector3(colPositions[4], yBot, 0.0),   // 3 -> Col 4 Bot
+      new THREE.Vector3(colPositions[3], 0.0,  0.0),   // 4 -> Col 3 Mid
+      new THREE.Vector3(colPositions[0], yBot, 0.0),   // 5 -> Col 0 Bot
+      new THREE.Vector3(colPositions[2], 0.0,  0.0),   // 6 -> Col 2 Mid (center)
     ];
-  }, [colPositions]);
+  }, [colPositions, totalHeight]);
 
   // Droplet Bezier control points (curving outward/inward for organic liquid trajectory)
   const bezierControls = useMemo(() => {
     return [
-      new THREE.Vector3(colPositions[0] - 1.2, 4.0, 0.5),
-      new THREE.Vector3(colPositions[1] - 0.8, 3.2, -0.3),
-      new THREE.Vector3(colPositions[4] + 1.2, 4.0, 0.5),
-      new THREE.Vector3(colPositions[4] + 1.2, -3.8, -0.3),
-      new THREE.Vector3(colPositions[3] + 0.8, -3.0, 0.2),
-      new THREE.Vector3(colPositions[0] - 1.2, -3.8, -0.3),
-      new THREE.Vector3(0.0, 1.8, 0.0),
+      new THREE.Vector3(colPositions[0] - 1.4,  totalHeight * 0.40,  0.5),
+      new THREE.Vector3(colPositions[1] - 0.8,  totalHeight * 0.32, -0.3),
+      new THREE.Vector3(colPositions[4] + 1.4,  totalHeight * 0.40,  0.5),
+      new THREE.Vector3(colPositions[4] + 1.4, -totalHeight * 0.40, -0.3),
+      new THREE.Vector3(colPositions[3] + 0.8, -totalHeight * 0.32,  0.2),
+      new THREE.Vector3(colPositions[0] - 1.4, -totalHeight * 0.40, -0.3),
+      new THREE.Vector3(0.0, totalHeight * 0.18, 0.0),
     ];
-  }, [colPositions]);
+  }, [colPositions, totalHeight]);
 
   // 3D Capsule Geometry for the 5 vertical columns
   const capsuleGeometry = useMemo(() => {
@@ -158,14 +167,15 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
         uniforms: {
           uTime: { value: 0 },
           uPhase: { value: i * 0.75 },
-          uWaistPinch: { value: 0.17 },
+          uWaistPinch: { value: 0.28 },
           uHalfHeight: { value: totalHeight * 0.5 },
+          uRadius: { value: capsuleRadius },
           uElongation: { value: 0.0 },
           uScaleX: { value: 1.0 },
           uOpacity: { value: 0.0 },
           uRimBoost: { value: 1.0 },
-          uBaseColor: { value: new THREE.Color(isLight ? '#22201d' : '#050508') },
-          uRimColor: { value: new THREE.Color(isLight ? '#8a7d65' : '#2d3748') },
+          uBaseColor: { value: new THREE.Color(isLight ? '#1c1a17' : '#090a0f') },
+          uRimColor: { value: new THREE.Color(isLight ? '#8c7f68' : '#3b4758') },
           uSpecularColor: { value: new THREE.Color('#ffffff') },
         },
         vertexShader: `
@@ -173,9 +183,11 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
           uniform float uPhase;
           uniform float uWaistPinch;
           uniform float uHalfHeight;
+          uniform float uRadius;
           uniform float uElongation;
           uniform float uScaleX;
 
+          varying vec3 vLocalNormal;
           varying vec3 vViewNormal;
           varying vec3 vViewPosition;
           varying float vNormY;
@@ -190,10 +202,10 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
             float effectiveHalfHeight = max(0.001, uHalfHeight * max(0.01, uElongation));
             float normY = clamp(pos.y / effectiveHalfHeight, -1.0, 1.0);
             vNormY = normY;
-            vNormX = clamp(pos.x / 2.0, -1.0, 1.0);
+            vNormX = clamp(pos.x / max(0.001, uRadius), -1.0, 1.0);
 
             // Waist pinch: maximum pinch at normY = 0, zero at caps normY = +-1
-            // Smooth cosine curve: cos(normY * PI / 2)
+            // Cosine curve: cos(normY * PI / 2) creates smooth dumbbell / twin metaball fusion
             float waistPinchCurve = cos(normY * 1.57079632679);
             float pinch = uWaistPinch * waistPinchCurve;
 
@@ -214,6 +226,7 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
             modNormal.y += slopeY * modNormal.x;
             modNormal = normalize(modNormal);
 
+            vLocalNormal = modNormal;
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
             vViewPosition = -mvPosition.xyz;
             vViewNormal = normalize(normalMatrix * modNormal);
@@ -229,6 +242,7 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
           uniform vec3 uRimColor;
           uniform vec3 uSpecularColor;
 
+          varying vec3 vLocalNormal;
           varying vec3 vViewNormal;
           varying vec3 vViewPosition;
           varying float vNormY;
@@ -237,39 +251,48 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
           void main() {
             if (uOpacity < 0.005) discard;
 
-            // Normal in view space (camera space: +X is right, +Y is up, +Z is forward)
-            vec3 normal = normalize(vViewNormal);
-            if (!gl_FrontFacing) normal = -normal;
+            vec3 norm = normalize(vLocalNormal);
+            if (!gl_FrontFacing) norm = -norm;
 
-            vec3 viewDir = normalize(vViewPosition);
+            // Body volume curvature
+            float NdotL = max(norm.z, 0.0);
+            vec3 bodyColor = uBaseColor * (0.85 + 0.35 * NdotL);
 
-            // 1. Edge Fresnel rim lighting (#1a202c / #2d3748) outlining silhouette
-            float fresnel = 1.0 - max(normal.z, 0.0);
+            // 1. Edge Fresnel rim lighting outlining silhouette cleanly against negative space
+            float fresnel = 1.0 - max(norm.z, 0.0);
             float rimPower = pow(fresnel, 2.0) * uRimBoost;
-            vec3 rimLight = uRimColor * (rimPower * 1.85);
+            vec3 rimLight = uRimColor * (rimPower * 1.75);
 
-            // 2. Dual-Lobe Specular Highlights in View Space:
-            // Upper-right lobe: sharp, curved highlight on top-right shoulder (45 degrees)
-            vec3 lightDir1 = normalize(vec3(0.72, 0.70, 0.75));
-            vec3 half1 = normalize(lightDir1 + viewDir);
-            float NdotH1 = max(dot(normal, half1), 0.0);
-            float isUpperRight = smoothstep(0.12, 0.65, vNormY) * smoothstep(-0.25, 0.55, normal.x);
-            float spec1 = pow(NdotH1, 42.0) * (2.6 * isUpperRight);
+            // 2. Dual-Lobe Specular Highlights:
+            // Slanted anisotropic gloss on upper-right shoulder matching reference image
+            vec2 specPos1 = vec2(vNormX - 0.42, vNormY - 0.62);
+            float rotX1 = specPos1.x * 0.707 + specPos1.y * 0.707;
+            float rotY1 = -specPos1.x * 0.707 + specPos1.y * 0.707;
+            float dist1 = (rotX1 * rotX1) * 4.5 + (rotY1 * rotY1) * 1.8;
+            float specCore1 = exp(-dist1 * 12.0) * 1.6;
+            float specGlow1 = exp(-dist1 * 3.2) * 0.50;
+            float spec1 = (specCore1 + specGlow1) * max(norm.z, 0.0);
 
-            // Lower-right lobe: softer, broader secondary reflection on lower half
-            vec3 lightDir2 = normalize(vec3(0.68, -0.32, 0.75));
-            vec3 half2 = normalize(lightDir2 + viewDir);
-            float NdotH2 = max(dot(normal, half2), 0.0);
-            float isLowerRight = smoothstep(-0.15, -0.65, vNormY) * smoothstep(-0.35, 0.45, normal.x);
-            float spec2 = pow(NdotH2, 28.0) * (1.35 * isLowerRight);
+            // Secondary softer reflection on lower-right
+            vec2 specPos2 = vec2(vNormX - 0.44, vNormY + 0.42);
+            float rotX2 = specPos2.x * 0.707 + specPos2.y * 0.707;
+            float rotY2 = -specPos2.x * 0.707 + specPos2.y * 0.707;
+            float dist2 = (rotX2 * rotX2) * 4.8 + (rotY2 * rotY2) * 2.0;
+            float specCore2 = exp(-dist2 * 10.0) * 0.70;
+            float specGlow2 = exp(-dist2 * 2.8) * 0.28;
+            float spec2 = (specCore2 + specGlow2) * max(norm.z, 0.0);
+
+            // 3D Directional Blinn-Phong specular highlight for realistic liquid glass sheen
+            vec3 lightDir = normalize(vec3(0.65, 0.75, 0.82));
+            vec3 halfV = normalize(lightDir + vec3(0.0, 0.0, 1.0));
+            float phong = pow(max(dot(norm, halfV), 0.0), 32.0) * 0.45;
 
             // Suppress specular in the pinched waist center so the middle stays dark and glassy
-            float inWaist = smoothstep(0.40, 0.0, abs(vNormY));
-            float waistSuppression = 1.0 - inWaist * 0.92;
+            float inWaist = smoothstep(0.38, 0.0, abs(vNormY));
+            float waistSuppression = 1.0 - inWaist * 0.90;
 
-            vec3 specular = uSpecularColor * ((spec1 + spec2) * waistSuppression);
-
-            vec3 color = uBaseColor + rimLight + specular;
+            vec3 specular = uSpecularColor * ((spec1 + spec2 + phong) * waistSuppression);
+            vec3 color = bodyColor + rimLight + specular;
 
             gl_FragColor = vec4(color, uOpacity);
           }
@@ -350,8 +373,8 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
 
   // Update theme colors when mode changes
   useEffect(() => {
-    const baseColor = new THREE.Color(isLight ? '#22201d' : '#050508');
-    const rimColor = new THREE.Color(isLight ? '#8a7d65' : '#222938');
+    const baseColor = new THREE.Color(isLight ? '#1c1a17' : '#090a0f');
+    const rimColor = new THREE.Color(isLight ? '#8c7f68' : '#3b4758');
 
     columnMaterials.forEach((mat) => {
       mat.uniforms.uBaseColor.value = baseColor;
@@ -375,19 +398,58 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
     timeRef.current += delta;
     const t = timeRef.current;
 
+    // Real-time camera view basis vectors at centerAnchor (zero foreshortening across any camera angle)
+    const currLook = new THREE.Vector3().subVectors(centerAnchor, camera.position).normalize();
+    const currRight = new THREE.Vector3().crossVectors(currLook, camera.up).normalize();
+    const currUp = new THREE.Vector3().crossVectors(currRight, currLook).normalize();
+
     // -------------------------------------------------------------------------
-    // REVERSE MODE: Morph back from capsules to droplets then center
+    // REVERSE MODE: Retract capsules into droplets, then droplets fly to center
     // -------------------------------------------------------------------------
     if (isReversing) {
-      reverseTimeRef.current += delta * 1.8;
-      const revP = Math.min(1.0, reverseTimeRef.current / 1.0);
+      reverseTimeRef.current += delta * 1.5;
+      const revP = Math.min(1.0, reverseTimeRef.current / 1.15);
+
+      // Phase 1 of reverse (0.0 to 0.35): Columns shrink vertically along Y into round droplets
+      const shrinkPhase = THREE.MathUtils.clamp(revP / 0.35, 0.0, 1.0);
+      const colElong = 1.0 - easeCubicOut(shrinkPhase);
+      const colOpacity = Math.max(0.0, 1.0 - shrinkPhase * 1.6);
+      const dropOpacity = THREE.MathUtils.clamp(shrinkPhase * 1.6, 0.0, 1.0);
 
       columnMaterials.forEach((mat) => {
-        mat.uniforms.uOpacity.value = Math.max(0.0, 1.0 - revP * 1.8);
+        mat.uniforms.uElongation.value = colElong;
+        mat.uniforms.uOpacity.value = colOpacity;
       });
-      dropletMaterials.forEach((mat) => {
-        mat.uniforms.uOpacity.value = Math.max(0.0, 1.0 - revP);
-      });
+
+      // Phase 2 of reverse (0.30 to 1.0): Droplets fly back along Bezier to center [0, 0, 0]
+      const flyPhase = THREE.MathUtils.clamp((revP - 0.30) / 0.70, 0.0, 1.0);
+      const flyEase = easePower3InOut(flyPhase);
+      const mergeShrink = flyPhase > 0.65 ? Math.max(0.0, 1.0 - (flyPhase - 0.65) / 0.35) : 1.0;
+
+      for (let i = 0; i < 7; i++) {
+        const mesh = dropletRefs.current[i];
+        const mat = dropletMaterials[i];
+        if (!mesh || !mat) continue;
+
+        mat.uniforms.uTime.value = t;
+        mat.uniforms.uScale.value = 0.45 * mergeShrink;
+        mat.uniforms.uOpacity.value = Math.max(0.0, (1.0 - flyPhase) * dropOpacity);
+
+        const targetP = dropletTargets[i];
+        const centerP = new THREE.Vector3(0, 0, 0);
+        const ctrlP = bezierControls[i];
+
+        // Glide back towards center anchor
+        const curLocal = quadBezier(targetP, ctrlP, centerP, flyEase);
+        const worldP = centerAnchor
+          .clone()
+          .addScaledVector(currRight, curLocal.x)
+          .addScaledVector(currUp, curLocal.y)
+          .addScaledVector(currLook, -curLocal.z);
+
+        mesh.position.copy(worldP);
+        mesh.visible = mat.uniforms.uOpacity.value > 0.01;
+      }
       return;
     }
 
@@ -445,9 +507,9 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
       // Convert local camera coordinates into world position
       const worldP = centerAnchor
         .clone()
-        .addScaledVector(rightVec, curLocal.x)
-        .addScaledVector(upVec, curLocal.y)
-        .addScaledVector(lookVec, -curLocal.z);
+        .addScaledVector(currRight, curLocal.x)
+        .addScaledVector(currUp, curLocal.y)
+        .addScaledVector(currLook, -curLocal.z);
 
       mesh.position.copy(worldP);
       mesh.visible = dropletOpacity > 0.01;
@@ -472,9 +534,9 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
       // Capsule elongation: stretches from round droplet into full capsule height
       mat.uniforms.uElongation.value = e3;
 
-      // Capsule waist pinch: starts at 0.38 (fusing metaball), relaxes to 0.17
-      const settledPinch = 0.17 + 0.018 * Math.sin(t * 2.2 + colIndex * 0.85);
-      const currentPinch = THREE.MathUtils.lerp(0.38, settledPinch, e3);
+      // Capsule waist pinch: starts at 0.44 (fusing metaball), relaxes to 0.28
+      const settledPinch = 0.28 + 0.02 * Math.sin(t * 2.2 + colIndex * 0.85);
+      const currentPinch = THREE.MathUtils.lerp(0.44, settledPinch, e3);
       mat.uniforms.uWaistPinch.value = currentPinch;
 
       // Capsule opacity: fades in as droplets fuse into it
@@ -501,9 +563,9 @@ export const MetaballGridMorph: React.FC<MetaballGridMorphProps> = ({
       // Set world position of column
       const worldColPos = centerAnchor
         .clone()
-        .addScaledVector(rightVec, posX)
-        .addScaledVector(upVec, 0.0)
-        .addScaledVector(lookVec, 0.0);
+        .addScaledVector(currRight, posX)
+        .addScaledVector(currUp, 0.0)
+        .addScaledVector(currLook, 0.0);
 
       mesh.position.copy(worldColPos);
       mesh.quaternion.copy(camera.quaternion);
