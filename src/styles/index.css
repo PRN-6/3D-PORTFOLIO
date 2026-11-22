@@ -346,3 +346,254 @@ input[type="range"].music-volume-slider::-moz-range-thumb {
   box-shadow: 0 0 4px rgba(34, 32, 29, 0.4);
 }
 
+/* ========================================================================== */
+/* 3D GRIMOIRE TOME: REALISTIC BOOK OPENING & 3D PAGE-CURL ANIMATIONS         */
+/* ========================================================================== */
+
+/* Typography for Ancient Grimoire */
+.font-grimoire-title {
+  font-family: 'Cinzel', 'Playfair Display', 'Bodoni Moda', 'Georgia', serif;
+}
+.font-grimoire-body {
+  font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+}
+
+/* Authentic Aged Parchment Paper Background */
+.parchment-page-bg {
+  background: linear-gradient(135deg, #f7f0e0 0%, #faefe0 45%, #f4e8d2 85%, #e8d7ba 100%);
+  color: #2b1a0d;
+}
+
+.parchment-page-left {
+  background: linear-gradient(to right, #ece0c8 0%, #f7f1e3 15%, #faf3e6 65%, #f1e4cd 92%, #cbb790 98%, #4a3820 100%);
+  color: #2b1a0d;
+  box-shadow: inset -25px 0 35px -10px rgba(50, 30, 10, 0.45);
+}
+
+.parchment-page-right {
+  background: linear-gradient(to left, #ece0c8 0%, #f7f1e3 15%, #faf3e6 65%, #f1e4cd 92%, #cbb790 98%, #4a3820 100%);
+  color: #2b1a0d;
+  box-shadow: inset 25px 0 35px -10px rgba(50, 30, 10, 0.45);
+}
+
+/* 1. Dramatic Tome Spring & Centering Entrance */
+@keyframes grimoire-tome-unfold-entrance {
+  0% {
+    transform: perspective(2200px) rotateX(15deg) scale(0.68) translateY(45px);
+    opacity: 0;
+    filter: drop-shadow(0 50px 90px rgba(0, 0, 0, 0.95));
+  }
+  40% {
+    opacity: 1;
+  }
+  75% {
+    transform: perspective(2200px) rotateX(3deg) scale(1.02) translateY(-2px);
+  }
+  100% {
+    transform: perspective(2200px) rotateX(5deg) scale(1.0) translateY(0);
+    opacity: 1;
+    filter: drop-shadow(0 30px 70px rgba(0, 0, 0, 0.9));
+  }
+}
+
+.animate-grimoire-tome-entrance {
+  animation: grimoire-tome-unfold-entrance 0.85s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+/* 2. Left Wing Blossoms Outward From Spine (During Book Opening) */
+@keyframes grimoire-left-wing-blossom {
+  0% {
+    transform: rotateY(-75deg) scale(0.95);
+    opacity: 0.35;
+    filter: brightness(0.6) drop-shadow(-12px 12px 24px rgba(0, 0, 0, 0.8));
+  }
+  60% {
+    transform: rotateY(-10deg) scale(1.01);
+    opacity: 0.95;
+    filter: brightness(0.92);
+  }
+  100% {
+    transform: rotateY(4deg) scale(1.0);
+    opacity: 1;
+    filter: brightness(1.0);
+  }
+}
+
+.animate-grimoire-left-blossom {
+  transform-origin: right center !important;
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+  animation: grimoire-left-wing-blossom 0.85s cubic-bezier(0.25, 0.85, 0.35, 1) forwards;
+}
+
+/* 3. Right Wing Blossoms Outward From Spine (During Book Opening) */
+@keyframes grimoire-right-wing-blossom {
+  0% {
+    transform: rotateY(75deg) scale(0.95);
+    opacity: 0.35;
+    filter: brightness(0.6) drop-shadow(12px 12px 24px rgba(0, 0, 0, 0.8));
+  }
+  60% {
+    transform: rotateY(10deg) scale(1.01);
+    opacity: 0.95;
+    filter: brightness(0.92);
+  }
+  100% {
+    transform: rotateY(-4deg) scale(1.0);
+    opacity: 1;
+    filter: brightness(1.0);
+  }
+}
+
+.animate-grimoire-right-blossom {
+  transform-origin: left center !important;
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+  animation: grimoire-right-wing-blossom 0.85s cubic-bezier(0.25, 0.85, 0.35, 1) forwards;
+}
+
+/* 4. Central Spine Arcane Radiance Flare */
+@keyframes spine-radiance-flare {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.1) scaleY(0.4);
+  }
+  35% {
+    opacity: 1;
+    transform: scaleX(2.8) scaleY(1.2);
+    filter: blur(6px);
+  }
+  70% {
+    opacity: 0.65;
+    transform: scaleX(1.6) scaleY(1.05);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.0) scaleY(1.0);
+    filter: blur(16px);
+  }
+}
+
+.animate-spine-radiance {
+  animation: spine-radiance-flare 0.9s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+}
+
+/* 5. Realistic 3D Forward Page Curl & Turn (Right Page Curls & Turns to Left) */
+@keyframes page-turn-curl-forward {
+  0% {
+    transform: rotateY(0deg) translateZ(2px) skewY(0deg) scale(1.0);
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.15));
+  }
+  25% {
+    transform: rotateY(-45deg) translateZ(75px) skewY(-3deg) scaleY(1.025) scaleX(0.97);
+    filter: drop-shadow(-20px 16px 32px rgba(0, 0, 0, 0.7));
+  }
+  50% {
+    transform: rotateY(-90deg) translateZ(115px) skewY(-4deg) scaleY(1.04) scaleX(0.95);
+    filter: drop-shadow(-32px 24px 48px rgba(0, 0, 0, 0.85));
+  }
+  75% {
+    transform: rotateY(-135deg) translateZ(75px) skewY(-2deg) scaleY(1.02) scaleX(0.97);
+    filter: drop-shadow(-20px 14px 28px rgba(0, 0, 0, 0.65));
+  }
+  100% {
+    transform: rotateY(-180deg) translateZ(2px) skewY(0deg) scale(1.0);
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.15));
+  }
+}
+
+.animate-page-curl-forward {
+  transform-origin: left center !important;
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+  animation: page-turn-curl-forward 0.62s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* 6. Realistic 3D Backward Page Curl & Turn (Left Page Curls & Turns to Right) */
+@keyframes page-turn-curl-backward {
+  0% {
+    transform: rotateY(0deg) translateZ(2px) skewY(0deg) scale(1.0);
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.15));
+  }
+  25% {
+    transform: rotateY(45deg) translateZ(75px) skewY(3deg) scaleY(1.025) scaleX(0.97);
+    filter: drop-shadow(20px 16px 32px rgba(0, 0, 0, 0.7));
+  }
+  50% {
+    transform: rotateY(90deg) translateZ(115px) skewY(4deg) scaleY(1.04) scaleX(0.95);
+    filter: drop-shadow(28px 22px 44px rgba(0, 0, 0, 0.85));
+  }
+  75% {
+    transform: rotateY(135deg) translateZ(75px) skewY(2deg) scaleY(1.02) scaleX(0.97);
+    filter: drop-shadow(20px 14px 28px rgba(0, 0, 0, 0.65));
+  }
+  100% {
+    transform: rotateY(180deg) translateZ(2px) skewY(0deg) scale(1.0);
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.15));
+  }
+}
+
+.animate-page-curl-backward {
+  transform-origin: right center !important;
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+  animation: page-turn-curl-backward 0.62s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* 8. Dynamic Cylindrical Page Highlight & Shadow Gradient Overlay */
+@keyframes page-cylindrical-highlight {
+  0% {
+    opacity: 0;
+    background-position: 0% 0%;
+  }
+  30% {
+    opacity: 0.6;
+    background-position: 30% 0%;
+  }
+  60% {
+    opacity: 0.85;
+    background-position: 70% 0%;
+  }
+  100% {
+    opacity: 0;
+    background-position: 100% 0%;
+  }
+}
+
+.animate-page-cylindrical-lighting {
+  background-size: 200% 100%;
+  animation: page-cylindrical-highlight 0.62s ease-in-out forwards;
+}
+
+/* 9. Soft Moving Shadow Underneath Turning Page */
+@keyframes page-cast-shadow {
+  0% {
+    opacity: 0.1;
+  }
+  40% {
+    opacity: 0.65;
+  }
+  80% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-page-cast-shadow {
+  animation: page-cast-shadow 0.62s ease-in-out forwards;
+}
+
+/* 10. Interactive Corner Dog-Ear Hover & Turn Pulse */
+.dog-ear-corner {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+}
+.dog-ear-corner:hover {
+  transform: scale(1.22);
+  filter: drop-shadow(-3px -3px 5px rgba(0, 0, 0, 0.45));
+}
+
+
+
