@@ -229,11 +229,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
       {/* Upper Line: PRINSON ROYAL NAZARETH traveling RIGHT (->)                   */}
       {/* Lower Line: PRINSON ROYAL NAZARETH traveling LEFT (<-)                    */}
       {/* ========================================================================= */}
-      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[70px] pb-16 lg:pb-20 relative z-[3] overflow-hidden select-none pointer-events-none">
+      <div className="hidden md:flex flex-col justify-between w-full h-full pt-[70px] pb-12 lg:pb-16 relative z-[3] overflow-hidden select-none pointer-events-none">
         {/* UPPER LINE: Full Name traveling RIGHT in continuous loop */}
         <div
           data-testid="prinson-text"
-          className="relative w-full h-[54vh] flex items-start overflow-hidden pointer-events-none select-none"
+          className="relative w-full h-[46vh] flex items-start overflow-visible pointer-events-none select-none"
         >
           <div className="flex w-max will-change-transform">
             <div className="animate-marquee-right flex shrink-0 items-center">
@@ -242,8 +242,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -256,8 +256,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -270,8 +270,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -286,8 +286,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -300,8 +300,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -314,8 +314,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -327,10 +327,10 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
           </div>
         </div>
 
-        {/* LOWER LINE: Full Name traveling LEFT in continuous loop (Positioned higher to avoid covering footer) */}
+        {/* LOWER LINE: Full Name traveling LEFT in continuous loop */}
         <div
           data-testid="royal-text"
-          className="relative w-full h-[46vh] lg:h-[48vh] flex items-end pb-8 lg:pb-12 overflow-hidden pointer-events-none select-none -translate-y-3 lg:-translate-y-6"
+          className="relative w-full h-[46vh] flex items-end pb-4 lg:pb-6 overflow-visible pointer-events-none select-none"
         >
           <div data-testid="nazareth-text" className="flex w-max will-change-transform">
             <div className="animate-marquee-left flex shrink-0 items-center">
@@ -339,8 +339,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -353,8 +353,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -367,8 +367,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -383,8 +383,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -397,8 +397,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -411,8 +411,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(140px, 48vh, 520px)',
-                  lineHeight: '0.82',
+                  fontSize: 'clamp(130px, 42vh, 460px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -428,11 +428,11 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
       {/* ========================================================================= */}
       {/* MOBILE LAYOUT (< 768px): KINETIC TRAVELING LOOP MARQUEE TYPOGRAPHY          */}
       {/* ========================================================================= */}
-      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-[54px] pb-16 relative z-[3] overflow-hidden select-none pointer-events-none">
+      <div className="md:hidden flex flex-col justify-between items-center w-full h-full pt-[54px] pb-12 relative z-[3] overflow-hidden select-none pointer-events-none">
         {/* UPPER MOBILE TIER: Traveling RIGHT */}
         <div
           data-testid="prinson-mobile-text"
-          className="relative w-full h-[36vh] flex items-center overflow-hidden pointer-events-none select-none"
+          className="relative w-full h-[35vh] flex items-center overflow-visible pointer-events-none select-none"
         >
           <div className="flex w-max will-change-transform">
             <div className="animate-marquee-right flex shrink-0 items-center">
@@ -441,8 +441,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -455,8 +455,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -471,8 +471,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -485,8 +485,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorPrimary,
                   filter: textShadowPrimary,
                   letterSpacing: '-0.02em',
@@ -498,10 +498,10 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
           </div>
         </div>
 
-        {/* LOWER MOBILE TIER: Traveling LEFT (Positioned higher to avoid covering footer) */}
+        {/* LOWER MOBILE TIER: Traveling LEFT */}
         <div
           data-testid="royal-mobile-text"
-          className="relative w-full h-[34vh] flex items-center pb-6 overflow-hidden pointer-events-none select-none -translate-y-3"
+          className="relative w-full h-[35vh] flex items-center pb-2 overflow-visible pointer-events-none select-none"
         >
           <div data-testid="nazareth-mobile-text" className="flex w-max will-change-transform">
             <div className="animate-marquee-left flex shrink-0 items-center">
@@ -510,8 +510,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -524,8 +524,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -540,8 +540,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
@@ -554,8 +554,8 @@ export const CinematicBackgroundTitle: React.FC<CinematicBackgroundTitleProps> =
                 style={{
                   fontFamily: "'Anton', 'Bebas Neue', 'Oswald', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(80px, 26vh, 220px)',
-                  lineHeight: '0.85',
+                  fontSize: 'clamp(70px, 22vh, 180px)',
+                  lineHeight: '0.88',
                   color: textColorSecondary,
                   filter: textShadowSecondary,
                   letterSpacing: '-0.02em',
