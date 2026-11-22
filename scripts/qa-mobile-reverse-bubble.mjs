@@ -49,3 +49,4 @@ run().catch(err => {
   console.error('Mobile QA error:', err);
   process.exit(1);
 });
+

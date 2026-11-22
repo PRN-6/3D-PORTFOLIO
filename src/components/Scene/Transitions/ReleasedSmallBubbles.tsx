@@ -10,6 +10,7 @@ import { PROJECTS_DATA, type ProjectItem } from '../../../data/projectsData';
 GRIMOIRES_DATA.forEach((grimoire) => {
   useGLTF.preload(grimoire.modelFile);
 });
+useGLTF.preload('/models/archive/floating-open-book.glb');
 
 export interface SmallBubbleItem {
   id: number;
@@ -194,6 +195,9 @@ interface RevealedGrimoireBookProps {
   isHovered: boolean;
   isReversing?: boolean;
   reverseBooksProgress?: number;
+  isOpened?: boolean;
+  isOtherOpened?: boolean;
+  openProgress?: number;
   onPointerOver: () => void;
   onPointerOut: () => void;
   onClick: () => void;
@@ -210,13 +214,19 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
   isHovered,
   isReversing = false,
   reverseBooksProgress = 0,
+  isOpened = false,
+  isOtherOpened = false,
+  openProgress = 0,
   onPointerOver,
   onPointerOut,
   onClick,
 }) => {
   const gltf = useGLTF(grimoire.modelFile);
+  const openBookGltf = useGLTF('/models/archive/floating-open-book.glb');
   const ringRef = useRef<THREE.Mesh>(null);
   const bookGroupRef = useRef<THREE.Group>(null);
+  const closedGroupRef = useRef<THREE.Group>(null);
+  const openGroupRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
 
   const clonedScene = useMemo(() => {
@@ -229,6 +239,29 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
     });
     return clone;
   }, [gltf.scene]);
+
+  const clonedOpenScene = useMemo(() => {
+    const clone = openBookGltf.scene.clone(true);
+    clone.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        if (mesh.material) {
+          const mat = (mesh.material as THREE.MeshStandardMaterial).clone();
+          if (mesh.name.toLowerCase().includes('violet')) {
+            mat.color = new THREE.Color(grimoire.accentColor);
+            mat.emissive = new THREE.Color(grimoire.accentColor);
+            mat.emissiveIntensity = 0.45;
+          } else if (mesh.name.toLowerCase().includes('paper')) {
+            mat.color = new THREE.Color('#f4ede2');
+          }
+          mesh.material = mat;
+        }
+      }
+    });
+    return clone;
+  }, [openBookGltf.scene, grimoire.accentColor]);
 
   // Apply emissive highlights on hover
   useEffect(() => {
@@ -282,6 +315,64 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
       return;
     }
 
+    if (isOtherOpened) {
+      // Another book is clicked and opening: smoothly shrink away this book
+      const s = THREE.MathUtils.damp(bookGroupRef.current.scale.x, 0.0, 10.0, delta);
+      bookGroupRef.current.scale.set(s, s, s);
+      bookGroupRef.current.visible = s > 0.005;
+      return;
+    }
+
+    if (isOpened) {
+      // THIS BOOK IS OPENED: Zoom forward to center screen, face camera, and unfold open book
+      bookGroupRef.current.visible = true;
+      const openProg = THREE.MathUtils.clamp(openProgress, 0.0, 1.0);
+      const targetScale = baseScale * THREE.MathUtils.lerp(1.0, 1.6, openProg);
+      bookGroupRef.current.scale.set(targetScale, targetScale, targetScale);
+
+      // Smoothly slerp orientation to face the camera directly with reading tilt
+      bookGroupRef.current.quaternion.slerp(camera.quaternion, delta * 7.5);
+      bookGroupRef.current.rotateX(0.08);
+
+      // Book opening unfolding effect:
+      // When openProg passes 0.35, the closed tome opens up into the open book model
+      if (closedGroupRef.current && openGroupRef.current) {
+        if (openProg > 0.32) {
+          const unfold = THREE.MathUtils.clamp((openProg - 0.32) / 0.68, 0.0, 1.0);
+          const closedScale = Math.max(0.0, 1.0 - unfold * 1.5);
+          closedGroupRef.current.scale.set(closedScale, closedScale, closedScale);
+          closedGroupRef.current.visible = closedScale > 0.01;
+
+          openGroupRef.current.visible = true;
+          const openScale = THREE.MathUtils.lerp(0.35, 1.0, unfold);
+          openGroupRef.current.scale.set(openScale, openScale, openScale);
+          openGroupRef.current.rotation.x = -Math.PI / 4;
+        } else {
+          closedGroupRef.current.visible = true;
+          closedGroupRef.current.scale.set(1, 1, 1);
+          openGroupRef.current.visible = false;
+          openGroupRef.current.scale.set(0, 0, 0);
+        }
+      }
+
+      if (ringRef.current) {
+        const ringScale = THREE.MathUtils.lerp(1.0, 1.65, openProg);
+        ringRef.current.scale.set(ringScale, ringScale, ringScale);
+        ringRef.current.rotation.z += delta * 2.2;
+      }
+      return;
+    }
+
+    // Normal floating state (no book opened)
+    if (closedGroupRef.current) {
+      closedGroupRef.current.visible = true;
+      closedGroupRef.current.scale.set(1, 1, 1);
+    }
+    if (openGroupRef.current) {
+      openGroupRef.current.visible = false;
+      openGroupRef.current.scale.set(0, 0, 0);
+    }
+
     const ft = floatingTimerRef.current;
     const timeSincePop = Math.max(0.0, ft - popTime);
     const tau = Math.min(1.0, timeSincePop / 0.35);
@@ -307,6 +398,7 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
     bookGroupRef.current.rotateY(-0.24 + Math.sin(t * 1.5 + index * 1.1) * 0.07);
 
     if (ringRef.current) {
+      ringRef.current.scale.set(1, 1, 1);
       ringRef.current.rotation.z += delta * (isHovered ? 1.4 : 0.45);
     }
   });
@@ -317,8 +409,15 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
       visible={false}
       scale={[0, 0, 0]}
     >
-      {/* 3D Grimoire Book Model */}
-      <primitive object={clonedScene} />
+      {/* 1. Closed 3D Grimoire Book Model */}
+      <group ref={closedGroupRef}>
+        <primitive object={clonedScene} />
+      </group>
+
+      {/* 2. Opened 3D Grimoire Book Model (Unfolds on selection) */}
+      <group ref={openGroupRef} visible={false} scale={[0, 0, 0]}>
+        <primitive object={clonedOpenScene} />
+      </group>
 
       {/* Delicate Rotating Arcane Aura Ring Beneath Floating Book */}
       <mesh
@@ -330,7 +429,7 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
         <meshBasicMaterial
           color={grimoire.accentColor}
           transparent
-          opacity={isHovered ? 0.75 : 0.22}
+          opacity={isOpened ? 0.95 : isHovered ? 0.75 : 0.22}
           blending={THREE.AdditiveBlending}
           side={THREE.DoubleSide}
           depthWrite={false}
@@ -341,19 +440,19 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
       <pointLight
         position={[0, 0.4, 1.2]}
         color="#ffffff"
-        intensity={isHovered ? 2.5 : 1.6}
-        distance={6}
+        intensity={isOpened ? 4.5 : isHovered ? 2.5 : 1.6}
+        distance={7}
         decay={2}
       />
       <pointLight
         position={[0, -0.2, 0.8]}
         color={grimoire.accentColor}
-        intensity={isHovered ? 3.8 : 2.2}
-        distance={5}
+        intensity={isOpened ? 5.5 : isHovered ? 3.8 : 2.2}
+        distance={6}
         decay={2}
       />
 
-      {/* 3D Floating Project Name Plate (Always visible once popped) */}
+      {/* 3D Floating Project Name Plate (Always visible once popped, hidden when opened) */}
       <Html
         position={[0, -1.18, 0]}
         center
@@ -374,7 +473,9 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
             onPointerOut();
           }}
           className={`flex flex-col items-center cursor-pointer transition-all duration-300 ${
-            isPopped && !isReversing ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-75 pointer-events-none'
+            isPopped && !isReversing && !isOpened && !isOtherOpened
+              ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+              : 'opacity-0 translate-y-2 scale-75 pointer-events-none'
           }`}
         >
           {/* Main Project Name Pill */}
@@ -473,7 +574,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
   onSelectGrimoire,
   selectedGrimoire: _selectedGrimoire,
   onSelectProject,
-  selectedProject: _selectedProject,
+  selectedProject,
 }) => {
   const { camera, size } = useThree();
   const isMobile = size.width < 768;
@@ -487,6 +588,14 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
   const [poppedMask, setPoppedMask] = useState<boolean[]>([false, false, false, false, false, false]);
   const popTimesRef = useRef<number[]>([-1, -1, -1, -1, -1, -1]);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Track which project book is currently opened to cover screen
+  const openedBookIndex = useMemo(() => {
+    if (!selectedProject) return null;
+    const idx = PROJECTS_DATA.findIndex((p) => p.id === selectedProject.id);
+    return idx >= 0 ? idx : null;
+  }, [selectedProject]);
+  const currentOpenProgress = useRef<number[]>([0, 0, 0, 0, 0, 0]);
 
   // Reset pop states if deactivated
   useEffect(() => {
@@ -528,6 +637,11 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
         .addScaledVector(lookVec, -b.depth);
     });
   }, [centerAnchor, rightVec, upVec, lookVec, activePresets]);
+
+  // Pre-calculate center foreground target for opened book
+  const centerFront = useMemo(() => {
+    return centerAnchor.clone().addScaledVector(lookVec, isMobile ? -3.8 : -4.8);
+  }, [centerAnchor, lookVec, isMobile]);
 
   // Pre-calculate start positions along main bubble surface
   const startPositions = useMemo(() => {
@@ -670,8 +784,6 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
       const floatY = Math.cos(t * (1.6 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.16 : 0.24) * ease;
       const floatZ = Math.sin(t * (1.1 * b.wobbleSpeed) + b.phase) * 0.14 * ease;
 
-      grp.position.set(curX + floatX, curY + floatY, curZ + floatZ);
-
       // Budding pop scale curve: expands to 1.16 then settles to 1.0
       let s = 0.0;
       if (tau < 0.35) {
@@ -684,8 +796,49 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
       const breath = Math.sin(t * (2.2 * b.wobbleSpeed) + b.phase) * (isMobile ? 0.035 : 0.025) * ease;
       const finalScale = Math.max(0.0, (s + breath) * tearFactor);
 
-      // Bubble container scale (applied while traveling)
-      grp.scale.set(finalScale, finalScale, finalScale);
+      // -----------------------------------------------------------------------
+      // BOOK OPENING / SCREEN-COVERING ANIMATION COORDINATION
+      // -----------------------------------------------------------------------
+      if (openedBookIndex !== null) {
+        if (index === openedBookIndex) {
+          // THIS BOOK GLIDES TO CENTER FOREGROUND
+          currentOpenProgress.current[index] = THREE.MathUtils.damp(
+            currentOpenProgress.current[index],
+            1.0,
+            7.0,
+            delta
+          );
+          grp.position.lerp(centerFront, Math.min(1.0, delta * 7.5));
+          grp.scale.set(1.0, 1.0, 1.0);
+          grp.visible = true;
+          return;
+        } else {
+          // OTHER 5 BOOKS SHRINK AWAY SMOOTHLY
+          currentOpenProgress.current[index] = THREE.MathUtils.damp(
+            currentOpenProgress.current[index],
+            0.0,
+            10.0,
+            delta
+          );
+          const curS = THREE.MathUtils.damp(grp.scale.x, 0.0, 9.0, delta);
+          grp.scale.set(curS, curS, curS);
+          grp.visible = curS > 0.005;
+          return;
+        }
+      } else {
+        // NO BOOK OPENED: RESTORE ALL BOOKS TO NORMAL CONSTELLATION
+        currentOpenProgress.current[index] = THREE.MathUtils.damp(
+          currentOpenProgress.current[index],
+          0.0,
+          8.0,
+          delta
+        );
+        const normalPos = new THREE.Vector3(curX + floatX, curY + floatY, curZ + floatZ);
+        grp.position.lerp(normalPos, Math.min(1.0, delta * 8.0));
+        const curS = THREE.MathUtils.damp(grp.scale.x, finalScale, 8.0, delta);
+        grp.scale.set(curS, curS, curS);
+        grp.visible = tearFactor > 0.01;
+      }
     });
   });
 
@@ -781,6 +934,9 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
               isHovered={hoveredIndex === index}
               isReversing={isReversing}
               reverseBooksProgress={reverseBooksProgress}
+              isOpened={openedBookIndex === index}
+              isOtherOpened={openedBookIndex !== null && openedBookIndex !== index}
+              openProgress={currentOpenProgress.current[index] || 0}
               onPointerOver={() => setHoveredIndex(index)}
               onPointerOut={() => setHoveredIndex(null)}
               onClick={() => {
