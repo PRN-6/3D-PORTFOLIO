@@ -15,7 +15,6 @@ import { ContactModal } from '../components/UI/ContactModal';
 import { ProjectsModal } from '../components/UI/ProjectsModal';
 import { ProductsModal } from '../components/UI/ProductsModal';
 import { ProjectDetailModal } from '../components/UI/ProjectDetailModal';
-import { GrimoireDetailModal } from '../components/UI/GrimoireDetailModal';
 import { ArchiveScrollModal } from '../components/UI/ArchiveScrollModal';
 import { useModelInteraction } from '../hooks/useModelInteraction';
 import { useTheme } from '../context/ThemeContext';
@@ -74,7 +73,19 @@ export const Home: React.FC = () => {
 
   const handleResetCamera = useCallback(() => {
     setFocusedForestLandmark('overview');
+    setSelectedGrimoire(null);
     setResetSignal((prev) => prev + 1);
+  }, []);
+
+  // Global Escape handler to deselect grimoire / return from bubbles
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedGrimoire(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // =========================================================================
@@ -151,10 +162,6 @@ export const Home: React.FC = () => {
   // =========================================================================
   const handleSelectGrimoire = useCallback((grimoire: GrimoireItem) => {
     setSelectedGrimoire(grimoire);
-  }, []);
-
-  const handleCloseGrimoire = useCallback(() => {
-    setSelectedGrimoire(null);
   }, []);
 
   const handleOpenScroll = useCallback(() => {
@@ -311,15 +318,6 @@ export const Home: React.FC = () => {
           navigate('/contact');
         }}
       />
-
-      {/* WORLD C: Interactive Grimoire Details / Return Navigation (shown when inspecting floating books) */}
-      {worldState === 'ARCHIVE_WORLD' && !selectedProject && (
-        <GrimoireDetailModal
-          grimoire={selectedGrimoire}
-          onClose={handleCloseGrimoire}
-          onSelectGrimoire={handleSelectGrimoire}
-        />
-      )}
 
       {/* WORLD C & D: Archmage's Chronicle & Biography Parchment Scroll (About Modal) */}
       <ArchiveScrollModal

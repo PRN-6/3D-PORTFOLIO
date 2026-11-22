@@ -275,7 +275,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
         })}
 
       {/* 2. CONTINUOUS 4-PHASE METABALL GRID MORPH INTO 5 VERTICAL CAPSULES */}
-      {releaseProgress >= 0.95 && (
+      {releaseProgress >= 0.95 && !isReversing && (
         <MetaballGridMorph
           active={active}
           releaseProgress={releaseProgress}

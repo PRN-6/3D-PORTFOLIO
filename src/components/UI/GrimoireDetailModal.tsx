@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import React from 'react';
 import { type GrimoireItem } from '../../data/archiveData';
-import { useTheme } from '../../context/ThemeContext';
 
 export interface GrimoireDetailModalProps {
   grimoire: GrimoireItem | null;
@@ -9,68 +7,9 @@ export interface GrimoireDetailModalProps {
   onSelectGrimoire?: (grimoire: GrimoireItem) => void;
 }
 
-export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = ({
-  grimoire,
-  onClose,
-}) => {
-  const { isLight } = useTheme();
-  const [isRevealed, setIsRevealed] = useState(false);
+/**
+ * GrimoireDetailModal
+ * Close button removed per user request so users navigate seamlessly via Navbar
+ */
+export const GrimoireDetailModal: React.FC<GrimoireDetailModalProps> = () => null;
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
-  // Delay UI entrance so only the floating book is shown while moving down
-  useEffect(() => {
-    if (grimoire) {
-      const timer = setTimeout(() => {
-        setIsRevealed(true);
-      }, 750);
-      return () => clearTimeout(timer);
-    } else {
-      setIsRevealed(false);
-    }
-  }, [grimoire]);
-
-  if (!grimoire) return null;
-
-  return (
-    <div
-      className="fixed inset-0 z-40 flex flex-col justify-between p-4 sm:p-6 md:p-8 pointer-events-none select-none"
-      role="dialog"
-      aria-modal="true"
-      aria-label={grimoire.title}
-    >
-      {/* Backdrop passes pointer events through to 3D canvas so floating books & bubbles are clickable */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        aria-hidden="true"
-      />
-
-      {/* TOP FLOATING BAR: Quick Close Button */}
-      <header
-        className={`relative z-50 flex items-center justify-end w-full pointer-events-auto transition-all duration-500 ease-out ${
-          isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
-        }`}
-      >
-        {/* Quick Close Button */}
-        <button
-          onClick={onClose}
-          type="button"
-          aria-label="Close and return to island"
-          className={`p-2 rounded-xl backdrop-blur-xl border transition-colors cursor-pointer ${
-            isLight
-              ? 'bg-[#f4eee0]/90 border-[#c8bc9f] text-[#5c5446] hover:text-[#1c1a17]'
-              : 'bg-[#080a14]/90 border-white/15 text-slate-400 hover:text-white'
-          }`}
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </header>
-    </div>
-  );
-};
