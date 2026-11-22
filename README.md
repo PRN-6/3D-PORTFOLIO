@@ -1,32 +1,53 @@
-# React + TypeScript + Vite
+# PRINSON — 3D Fantasy RPG Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-19.3-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/Three.js-0.187-black?style=flat&logo=three.js&logoColor=white)](https://threejs.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.3-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![GSAP](https://img.shields.io/badge/GSAP-3.15-88CE02?style=flat&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
 
-Currently, two official plugins are available:
+An immersive, cinematic 3D fantasy RPG portfolio and interactive digital universe crafted for **Prinson** ([prinson.is-a.dev](https://prinson.is-a.dev)).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🏰 **4 Seamless 3D Realms**:
+  - **Hero's Home (`/`)**: Floating pastoral island with hero party companions gathered around an animated campfire.
+  - **Rune Creation Workshop (`/products`)**: Mystical forge and crafting workshop showcasing digital software products.
+  - **Grand Mage's Archive (`/projects`)**: Cloud-top Gothic library featuring Frieren, floating grimoires, and interactive projects.
+  - **Blue Flower Garden (`/about`)**: Ethereal meadow of blooming blue flowers beneath the sacred tree.
+- 🫧 **Organic Liquid Bubble Transitions**: Custom WebGL & GLSL tearing black liquid bubble sweeps connecting all realms.
+- 🎬 **FLIP Brand Flight & Asset Preloader**: Asset-gated loading screen that animates the `P R N` wordmark into the persistent navbar.
+- 🎵 **Interactive Ambient Music System**: Dynamic section-specific soundtracks with animated soundwave equalizer, volume control, and mute states.
+- 🌗 **Dual Aesthetics**: Warm Japanese vintage parchment (Light Mode) and deep obsidian void (Dark Mode).
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 🚀 Quick Start
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+### Installation
+
+```bash
+git clone https://github.com/PRN-6/3D-PORTFOLIO.git
+cd 3D-PORTFOLIO
+npm install
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### Development
+
+```bash
+npm run dev
+```
+
+### Production Build
+
+```bash
+npm run build
+```
+
+---
+
+## 📜 License
+
+Created with ❤️ by Prinson Nazareth.
