@@ -117,8 +117,11 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
   const [currentSpread, setCurrentSpread] = useState<number>(0);
   const [isRendered, setIsRendered] = useState(false);
 
-  // 3D Book Opening Entrance Sequence State
+  // 3D Book Opening Entrance Sequence State (Tome springs open from center)
   const [isBookOpening, setIsBookOpening] = useState(false);
+
+  // 3D Book Closing Sequence State (Cover folds shut before dismissing)
+  const [isBookClosing, setIsBookClosing] = useState(false);
 
   // 3D Page Turning Animation States
   const [isFlipping, setIsFlipping] = useState(false);
@@ -133,6 +136,7 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
     if (isOpen) {
       setIsRendered(true);
       setIsBookOpening(true);
+      setIsBookClosing(false);
       setCurrentSpread(0);
       setMobilePageOffset(0);
       const timer = setTimeout(() => {
@@ -141,13 +145,23 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       return () => clearTimeout(timer);
     } else {
       setIsBookOpening(false);
+      setIsBookClosing(false);
       const timer = setTimeout(() => setIsRendered(false), 350);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
+  const handleInitiateClose = () => {
+    if (isBookClosing || isFlipping) return;
+    setIsBookClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsBookClosing(false);
+    }, 550);
+  };
+
   const handleNextPage = () => {
-    if (isFlipping || isBookOpening) return;
+    if (isFlipping || isBookOpening || isBookClosing) return;
     if (currentSpread < 2) {
       const from = currentSpread;
       const to = from + 1;
@@ -158,12 +172,12 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       setTimeout(() => {
         setCurrentSpread(to);
         setIsFlipping(false);
-      }, 650);
+      }, 620);
     }
   };
 
   const handlePrevPage = () => {
-    if (isFlipping || isBookOpening) return;
+    if (isFlipping || isBookOpening || isBookClosing) return;
     if (currentSpread > 0) {
       const from = currentSpread;
       const to = from - 1;
@@ -174,12 +188,12 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       setTimeout(() => {
         setCurrentSpread(to);
         setIsFlipping(false);
-      }, 650);
+      }, 620);
     }
   };
 
   const handleJumpToSpread = (idx: number) => {
-    if (idx !== currentSpread && !isFlipping && !isBookOpening) {
+    if (idx !== currentSpread && !isFlipping && !isBookOpening && !isBookClosing) {
       const from = currentSpread;
       const to = idx;
       setFlipFrom(from);
@@ -189,7 +203,7 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       setTimeout(() => {
         setCurrentSpread(to);
         setIsFlipping(false);
-      }, 650);
+      }, 620);
     }
   };
 
@@ -243,68 +257,59 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
   const spellsList = grimoire?.spells || [];
 
   // ===========================================================================
-  // FOLIO RENDERERS (Strictly Antique Manuscript / Classical Medieval Layout)
+  // FOLIO RENDERERS (Strictly Authentic Antique Vellum Manuscript Typography)
+  // Text colors: Rich dark walnut ink (#241408), aged sepia (#633b15), vermilion red (#991b1b)
   // ===========================================================================
 
   /** FOLIO I: Frontispiece, Title Inscription, Alchemical Sigil, & Lore Initial */
   const renderFolio1 = () => (
-    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif">
+    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif text-[#241408]">
       <div className="space-y-2.5">
         {/* Folio Header Rule */}
-        <div className="flex items-center justify-between border-b border-amber-800/25 pb-1.5">
-          <span className="text-[10px] tracking-widest font-grimoire-title uppercase opacity-65 flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-amber-900/25 pb-1.5">
+          <span className="text-[10px] tracking-widest font-grimoire-title uppercase text-[#633b15] font-bold flex items-center gap-1">
             <span>❧</span> ARCHIVE CODEX · FOLIO I
           </span>
-          <span className="text-[11px] font-grimoire-title font-bold tracking-widest" style={{ color: theme.glowColor }}>
+          <span className="text-[11px] font-grimoire-title font-bold tracking-widest text-amber-800">
             PAGE I
           </span>
         </div>
 
         {/* Category Inscription */}
         <div className="flex items-center gap-2">
-          <span className="text-amber-600 font-serif text-xs">✦</span>
-          <span className="text-[11px] font-grimoire-title uppercase tracking-widest font-bold" style={{ color: theme.glowColor }}>
+          <span className="text-amber-700 font-serif text-xs">✦</span>
+          <span className="text-[11px] font-grimoire-title uppercase tracking-widest font-bold text-amber-900">
             {project.category}
           </span>
-          <span className="text-amber-600 font-serif text-xs">✦</span>
+          <span className="text-amber-700 font-serif text-xs">✦</span>
         </div>
 
         {/* Title in Grand Classical Roman Capital Letters */}
         <h1
-          className={`text-2xl sm:text-3xl md:text-[34px] font-black tracking-wide font-grimoire-title leading-tight ${
-            isLight ? 'text-[#1e140a]' : 'text-white'
-          }`}
-          style={{ textShadow: `0 0 20px ${theme.glowColor}33` }}
+          className="text-2xl sm:text-3xl md:text-[34px] font-black tracking-wide font-grimoire-title leading-tight text-[#1b0d04]"
+          style={{ textShadow: '1px 1px 0px rgba(255,255,255,0.6)' }}
         >
           {project.title}
         </h1>
 
         {/* Tagline as Classical Inscription Quote */}
-        <p className={`text-xs sm:text-[13px] italic font-grimoire-body leading-relaxed ${isLight ? 'text-[#4d3a27]' : 'text-slate-300'}`}>
+        <p className="text-xs sm:text-[13px] italic font-grimoire-body leading-relaxed text-[#4a2e12]">
           &ldquo;{project.tagline}&rdquo;
         </p>
 
         {/* Woodblock Alchemical Seal Engraving */}
-        <div
-          className={`p-3 rounded border border-amber-800/30 flex items-center gap-3 ${
-            isLight ? 'bg-amber-900/5' : 'bg-black/40'
-          }`}
-        >
+        <div className="p-3 rounded border border-amber-900/30 bg-amber-950/5 flex items-center gap-3 shadow-inner">
           <div
-            className="w-11 h-11 rounded-full border-2 flex items-center justify-center text-xl font-grimoire-title flex-shrink-0 shadow-inner"
-            style={{
-              borderColor: theme.glowColor,
-              color: theme.glowColor,
-              backgroundColor: theme.accentBg,
-            }}
+            className="w-11 h-11 rounded-full border-2 border-amber-800/60 flex items-center justify-center text-xl font-grimoire-title flex-shrink-0 shadow-inner bg-amber-100/60"
+            style={{ color: theme.glowColor }}
           >
             {theme.runeGlyph}
           </div>
           <div>
-            <div className="text-xs font-grimoire-title font-bold tracking-wider uppercase" style={{ color: theme.glowColor }}>
+            <div className="text-xs font-grimoire-title font-bold tracking-wider uppercase text-[#331c07]">
               ALCHEMICAL APPARATUS SIGIL
             </div>
-            <div className={`text-[10px] font-grimoire-body italic ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+            <div className="text-[10px] font-grimoire-body italic text-[#633b15]">
               Inscribed in the Archmage&apos;s Grand Codex · Artifact No. {project.id}
             </div>
           </div>
@@ -312,16 +317,13 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
         {/* Primary Inscription with Vermilion Drop-Cap */}
         <div>
-          <div className="text-[10px] font-grimoire-title uppercase tracking-widest text-amber-700 font-bold mb-1">
+          <div className="text-[10px] font-grimoire-title uppercase tracking-widest text-[#7c2d12] font-bold mb-1">
             ✦ DE INSCRIPTIONE PRIMA (LORE)
           </div>
-          <div className={`text-xs sm:text-[13px] leading-relaxed font-grimoire-body text-justify ${isLight ? 'text-[#2a1e12]' : 'text-slate-200'}`}>
+          <div className="text-xs sm:text-[13px] leading-relaxed font-grimoire-body text-justify text-[#241408]">
             <span
-              className="float-left text-4xl sm:text-5xl font-grimoire-title font-black pr-2.5 pt-0.5 leading-none select-none"
-              style={{
-                color: isLight ? '#991b1b' : theme.glowColor,
-                textShadow: isLight ? '1px 1px 0px rgba(0,0,0,0.1)' : `0 0 14px ${theme.glowColor}`,
-              }}
+              className="float-left text-4xl sm:text-5xl font-grimoire-title font-black pr-2.5 pt-0.5 leading-none select-none text-[#991b1b]"
+              style={{ textShadow: '1px 1px 0px rgba(0,0,0,0.15)' }}
             >
               {project.description.charAt(0)}
             </span>
@@ -331,7 +333,7 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       </div>
 
       {/* Bottom Folio Margin Footnote */}
-      <div className="border-t border-amber-800/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-amber-800/60">
+      <div className="border-t border-amber-900/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-[#633b15]">
         <span>❧ ARCHIVUM MAGISTER · ANNO MMXXVI ☙</span>
         <span className="font-grimoire-title tracking-wider font-bold">FOLIO I</span>
       </div>
@@ -340,31 +342,29 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
   /** FOLIO II: The Artifact Chronicles, Architecture Overview, and Action Relic Portals */
   const renderFolio2 = () => (
-    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif">
+    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif text-[#241408]">
       <div className="space-y-2.5">
         {/* Folio Header Rule */}
-        <div className="flex items-center justify-between border-b border-amber-800/25 pb-1.5">
-          <span className="text-[10px] tracking-widest font-grimoire-title uppercase opacity-65 flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-amber-900/25 pb-1.5">
+          <span className="text-[10px] tracking-widest font-grimoire-title uppercase text-[#633b15] font-bold flex items-center gap-1">
             <span>✦</span> TRACTATUS PRIMUS · FOLIO II
           </span>
-          <span className="text-[11px] font-grimoire-title font-bold tracking-widest" style={{ color: theme.glowColor }}>
+          <span className="text-[11px] font-grimoire-title font-bold tracking-widest text-amber-800">
             PAGE II
           </span>
         </div>
 
         <div>
-          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5" style={{ color: theme.glowColor }}>
+          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5 text-[#1b0d04]">
             ✦ The Artifact Chronicles
           </h2>
-          <p className={`text-[11px] italic font-grimoire-body ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+          <p className="text-[11px] italic font-grimoire-body text-[#633b15]">
             Inscribed records of performance, offline reliability, and surgical precision.
           </p>
         </div>
 
         {/* Narrative Paragraphs */}
-        <div className={`space-y-2 font-grimoire-body text-xs sm:text-[13px] leading-relaxed text-justify ${
-          isLight ? 'text-[#2a1e12]' : 'text-slate-200'
-        }`}>
+        <div className="space-y-2 font-grimoire-body text-xs sm:text-[13px] leading-relaxed text-justify text-[#241408]">
           <p>
             Inscribed as a foundational work within the Archmage&apos;s digital repository, this project exemplifies the synthesis of mathematical rigor and modern execution. Operating entirely independent of centralized cloud clusters, all computation resolves locally.
           </p>
@@ -374,8 +374,8 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
         </div>
 
         {/* Action Portals Inscribed as Antique Engraved Brass Plaques */}
-        <div className="border-t border-b border-amber-800/25 py-2.5 space-y-2">
-          <div className="text-[10px] font-grimoire-title uppercase tracking-widest text-amber-700 font-bold">
+        <div className="border-t border-b border-amber-900/25 py-2.5 space-y-2">
+          <div className="text-[10px] font-grimoire-title uppercase tracking-widest text-[#7c2d12] font-bold">
             ✦ REALM ACTION PORTALS ✦
           </div>
 
@@ -385,15 +385,11 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-amber-800/40 hover:border-amber-600 transition-all font-grimoire-title text-xs tracking-wider uppercase group shadow-md"
-                style={{
-                  backgroundColor: isLight ? '#f2e8d3' : '#0c131c',
-                  color: isLight ? '#3b2512' : '#f1f5f9',
-                }}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-amber-900/40 hover:border-amber-700 bg-amber-100/70 hover:bg-amber-100 transition-all font-grimoire-title text-xs tracking-wider uppercase group shadow-sm text-[#2b1604]"
               >
-                <span className="text-amber-600 font-bold text-sm">☩</span>
+                <span className="text-amber-800 font-bold text-sm">☩</span>
                 <span className="font-bold">Inspect Source Code</span>
-                <ExternalLink className="w-3 h-3 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
+                <ExternalLink className="w-3 h-3 text-amber-800 group-hover:translate-x-0.5 transition-transform" />
               </a>
             )}
 
@@ -402,15 +398,11 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
                 href={project.liveDemoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-amber-800/40 hover:border-amber-600 transition-all font-grimoire-title text-xs tracking-wider uppercase group shadow-md"
-                style={{
-                  backgroundColor: isLight ? '#f2e8d3' : '#0c131c',
-                  color: isLight ? '#3b2512' : '#f1f5f9',
-                }}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded border border-amber-900/40 hover:border-amber-700 bg-amber-100/70 hover:bg-amber-100 transition-all font-grimoire-title text-xs tracking-wider uppercase group shadow-sm text-[#2b1604]"
               >
-                <span className="text-amber-600 font-bold text-sm">✦</span>
+                <span className="text-amber-800 font-bold text-sm">✦</span>
                 <span className="font-bold">Enter Live Realm</span>
-                <ExternalLink className="w-3 h-3 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
+                <ExternalLink className="w-3 h-3 text-amber-800 group-hover:translate-x-0.5 transition-transform" />
               </a>
             )}
           </div>
@@ -418,12 +410,12 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       </div>
 
       {/* Bottom Folio Margin Footnote */}
-      <div className="border-t border-amber-800/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-amber-800/60">
+      <div className="border-t border-amber-900/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-[#633b15]">
         <span className="italic">Turn forward to inspect De Architectura</span>
         <button
           type="button"
           onClick={handleNextPage}
-          className="hover:text-amber-600 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-amber-700"
+          className="hover:text-amber-900 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-[#7c2d12]"
         >
           <span>Folio III ❯</span>
         </button>
@@ -433,32 +425,30 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
   /** FOLIO III: De Architectura, Computational Mechanics, & Core Pillars */
   const renderFolio3 = () => (
-    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif">
+    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif text-[#241408]">
       <div className="space-y-2.5">
         {/* Folio Header Rule */}
-        <div className="flex items-center justify-between border-b border-amber-800/25 pb-1.5">
-          <span className="text-[10px] tracking-widest font-grimoire-title uppercase opacity-65 flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-amber-900/25 pb-1.5">
+          <span className="text-[10px] tracking-widest font-grimoire-title uppercase text-[#633b15] font-bold flex items-center gap-1">
             <span>✦</span> DE ARCHITECTURA ET SCHEMATIBUS · FOLIO III
           </span>
-          <span className="text-[11px] font-grimoire-title font-bold tracking-widest" style={{ color: theme.glowColor }}>
+          <span className="text-[11px] font-grimoire-title font-bold tracking-widest text-amber-800">
             PAGE III
           </span>
         </div>
 
         <div>
-          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5" style={{ color: theme.glowColor }}>
+          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5 text-[#1b0d04]">
             ✦ Treatise on Architecture & Parity
           </h2>
-          <p className={`text-[11px] italic font-grimoire-body ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+          <p className="text-[11px] italic font-grimoire-body text-[#633b15]">
             Analysis of computational mechanics, local state isolation, and deterministic performance.
           </p>
         </div>
 
         {/* Core Architecture Thesis Box */}
-        <div className={`p-3.5 rounded border border-amber-800/30 font-grimoire-body text-xs sm:text-[13px] leading-relaxed text-justify ${
-          isLight ? 'bg-amber-900/5 text-[#2a1e12]' : 'bg-black/35 text-slate-200'
-        }`}>
-          <span className="font-grimoire-title font-bold block mb-1 text-amber-700 text-xs">
+        <div className="p-3.5 rounded border border-amber-900/30 bg-amber-950/5 font-grimoire-body text-xs sm:text-[13px] leading-relaxed text-justify text-[#241408]">
+          <span className="font-grimoire-title font-bold block mb-1 text-[#7c2d12] text-xs">
             I. THE ARCHITECTURAL THESIS
           </span>
           {project.details}
@@ -466,28 +456,28 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
         {/* 2 Foundational Pillars Formatted as Ancient Axioms */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-grimoire-title uppercase tracking-widest text-amber-700 font-bold block">
+          <span className="text-[10px] font-grimoire-title uppercase tracking-widest text-[#7c2d12] font-bold block">
             ✦ FOUNDATIONAL PILLARS
           </span>
           <div className="grid grid-cols-2 gap-2 text-[11px] font-grimoire-body">
-            <div className={`p-2 rounded border border-amber-800/25 ${isLight ? 'bg-white/40' : 'bg-white/5'}`}>
-              <div className="font-grimoire-title font-bold text-amber-600 text-xs">✦ Latency Determinism</div>
-              <div className="opacity-80 mt-0.5">Sub-second execution loops with zero telemetry overhead.</div>
+            <div className="p-2 rounded border border-amber-900/25 bg-amber-50/60 shadow-xs">
+              <div className="font-grimoire-title font-bold text-[#854d0e] text-xs">✦ Latency Determinism</div>
+              <div className="text-[#3b2310] mt-0.5">Sub-second execution loops with zero telemetry overhead.</div>
             </div>
-            <div className={`p-2 rounded border border-amber-800/25 ${isLight ? 'bg-white/40' : 'bg-white/5'}`}>
-              <div className="font-grimoire-title font-bold text-amber-600 text-xs">✦ Algorithmic Parity</div>
-              <div className="opacity-80 mt-0.5">Strict mathematical correctness verified across all state trees.</div>
+            <div className="p-2 rounded border border-amber-900/25 bg-amber-50/60 shadow-xs">
+              <div className="font-grimoire-title font-bold text-[#854d0e] text-xs">✦ Algorithmic Parity</div>
+              <div className="text-[#3b2310] mt-0.5">Strict mathematical correctness verified across all state trees.</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Folio Margin Footnote */}
-      <div className="border-t border-amber-800/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-amber-800/60">
+      <div className="border-t border-amber-900/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-[#633b15]">
         <button
           type="button"
           onClick={handlePrevPage}
-          className="hover:text-amber-600 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-amber-700"
+          className="hover:text-amber-900 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-[#7c2d12]"
         >
           <span>❮ Folio I-II</span>
         </button>
@@ -498,23 +488,23 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
   /** FOLIO IV: Inscribed Grimoire Spells & Arcane Incantations (Detailed Commentary) */
   const renderFolio4 = () => (
-    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif">
+    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif text-[#241408]">
       <div className="space-y-2.5">
         {/* Folio Header Rule */}
-        <div className="flex items-center justify-between border-b border-amber-800/25 pb-1.5">
-          <span className="text-[10px] tracking-widest font-grimoire-title uppercase opacity-65 flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-amber-900/25 pb-1.5">
+          <span className="text-[10px] tracking-widest font-grimoire-title uppercase text-[#633b15] font-bold flex items-center gap-1">
             <span>✦</span> INCANTATIONES MAGISTERII · FOLIO IV
           </span>
-          <span className="text-[11px] font-grimoire-title font-bold tracking-widest" style={{ color: theme.glowColor }}>
+          <span className="text-[11px] font-grimoire-title font-bold tracking-widest text-amber-800">
             PAGE IV
           </span>
         </div>
 
         <div>
-          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5" style={{ color: theme.glowColor }}>
+          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5 text-[#1b0d04]">
             ✦ Inscribed Spells & Incantations
           </h2>
-          <p className={`text-[11px] italic font-grimoire-body ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+          <p className="text-[11px] italic font-grimoire-body text-[#633b15]">
             Core apparatus capabilities inscribed into the grimoire binding.
           </p>
         </div>
@@ -532,24 +522,22 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           ).slice(0, 4).map((spell, idx) => (
             <div
               key={spell.name}
-              className={`p-2 sm:p-2.5 rounded border border-amber-800/25 transition-all ${
-                isLight ? 'bg-amber-900/5 hover:bg-amber-900/10' : 'bg-black/35 hover:bg-white/5'
-              }`}
+              className="p-2 sm:p-2.5 rounded border border-amber-900/25 bg-amber-50/70 hover:bg-amber-100/70 transition-all shadow-xs"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-amber-700 font-grimoire-title font-bold text-xs">
+                  <span className="text-[#7c2d12] font-grimoire-title font-bold text-xs">
                     {['I.', 'II.', 'III.', 'IV.'][idx]}
                   </span>
-                  <span className={`text-xs font-grimoire-title font-bold ${isLight ? 'text-[#2a1e12]' : 'text-white'}`}>
+                  <span className="text-xs font-grimoire-title font-bold text-[#1b0d04]">
                     {spell.name}
                   </span>
                 </div>
-                <span className="text-[9px] font-grimoire-title uppercase tracking-wider text-amber-700 font-bold border border-amber-800/30 px-1.5 py-0.5 rounded">
+                <span className="text-[9px] font-grimoire-title uppercase tracking-wider text-[#7c2d12] font-bold border border-amber-900/30 px-1.5 py-0.5 rounded bg-amber-100/50">
                   {spell.tier}
                 </span>
               </div>
-              <p className={`text-[11px] font-grimoire-body mt-1 leading-snug ${isLight ? 'text-[#4d3a27]' : 'text-slate-300'}`}>
+              <p className="text-[11px] font-grimoire-body mt-1 leading-snug text-[#3b2310]">
                 {spell.description}
               </p>
             </div>
@@ -558,12 +546,12 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       </div>
 
       {/* Bottom Folio Margin Footnote */}
-      <div className="border-t border-amber-800/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-amber-800/60">
+      <div className="border-t border-amber-900/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-[#633b15]">
         <span className="italic">Turn forward to inspect Technologies & Sigils</span>
         <button
           type="button"
           onClick={handleNextPage}
-          className="hover:text-amber-600 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-amber-700"
+          className="hover:text-amber-900 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-[#7c2d12]"
         >
           <span>Folio V ❯</span>
         </button>
@@ -573,23 +561,23 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
   /** FOLIO V: Inscribed Technologies & Runes (Antique Manuscript Cartouches) */
   const renderFolio5 = () => (
-    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif">
+    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif text-[#241408]">
       <div className="space-y-2.5">
         {/* Folio Header Rule */}
-        <div className="flex items-center justify-between border-b border-amber-800/25 pb-1.5">
-          <span className="text-[10px] tracking-widest font-grimoire-title uppercase opacity-65 flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-amber-900/25 pb-1.5">
+          <span className="text-[10px] tracking-widest font-grimoire-title uppercase text-[#633b15] font-bold flex items-center gap-1">
             <span>✦</span> SIGILLA ET TECHNOLOGIAE · FOLIO V
           </span>
-          <span className="text-[11px] font-grimoire-title font-bold tracking-widest" style={{ color: theme.glowColor }}>
+          <span className="text-[11px] font-grimoire-title font-bold tracking-widest text-amber-800">
             PAGE V
           </span>
         </div>
 
         <div>
-          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5" style={{ color: theme.glowColor }}>
+          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5 text-[#1b0d04]">
             ✦ Inscribed Technologies & Runes
           </h2>
-          <p className={`text-[11px] italic font-grimoire-body ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+          <p className="text-[11px] italic font-grimoire-body text-[#633b15]">
             The foundational languages, compilers, and tools forged into this artifact.
           </p>
         </div>
@@ -599,16 +587,14 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           {project.technologies.map((tech, idx) => (
             <div
               key={tech}
-              className={`p-2.5 rounded border border-amber-800/30 flex items-center gap-2 transition-all ${
-                isLight ? 'bg-amber-900/5 hover:bg-amber-900/10' : 'bg-black/35 hover:bg-white/5'
-              }`}
+              className="p-2.5 rounded border border-amber-900/30 bg-amber-50/70 hover:bg-amber-100/70 transition-all shadow-xs flex items-center gap-2"
             >
-              <span className="text-amber-600 font-grimoire-title text-xs font-bold">{idx + 1}.</span>
+              <span className="text-amber-800 font-grimoire-title text-xs font-bold">{idx + 1}.</span>
               <div className="flex flex-col">
-                <span className={`text-xs font-grimoire-title font-bold ${isLight ? 'text-[#2a1e12]' : 'text-white'}`}>
+                <span className="text-xs font-grimoire-title font-bold text-[#1b0d04]">
                   {tech}
                 </span>
-                <span className="text-[9px] font-grimoire-body opacity-60 uppercase">
+                <span className="text-[9px] font-grimoire-body text-[#633b15] uppercase font-bold">
                   Sigil {theme.runeGlyph} · Verified
                 </span>
               </div>
@@ -617,19 +603,17 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
         </div>
 
         {/* Marginal Scholastic Note */}
-        <div className={`p-3 rounded border border-dashed border-amber-800/30 text-[11px] font-grimoire-body italic ${
-          isLight ? 'bg-amber-50 text-[#4a3520]' : 'bg-black/20 text-slate-300'
-        }`}>
+        <div className="p-3 rounded border border-dashed border-amber-900/35 bg-amber-100/40 text-[11px] font-grimoire-body italic text-[#3b2310]">
           &ldquo;Each technology is bound through deterministic compilation, with zero superfluous dependencies or cloud telemetry.&rdquo;
         </div>
       </div>
 
       {/* Bottom Folio Margin Footnote */}
-      <div className="border-t border-amber-800/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-amber-800/60">
+      <div className="border-t border-amber-900/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-[#633b15]">
         <button
           type="button"
           onClick={handlePrevPage}
-          className="hover:text-amber-600 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-amber-700"
+          className="hover:text-amber-900 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-[#7c2d12]"
         >
           <span>❮ Folio III-IV</span>
         </button>
@@ -640,33 +624,29 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
   /** FOLIO VI: Colophon & Archmage Wax Seal Verification */
   const renderFolio6 = () => (
-    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif">
+    <div className="relative z-10 flex flex-col h-full justify-between select-text font-serif text-[#241408]">
       <div className="space-y-2.5">
         {/* Folio Header Rule */}
-        <div className="flex items-center justify-between border-b border-amber-800/25 pb-1.5">
-          <span className="text-[10px] tracking-widest font-grimoire-title uppercase opacity-65 flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-amber-900/25 pb-1.5">
+          <span className="text-[10px] tracking-widest font-grimoire-title uppercase text-[#633b15] font-bold flex items-center gap-1">
             <span>✦</span> COLOPHON & SIGILLUM · FOLIO VI
           </span>
-          <span className="text-[11px] font-grimoire-title font-bold tracking-widest" style={{ color: theme.glowColor }}>
+          <span className="text-[11px] font-grimoire-title font-bold tracking-widest text-amber-800">
             PAGE VI
           </span>
         </div>
 
         <div>
-          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5" style={{ color: theme.glowColor }}>
+          <h2 className="text-base sm:text-lg font-grimoire-title font-bold uppercase tracking-wider mb-0.5 text-[#1b0d04]">
             ✦ Archmage Colophon & Seal
           </h2>
-          <p className={`text-[11px] italic font-grimoire-body ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+          <p className="text-[11px] italic font-grimoire-body text-[#633b15]">
             Official certification and archival inscription of this grimoire artifact.
           </p>
         </div>
 
         {/* Archmage Official Wax Seal Medallion */}
-        <div
-          className={`p-4 rounded border border-amber-800/35 flex flex-col sm:flex-row items-center gap-4 ${
-            isLight ? 'bg-amber-900/5' : 'bg-black/40'
-          }`}
-        >
+        <div className="p-4 rounded border border-amber-900/35 bg-amber-50/70 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
           {/* Authentic 3D Crimson Wax Seal */}
           <div
             className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 shadow-2xl relative select-none"
@@ -684,13 +664,13 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           </div>
 
           <div className="text-center sm:text-left space-y-1">
-            <div className="text-xs font-grimoire-title font-bold tracking-widest text-amber-600 uppercase">
+            <div className="text-xs font-grimoire-title font-bold tracking-widest text-[#7c2d12] uppercase">
               ARCHIVUM MAGISTER VERIFICATIO
             </div>
-            <div className={`text-[11px] font-grimoire-body leading-relaxed ${isLight ? 'text-[#3b2713]' : 'text-slate-300'}`}>
+            <div className="text-[11px] font-grimoire-body leading-relaxed text-[#3b2310]">
               Codex bound with deterministic integrity. Verified for production deployment and perpetual open-source inspection.
             </div>
-            <div className={`text-[9px] font-grimoire-title font-bold tracking-widest opacity-60 uppercase ${isLight ? 'text-[#5a4833]' : 'text-slate-400'}`}>
+            <div className="text-[9px] font-grimoire-title font-bold tracking-widest uppercase text-[#633b15]">
               Inscribed in the Archive Realm · Year 2026
             </div>
           </div>
@@ -703,35 +683,30 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded border border-amber-800/40 hover:border-amber-600 transition-all font-grimoire-title text-xs tracking-wider uppercase group shadow-md"
-              style={{
-                backgroundColor: isLight ? '#f2e8d3' : '#0c131c',
-                color: isLight ? '#3b2512' : '#f1f5f9',
-              }}
+              className="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded border border-amber-900/40 hover:border-amber-700 bg-amber-100/70 hover:bg-amber-100 transition-all font-grimoire-title text-xs tracking-wider uppercase group shadow-sm text-[#2b1604]"
             >
-              <span className="text-amber-600 font-bold text-sm">☩</span>
+              <span className="text-amber-800 font-bold text-sm">☩</span>
               <span className="font-bold">Inspect Complete Repository on GitHub</span>
-              <ExternalLink className="w-3.5 h-3.5 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
+              <ExternalLink className="w-3.5 h-3.5 text-amber-800 group-hover:translate-x-0.5 transition-transform" />
             </a>
           </div>
         )}
       </div>
 
       {/* Fold Grimoire & Close Action */}
-      <div className="border-t border-amber-800/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-amber-800/60">
+      <div className="border-t border-amber-900/20 pt-2 flex items-center justify-between text-[10px] font-grimoire-body text-[#633b15]">
         <button
           type="button"
           onClick={handlePrevPage}
-          className="hover:text-amber-600 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-amber-700"
+          className="hover:text-amber-900 transition-colors cursor-pointer flex items-center gap-1 font-grimoire-title font-bold text-[#7c2d12]"
         >
           <ChevronLeft className="w-3 h-3" />
           <span>Folio V</span>
         </button>
         <button
           type="button"
-          onClick={onClose}
-          className="px-3.5 py-1 rounded-full border border-amber-800/40 font-grimoire-title text-xs hover:bg-amber-500/10 transition-colors cursor-pointer font-bold"
-          style={{ color: theme.glowColor }}
+          onClick={handleInitiateClose}
+          className="px-3.5 py-1 rounded-full border border-amber-900/40 bg-amber-100/80 hover:bg-amber-200/80 font-grimoire-title text-xs transition-colors cursor-pointer font-bold text-[#7c2d12]"
         >
           ✦ Fold Grimoire & Close ✦
         </button>
@@ -769,7 +744,7 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
       {/* 1. Atmospheric Dark Backdrop with Vignette & Theme Color Radiance */}
       <div
         className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity duration-300"
-        onClick={onClose}
+        onClick={handleInitiateClose}
         aria-hidden="true"
       >
         <div
@@ -785,11 +760,11 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
         className="relative z-50 w-full max-w-5xl flex items-center justify-center pointer-events-auto"
         style={{ perspective: '2200px' }}
       >
-        {/* 3. 3D BOOK TOME ROOT (Tilted slightly in 3D for authentic RPG reading posture) */}
+        {/* 3. 3D BOOK TOME ROOT (Unfolds into authentic 3D reading posture) */}
         <div
           className={`relative w-full flex flex-col items-center transition-all duration-500 ease-out ${
-            isOpen ? 'scale-100 translate-y-0 opacity-100' : 'scale-90 translate-y-6 opacity-0'
-          }`}
+            isOpen && !isBookClosing ? 'scale-100 translate-y-0 opacity-100' : 'scale-90 translate-y-6 opacity-0'
+          } ${isBookOpening ? 'animate-grimoire-tome-entrance' : ''}`}
           style={{
             transformStyle: 'preserve-3d',
             transform: 'rotateX(5deg)',
@@ -890,7 +865,7 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           </div>
 
           {/* ================================================================= */}
-          {/* B. THE 3D PAPER STACK (Fore-Edge & Tail Depth - 500 Pages Block)  */}
+          {/* B. THE 3D PAPER STACK (Fore-Edge & Tail Depth - Layered Vellum)    */}
           {/* ================================================================= */}
           <div
             className="hidden md:block absolute -left-4 top-2 bottom-2 w-4 pointer-events-none z-10 rounded-l-sm"
@@ -920,71 +895,58 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           {/* C. TOP EMBOSSED BRASS HEADER & WAX SEAL CLOSE BUTTON               */}
           {/* ================================================================= */}
           <header
-            className="relative z-40 w-full flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3 border-b select-none rounded-t-xl"
+            className="relative z-40 w-full flex items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 border-b select-none rounded-t-xl"
             style={{
-              backgroundColor: isLight ? '#dfd2ba' : '#080d16',
-              borderColor: isLight ? '#c8b693' : 'rgba(255,255,255,0.12)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
+              backgroundColor: '#dfd2ba',
+              borderColor: '#c8b693',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
             }}
           >
             {/* Theme Emblem & Medieval Latin Subtitle */}
-            <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <span
                 className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center font-grimoire-title font-bold text-sm sm:text-base border shadow-inner"
                 style={{
-                  backgroundColor: theme.accentBg,
-                  color: theme.glowColor,
-                  borderColor: `${theme.glowColor}66`,
-                  boxShadow: `0 0 12px ${theme.glowColor}44`,
+                  backgroundColor: 'rgba(120, 53, 15, 0.15)',
+                  color: '#78350f',
+                  borderColor: 'rgba(120, 53, 15, 0.35)',
+                  boxShadow: `0 0 10px ${theme.glowColor}33`,
                 }}
               >
                 {theme.runeGlyph}
               </span>
               <div className="flex flex-col">
-                <span
-                  className="text-[10px] sm:text-[11px] font-grimoire-title font-bold tracking-widest uppercase"
-                  style={{ color: theme.glowColor }}
-                >
+                <span className="text-[10px] sm:text-[11px] font-grimoire-title font-bold tracking-widest uppercase text-[#542807]">
                   {theme.themeName}
                 </span>
-                <span
-                  className={`text-[9px] sm:text-[10px] font-grimoire-body tracking-wider italic truncate max-w-[130px] sm:max-w-[420px] ${
-                    isLight ? 'text-[#5a4833]' : 'text-slate-400'
-                  }`}
-                >
+                <span className="text-[9px] sm:text-[10px] font-grimoire-body tracking-wider italic truncate max-w-[140px] sm:max-w-[420px] text-[#633b15]">
                   {theme.latinTitle}
                 </span>
               </div>
             </div>
 
             {/* Page Navigation & Wax Seal Close Button */}
-            <div className="flex items-center gap-1.5 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Turn Page Buttons in Header (Hidden on small mobile where footer handles it) */}
-              <div
-                className={`hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs font-serif ${
-                  isLight
-                    ? 'border-[#c8b693] bg-[#eae0cb] text-[#4d3b26]'
-                    : 'border-white/10 bg-white/5 text-slate-300'
-                }`}
-              >
+              <div className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full border border-[#c8b693] bg-[#eae0cb] text-[#4d3b26] text-xs font-serif">
                 <button
                   type="button"
                   onClick={handlePrevPage}
-                  disabled={currentSpread === 0 || isFlipping || isBookOpening}
+                  disabled={currentSpread === 0 || isFlipping || isBookOpening || isBookClosing}
                   aria-label="Previous Page"
-                  className="p-1 hover:text-amber-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  className="p-1 hover:text-amber-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
-                <span className="text-[10px] font-mono tracking-widest px-1 font-bold">
+                <span className="text-[10px] font-mono tracking-widest px-1 font-bold text-[#4a2e12]">
                   FOLIO {currentSpread * 2 + 1}-{currentSpread * 2 + 2} / 6
                 </span>
                 <button
                   type="button"
                   onClick={handleNextPage}
-                  disabled={currentSpread === 2 || isFlipping || isBookOpening}
+                  disabled={currentSpread === 2 || isFlipping || isBookOpening || isBookClosing}
                   aria-label="Next Page"
-                  className="p-1 hover:text-amber-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  className="p-1 hover:text-amber-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
@@ -992,12 +954,12 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
               {/* Antique Wax Seal Close Button */}
               <button
-                onClick={onClose}
+                onClick={handleInitiateClose}
                 type="button"
                 aria-label="Close 3D Grimoire"
-                className="p-1.5 sm:p-2 rounded-full border transition-all duration-200 cursor-pointer group hover:scale-110 active:scale-95 shadow-md"
+                className="p-1.5 sm:p-2 rounded-full border transition-all duration-200 cursor-pointer group hover:scale-110 active:scale-95 shadow-md flex-shrink-0"
                 style={{
-                  backgroundColor: isLight ? '#8a1f2d' : '#991b1b',
+                  backgroundColor: '#991b1b',
                   borderColor: '#fca5a5',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
                 }}
@@ -1008,17 +970,22 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           </header>
 
           {/* ================================================================= */}
-          {/* D. TWO-PAGE 3D OPEN SPREAD (With Realistic Page-Flip Animation)     */}
+          {/* D. TWO-PAGE 3D OPEN SPREAD (Authentic Vellum + Real Page Curl)     */}
           {/* ================================================================= */}
           <div
-            className="relative w-full min-h-[520px] md:min-h-[560px] max-h-[82vh] sm:max-h-[80vh] overflow-hidden rounded-b-xl"
+            className="relative w-full min-h-[520px] md:min-h-[560px] max-h-[82vh] sm:max-h-[80vh] rounded-b-xl"
             style={{
-              perspective: '2000px',
+              perspective: '2200px',
               transformStyle: 'preserve-3d',
             }}
           >
             {/* 1. DESKTOP TWO-PAGE SPREAD CONTAINER */}
-            <div className="hidden md:flex w-full h-full min-h-[520px] md:min-h-[560px] relative">
+            <div
+              className="hidden md:flex w-full h-full min-h-[520px] md:min-h-[560px] relative"
+              style={{
+                transformStyle: 'preserve-3d',
+              }}
+            >
               {/* CENTER DEEP SPINE CREASE & SHADOW CANYON */}
               <div
                 className="absolute left-1/2 -ml-2 top-0 bottom-0 w-4 z-40 pointer-events-none"
@@ -1039,7 +1006,6 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
                   boxShadow: `0 4px 14px ${theme.glowColor}55`,
                 }}
               >
-                {/* Swallowtail V-cut tip */}
                 <div
                   className="absolute -bottom-3 left-0 right-0 h-4"
                   style={{
@@ -1049,46 +1015,64 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
                 />
               </div>
 
-              {/* STATIONARY LEFT PAGE */}
+              {/* Central Spine Arcane Radiance Flare on Book Opening */}
+              {isBookOpening && (
+                <div
+                  className="absolute left-1/2 -ml-12 top-0 bottom-0 w-24 z-50 pointer-events-none animate-spine-radiance"
+                  style={{
+                    background: `radial-gradient(ellipse at center, ${theme.glowColor} 0%, rgba(251, 191, 36, 0.9) 35%, transparent 75%)`,
+                  }}
+                />
+              )}
+
+              {/* STATIONARY LEFT PAGE (Authentic Vellum Parchment - Blossoms Open on Mount) */}
               <div
-                className="w-1/2 p-5 sm:p-7 md:p-9 flex flex-col justify-between relative overflow-hidden"
+                className={`w-1/2 p-5 sm:p-7 md:p-9 flex flex-col justify-between relative rounded-bl-lg parchment-page-left ${
+                  isBookOpening ? 'animate-grimoire-left-blossom' : ''
+                }`}
                 style={{
                   transformOrigin: 'right center',
-                  transform: 'rotateY(5deg)',
-                  background: isLight
-                    ? 'linear-gradient(to right, #f1e9d7 0%, #faefe0 45%, #f6ecd5 85%, #d5c3a0 97%, #6d5b3d 100%)'
-                    : 'linear-gradient(to right, #0a111a 0%, #101824 45%, #0d1520 85%, #070b10 97%, #020306 100%)',
-                  boxShadow: 'inset -30px 0 35px -12px rgba(0, 0, 0, 0.75)',
+                  transform: isBookOpening ? undefined : 'rotateY(4deg)',
                 }}
               >
                 {/* Double-Ruled Gilded Border Inset */}
                 <div
-                  className="absolute inset-3 sm:inset-4 pointer-events-none rounded border-2 border-amber-800/20"
+                  className="absolute inset-3 sm:inset-4 pointer-events-none rounded border-2 border-amber-900/25"
                   style={{
-                    outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                    outline: '1px solid rgba(180, 140, 70, 0.45)',
                     outlineOffset: '-4px',
                   }}
                 />
 
                 {/* Left Dog-Ear Previous Page Corner */}
-                {currentSpread > 0 && !isFlipping && (
+                {currentSpread > 0 && !isFlipping && !isBookOpening && !isBookClosing && (
                   <button
                     type="button"
                     onClick={handlePrevPage}
                     title="Turn to previous folio (❮)"
                     aria-label="Turn to previous folio"
-                    className="absolute bottom-2 left-2 w-8 h-8 z-30 cursor-pointer group flex items-end justify-start p-1"
+                    className="dog-ear-corner absolute bottom-2 left-2 w-8 h-8 z-30 cursor-pointer flex items-end justify-start p-1"
                   >
                     <div
-                      className="w-5 h-5 transition-transform group-hover:scale-125 rounded-tr"
+                      className="w-5 h-5 rounded-tr"
                       style={{
-                        background: isLight ? '#d5c3a0' : '#1e293b',
+                        background: '#d5c3a0',
                         clipPath: 'polygon(0 0, 100% 100%, 0 100%)',
-                        boxShadow: '2px -2px 4px rgba(0,0,0,0.4)',
+                        boxShadow: '2px -2px 5px rgba(0,0,0,0.35)',
                       }}
                     />
-                    <ChevronLeft className="w-3 h-3 text-amber-700 absolute bottom-1 left-1 group-hover:-translate-x-0.5 transition-transform" />
+                    <ChevronLeft className="w-3.5 h-3.5 text-amber-900 absolute bottom-0.5 left-0.5" />
                   </button>
+                )}
+
+                {/* Shadow Overlay Underneath Turning Page */}
+                {isFlipping && flipDirection === 'backward' && (
+                  <div
+                    className="absolute inset-0 pointer-events-none z-20 animate-page-cast-shadow"
+                    style={{
+                      background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, transparent 80%)',
+                    }}
+                  />
                 )}
 
                 {/* Render stationary left content */}
@@ -1097,46 +1081,54 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
                   : renderLeftFolio(currentSpread)}
               </div>
 
-              {/* STATIONARY RIGHT PAGE */}
+              {/* STATIONARY RIGHT PAGE (Authentic Vellum Parchment - Blossoms Open on Mount) */}
               <div
-                className="w-1/2 p-5 sm:p-7 md:p-9 flex flex-col justify-between relative overflow-hidden"
+                className={`w-1/2 p-5 sm:p-7 md:p-9 flex flex-col justify-between relative rounded-br-lg parchment-page-right ${
+                  isBookOpening ? 'animate-grimoire-right-blossom' : ''
+                }`}
                 style={{
                   transformOrigin: 'left center',
-                  transform: 'rotateY(-5deg)',
-                  background: isLight
-                    ? 'linear-gradient(to left, #f1e9d7 0%, #faefe0 45%, #f6ecd5 85%, #d5c3a0 97%, #6d5b3d 100%)'
-                    : 'linear-gradient(to left, #0a111a 0%, #101824 45%, #0d1520 85%, #070b10 97%, #020306 100%)',
-                  boxShadow: 'inset 30px 0 35px -12px rgba(0, 0, 0, 0.75)',
+                  transform: isBookOpening ? undefined : 'rotateY(-4deg)',
                 }}
               >
                 {/* Double-Ruled Gilded Border Inset */}
                 <div
-                  className="absolute inset-3 sm:inset-4 pointer-events-none rounded border-2 border-amber-800/20"
+                  className="absolute inset-3 sm:inset-4 pointer-events-none rounded border-2 border-amber-900/25"
                   style={{
-                    outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                    outline: '1px solid rgba(180, 140, 70, 0.45)',
                     outlineOffset: '-4px',
                   }}
                 />
 
                 {/* Right Dog-Ear Next Page Corner */}
-                {currentSpread < 2 && !isFlipping && (
+                {currentSpread < 2 && !isFlipping && !isBookOpening && !isBookClosing && (
                   <button
                     type="button"
                     onClick={handleNextPage}
                     title="Turn to next folio (❯)"
                     aria-label="Turn to next folio"
-                    className="absolute bottom-2 right-2 w-8 h-8 z-30 cursor-pointer group flex items-end justify-end p-1"
+                    className="dog-ear-corner absolute bottom-2 right-2 w-8 h-8 z-30 cursor-pointer flex items-end justify-end p-1"
                   >
                     <div
-                      className="w-5 h-5 transition-transform group-hover:scale-125 rounded-tl"
+                      className="w-5 h-5 rounded-tl"
                       style={{
-                        background: isLight ? '#d5c3a0' : '#1e293b',
+                        background: '#d5c3a0',
                         clipPath: 'polygon(100% 0, 100% 100%, 0 100%)',
-                        boxShadow: '-2px -2px 4px rgba(0,0,0,0.4)',
+                        boxShadow: '-2px -2px 5px rgba(0,0,0,0.35)',
                       }}
                     />
-                    <ChevronRight className="w-3 h-3 text-amber-700 absolute bottom-1 right-1 group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className="w-3.5 h-3.5 text-amber-900 absolute bottom-0.5 right-0.5" />
                   </button>
+                )}
+
+                {/* Shadow Overlay Underneath Turning Page */}
+                {isFlipping && flipDirection === 'forward' && (
+                  <div
+                    className="absolute inset-0 pointer-events-none z-20 animate-page-cast-shadow"
+                    style={{
+                      background: 'linear-gradient(to left, rgba(0,0,0,0.55) 0%, transparent 80%)',
+                    }}
+                  />
                 )}
 
                 {/* Render stationary right content */}
@@ -1146,69 +1138,72 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
               </div>
 
               {/* ----------------------------------------------------------------- */}
-              {/* 3D TURNING PAGE LEAF OVERLAY (PHYSICAL 3D PAGE-FLIP ACROSS SPINE) */}
+              {/* 3D TURNING PAGE LEAF: AUTHENTIC FLEXIBLE CURL & FLIP              */}
               {/* ----------------------------------------------------------------- */}
               {isFlipping && flipDirection === 'forward' && (
                 <div
-                  className="absolute top-0 bottom-0 left-1/2 w-1/2 z-35 animate-page-turn-forward pointer-events-none"
+                  className="absolute top-0 bottom-0 left-1/2 w-1/2 animate-page-curl-forward pointer-events-none"
                   style={{
+                    zIndex: 45,
                     transformOrigin: 'left center',
                     transformStyle: 'preserve-3d',
+                    WebkitTransformStyle: 'preserve-3d',
                   }}
                 >
                   {/* FRONT SIDE (Outgoing Right Folio) */}
                   <div
-                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between overflow-hidden shadow-2xl"
+                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between shadow-2xl parchment-page-right rounded-br-lg"
                     style={{
+                      transform: 'rotateY(0deg)',
                       backfaceVisibility: 'hidden',
-                      background: isLight
-                        ? 'linear-gradient(to left, #f1e9d7 0%, #faefe0 45%, #f6ecd5 85%, #d5c3a0 97%, #6d5b3d 100%)'
-                        : 'linear-gradient(to left, #0a111a 0%, #101824 45%, #0d1520 85%, #070b10 97%, #020306 100%)',
-                      boxShadow: 'inset 30px 0 35px -12px rgba(0, 0, 0, 0.75)',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
                     }}
                   >
                     <div
-                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-800/20"
+                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-900/25 pointer-events-none"
                       style={{
-                        outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                        outline: '1px solid rgba(180, 140, 70, 0.45)',
                         outlineOffset: '-4px',
                       }}
                     />
                     {renderRightFolio(flipFrom)}
-                    {/* Dynamic Page Curl Shadow */}
+
+                    {/* Dynamic Cylindrical Highlight & Shadow Overlay */}
                     <div
-                      className="absolute inset-0 animate-page-flip-shadow"
+                      className="absolute inset-0 animate-page-cylindrical-lighting pointer-events-none"
                       style={{
-                        background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, transparent 80%)',
+                        backgroundImage:
+                          'linear-gradient(to right, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.45) 45%, rgba(0,0,0,0.35) 80%, transparent 100%)',
                       }}
                     />
                   </div>
 
                   {/* BACK SIDE (Incoming Left Folio) */}
                   <div
-                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between overflow-hidden shadow-2xl"
+                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between shadow-2xl parchment-page-left rounded-bl-lg"
                     style={{
                       transform: 'rotateY(180deg)',
                       backfaceVisibility: 'hidden',
-                      background: isLight
-                        ? 'linear-gradient(to right, #f1e9d7 0%, #faefe0 45%, #f6ecd5 85%, #d5c3a0 97%, #6d5b3d 100%)'
-                        : 'linear-gradient(to right, #0a111a 0%, #101824 45%, #0d1520 85%, #070b10 97%, #020306 100%)',
-                      boxShadow: 'inset -30px 0 35px -12px rgba(0, 0, 0, 0.75)',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
                     }}
                   >
                     <div
-                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-800/20"
+                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-900/25 pointer-events-none"
                       style={{
-                        outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                        outline: '1px solid rgba(180, 140, 70, 0.45)',
                         outlineOffset: '-4px',
                       }}
                     />
                     {renderLeftFolio(flipTo)}
-                    {/* Dynamic Page Curl Shadow */}
+
+                    {/* Dynamic Cylindrical Highlight & Shadow Overlay */}
                     <div
-                      className="absolute inset-0 animate-page-flip-shadow"
+                      className="absolute inset-0 animate-page-cylindrical-lighting pointer-events-none"
                       style={{
-                        background: 'linear-gradient(to left, rgba(0,0,0,0.55) 0%, transparent 80%)',
+                        backgroundImage:
+                          'linear-gradient(to left, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.45) 45%, rgba(0,0,0,0.35) 80%, transparent 100%)',
                       }}
                     />
                   </div>
@@ -1217,130 +1212,81 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
 
               {isFlipping && flipDirection === 'backward' && (
                 <div
-                  className="absolute top-0 bottom-0 left-0 w-1/2 z-35 animate-page-turn-backward pointer-events-none"
+                  className="absolute top-0 bottom-0 left-0 w-1/2 animate-page-curl-backward pointer-events-none"
                   style={{
+                    zIndex: 45,
                     transformOrigin: 'right center',
                     transformStyle: 'preserve-3d',
+                    WebkitTransformStyle: 'preserve-3d',
                   }}
                 >
                   {/* FRONT SIDE (Outgoing Left Folio) */}
                   <div
-                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between overflow-hidden shadow-2xl"
+                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between shadow-2xl parchment-page-left rounded-bl-lg"
                     style={{
+                      transform: 'rotateY(0deg)',
                       backfaceVisibility: 'hidden',
-                      background: isLight
-                        ? 'linear-gradient(to right, #f1e9d7 0%, #faefe0 45%, #f6ecd5 85%, #d5c3a0 97%, #6d5b3d 100%)'
-                        : 'linear-gradient(to right, #0a111a 0%, #101824 45%, #0d1520 85%, #070b10 97%, #020306 100%)',
-                      boxShadow: 'inset -30px 0 35px -12px rgba(0, 0, 0, 0.75)',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
                     }}
                   >
                     <div
-                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-800/20"
+                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-900/25 pointer-events-none"
                       style={{
-                        outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                        outline: '1px solid rgba(180, 140, 70, 0.45)',
                         outlineOffset: '-4px',
                       }}
                     />
                     {renderLeftFolio(flipFrom)}
-                    {/* Dynamic Page Curl Shadow */}
+
                     <div
-                      className="absolute inset-0 animate-page-flip-shadow"
+                      className="absolute inset-0 animate-page-cylindrical-lighting pointer-events-none"
                       style={{
-                        background: 'linear-gradient(to left, rgba(0,0,0,0.55) 0%, transparent 80%)',
+                        backgroundImage:
+                          'linear-gradient(to left, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.45) 45%, rgba(0,0,0,0.35) 80%, transparent 100%)',
                       }}
                     />
                   </div>
 
                   {/* BACK SIDE (Incoming Right Folio) */}
                   <div
-                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between overflow-hidden shadow-2xl"
+                    className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between shadow-2xl parchment-page-right rounded-br-lg"
                     style={{
                       transform: 'rotateY(180deg)',
                       backfaceVisibility: 'hidden',
-                      background: isLight
-                        ? 'linear-gradient(to left, #f1e9d7 0%, #faefe0 45%, #f6ecd5 85%, #d5c3a0 97%, #6d5b3d 100%)'
-                        : 'linear-gradient(to left, #0a111a 0%, #101824 45%, #0d1520 85%, #070b10 97%, #020306 100%)',
-                      boxShadow: 'inset 30px 0 35px -12px rgba(0, 0, 0, 0.75)',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
                     }}
                   >
                     <div
-                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-800/20"
+                      className="absolute inset-3 sm:inset-4 rounded border-2 border-amber-900/25 pointer-events-none"
                       style={{
-                        outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                        outline: '1px solid rgba(180, 140, 70, 0.45)',
                         outlineOffset: '-4px',
                       }}
                     />
                     {renderRightFolio(flipTo)}
-                    {/* Dynamic Page Curl Shadow */}
+
                     <div
-                      className="absolute inset-0 animate-page-flip-shadow"
+                      className="absolute inset-0 animate-page-cylindrical-lighting pointer-events-none"
                       style={{
-                        background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, transparent 80%)',
+                        backgroundImage:
+                          'linear-gradient(to right, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.45) 45%, rgba(0,0,0,0.35) 80%, transparent 100%)',
                       }}
                     />
                   </div>
                 </div>
               )}
-
-              {/* ----------------------------------------------------------------- */}
-              {/* 3D BOOK OPENING SEQUENCE: FRONT COVER SWINGS OPEN (ON MOUNT)      */}
-              {/* ----------------------------------------------------------------- */}
-              {isBookOpening && (
-                <>
-                  {/* Radiant Spine Beam Flare */}
-                  <div
-                    className="absolute left-1/2 -ml-8 top-0 bottom-0 w-16 z-50 pointer-events-none animate-spine-beam"
-                    style={{
-                      background: `radial-gradient(ellipse at center, ${theme.glowColor} 0%, transparent 75%)`,
-                    }}
-                  />
-
-                  {/* Swinging Heavy Leather Front Cover */}
-                  <div
-                    className="absolute top-0 bottom-0 left-1/2 w-1/2 z-50 animate-grimoire-cover-open pointer-events-none rounded-r-xl"
-                    style={{
-                      backgroundColor: isLight ? '#2f1a0d' : theme.leatherColor,
-                      border: `3px solid ${isLight ? '#4a2c17' : theme.leatherBorder}`,
-                      borderLeft: 'none',
-                    }}
-                  >
-                    {/* Embossed Leather Front Cover Artwork */}
-                    <div className="absolute inset-4 rounded-lg border-2 border-dashed border-amber-600/40 flex flex-col items-center justify-center p-6 text-center select-none">
-                      <div
-                        className="w-16 h-16 rounded-full border-2 flex items-center justify-center text-3xl font-grimoire-title mb-4 shadow-2xl"
-                        style={{
-                          borderColor: theme.claspColor,
-                          color: theme.claspColor,
-                          backgroundColor: 'rgba(0,0,0,0.4)',
-                          boxShadow: `0 0 20px ${theme.glowColor}`,
-                        }}
-                      >
-                        {theme.runeGlyph}
-                      </div>
-                      <div className="text-sm font-grimoire-title font-bold tracking-widest uppercase text-amber-500 mb-1">
-                        {project.title}
-                      </div>
-                      <div className="text-[10px] font-grimoire-body italic text-amber-200/60 uppercase">
-                        {theme.latinTitle}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
             </div>
 
             {/* 2. MOBILE SINGLE-PAGE SPREAD CONTAINER */}
-            <div className="flex md:hidden flex-col w-full min-h-[520px] p-4 relative overflow-hidden select-text font-serif"
-              style={{
-                background: isLight
-                  ? 'linear-gradient(to bottom, #f1e9d7 0%, #faefe0 45%, #ebdcb9 100%)'
-                  : 'linear-gradient(to bottom, #0a111a 0%, #101824 45%, #070b10 100%)',
-              }}
+            <div
+              className="flex md:hidden flex-col w-full min-h-[520px] p-4 relative select-text font-serif parchment-page-bg rounded-b-xl"
             >
               <div
-                className="absolute inset-2 pointer-events-none rounded border-2 border-amber-800/20"
+                className="absolute inset-2 pointer-events-none rounded border-2 border-amber-900/25"
                 style={{
-                  outline: `1px solid ${isLight ? 'rgba(180, 140, 70, 0.4)' : 'rgba(212, 175, 55, 0.25)'}`,
+                  outline: '1px solid rgba(180, 140, 70, 0.45)',
                   outlineOffset: '-3px',
                 }}
               />
@@ -1359,10 +1305,10 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
           {/* E. BOTTOM 3D FOLIO NAVIGATOR BAR & SPREAD SELECTOR TABS           */}
           {/* ================================================================= */}
           <footer
-            className="w-full flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-b-xl border-t select-none"
+            className="w-full flex items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 rounded-b-xl border-t select-none"
             style={{
-              backgroundColor: isLight ? '#dfd2ba' : '#080d16',
-              borderColor: isLight ? '#c8b693' : 'rgba(255,255,255,0.12)',
+              backgroundColor: '#dfd2ba',
+              borderColor: '#c8b693',
             }}
           >
             {/* Previous Page Button (Desktop & Mobile) */}
@@ -1378,10 +1324,10 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
               disabled={
                 (window.innerWidth < 768 ? currentMobileFolio === 0 : currentSpread === 0) ||
                 isFlipping ||
-                isBookOpening
+                isBookOpening ||
+                isBookClosing
               }
-              className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-800/30 hover:bg-amber-800/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer font-grimoire-title text-[11px]"
-              style={{ color: isLight ? '#4a3520' : '#e2e8f0' }}
+              className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-900/40 bg-amber-100/70 hover:bg-amber-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer font-grimoire-title text-[11px] text-[#4a2e12] font-bold"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               <span>❮ Turn Back</span>
@@ -1394,10 +1340,11 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
                   key={idx}
                   type="button"
                   onClick={() => handleJumpToSpread(idx)}
+                  disabled={isFlipping || isBookOpening || isBookClosing}
                   className={`px-3 py-0.5 rounded text-[11px] font-grimoire-title font-bold transition-all cursor-pointer ${
                     currentSpread === idx
-                      ? 'border border-amber-600 bg-amber-600 text-white shadow-sm'
-                      : 'border border-amber-800/30 hover:border-amber-600/50 opacity-60'
+                      ? 'border border-amber-800 bg-amber-800 text-white shadow-sm'
+                      : 'border border-amber-900/30 bg-amber-100/50 hover:border-amber-700 text-[#4a2e12]'
                   }`}
                 >
                   Folio {idx * 2 + 1}-{idx * 2 + 2}
@@ -1406,7 +1353,7 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
             </div>
 
             {/* Mobile Folio Indicator */}
-            <div className="flex md:hidden items-center text-xs font-mono font-bold tracking-widest text-amber-700">
+            <div className="flex md:hidden items-center text-xs font-mono font-bold tracking-widest text-[#7c2d12]">
               FOLIO {currentMobileFolio + 1} / 6
             </div>
 
@@ -1423,10 +1370,10 @@ export const ThemedOpenGrimoireModal: React.FC<ThemedOpenGrimoireModalProps> = (
               disabled={
                 (window.innerWidth < 768 ? currentMobileFolio === 5 : currentSpread === 2) ||
                 isFlipping ||
-                isBookOpening
+                isBookOpening ||
+                isBookClosing
               }
-              className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-800/30 hover:bg-amber-800/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer font-grimoire-title text-[11px]"
-              style={{ color: isLight ? '#4a3520' : '#e2e8f0' }}
+              className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-900/40 bg-amber-100/70 hover:bg-amber-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer font-grimoire-title text-[11px] text-[#4a2e12] font-bold"
             >
               <span>Turn Forward ❯</span>
               <ChevronRight className="w-3.5 h-3.5" />
