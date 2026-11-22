@@ -26,7 +26,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // localStorage not available
       }
     }
-    return 'dark'; // Default to Dark Mode for first-time visitors
+    return 'light'; // Default to Light Mode for first-time visitors
   });
 
   const setTheme = (nextTheme: Theme) => {
@@ -73,11 +73,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 };
 
 const defaultThemeContext: ThemeContextType = {
-  theme: 'dark',
+  theme: 'light',
   setTheme: () => {},
   toggleTheme: () => {},
-  isDark: true,
-  isLight: false,
+  isDark: false,
+  isLight: true,
 };
 
 export function useTheme(): ThemeContextType {
