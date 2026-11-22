@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Scene, type WorldState } from '../components/Scene/Scene';
-import { Navigation } from '../components/UI/Navigation';
+import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/UI/Footer';
 import { MusicControls } from '../components/UI/MusicControls';
-import { LoadingScreen } from '../components/UI/LoadingScreen';
+import { Preloader } from '../components/Preloader';
+import { useSceneReady } from '../hooks/useSceneReady';
 import type { NavTabId } from '../config/navigationConfig';
 import { audioManager } from '../services/audioManager';
 import { ROUTES, getRouteFromPath, updatePageSEO } from '../routes';
@@ -32,9 +33,11 @@ export const Home: React.FC = () => {
   const currentRoute = getRouteFromPath(location.pathname);
 
   const [resetSignal, setResetSignal] = useState(0);
-  const [modelStatus, setModelStatus] = useState<
-    'checking' | 'loading' | 'loaded' | 'fallback'
-  >('checking');
+
+  // Asset readiness gating + shader compile warmup pass
+  const { isReady, markCompiled } = useSceneReady();
+  const brandRef = useRef<HTMLAnchorElement | null>(null);
+  const [hasDocked, setHasDocked] = useState(false);
 
   // Application World State & Destination Tracking initialized from URL
   const [worldState, setWorldState] = useState<WorldState>(() => {
@@ -73,13 +76,6 @@ export const Home: React.FC = () => {
     setFocusedForestLandmark('overview');
     setResetSignal((prev) => prev + 1);
   }, []);
-
-  const handleStatusChange = useCallback(
-    (status: 'checking' | 'loading' | 'loaded' | 'fallback') => {
-      setModelStatus(status);
-    },
-    []
-  );
 
   // =========================================================================
   // UNIFIED MULTI-ISLAND DESTINATION SELECTION & HANDOVER
@@ -257,7 +253,6 @@ export const Home: React.FC = () => {
         resetSignal={resetSignal}
         onSelectObject={handleSelect}
         onHoverObject={handleHover}
-        onStatusChange={handleStatusChange}
         selectedProject={selectedProject}
         onSelectProject={handleSelectProject}
         selectedGrimoire={selectedGrimoire}
@@ -271,13 +266,16 @@ export const Home: React.FC = () => {
         onTransitionFromForestToArchiveComplete={handleTransitionFromForestToArchiveComplete}
         onTransitionToWorkshopComplete={handleTransitionToWorkshopComplete}
         onDestinationReached={handleDestinationReached}
+        onCompiled={markCompiled}
       />
 
       {/* Fixed Top-Left Minimalist Music Player Capsule (Desktop & Mobile) */}
       <MusicControls />
 
-      {/* Top-Right Navigation Header (Reset View + Responsive Mobile Hamburger Menu) */}
-      <Navigation
+      {/* Top Navigation Header with Persistent Docked P R N Wordmark */}
+      <Navbar
+        brandRef={brandRef}
+        showBrand={hasDocked}
         onResetCamera={handleResetCamera}
         activeNav={activeNavTab}
         onSelectNav={handleSelectNav}
@@ -345,8 +343,12 @@ export const Home: React.FC = () => {
       {/* Fixed Bottom Footer (Desktop: Left Icons + Right Vis Counter; Mobile: Responsive Safe Insets) */}
       <Footer />
 
-      {/* Initial Asset Loading Screen */}
-      <LoadingScreen manualFinished={modelStatus === 'fallback' || modelStatus === 'loaded'} />
+      {/* Master Asset-Gated Preloader & Hero Brand-Flight Transition */}
+      <Preloader
+        isReady={isReady}
+        targetRef={brandRef}
+        onDock={() => setHasDocked(true)}
+      />
     </main>
   );
 };
