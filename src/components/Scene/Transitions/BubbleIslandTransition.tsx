@@ -2,12 +2,13 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { WorldA_HeroIsland } from '../WorldA_HeroIsland';
+import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
 import { BlackBubbleMesh, type BubbleAnimationMode } from './BlackBubbleMesh';
 import { BlackBubbleRimDroplets } from './BlackBubbleRimDroplets';
-import { MetaballGridMorph } from './MetaballGridMorph';
+import { ReleasedSmallBubbles } from './ReleasedSmallBubbles';
 import {
   ISLAND_DISPLAY_TRANSFORMS,
   type DestinationId,
@@ -64,7 +65,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   onHoverObject,
   onStatusChange,
   selectedGrimoire,
-  onSelectGrimoire: _onSelectGrimoire,
+  onSelectGrimoire,
   onOpenAboutModal,
   isAboutModalOpen,
   focusedForestLandmark,
@@ -118,7 +119,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const [bookBubbleProgress, setBookBubbleProgress] = useState(0);
   const [bookBubbleMode, setBookBubbleMode] = useState<BubbleAnimationMode>('FORMING');
   const [mainBubbleScale, setMainBubbleScale] = useState(1.0);
-  const [, setReleaseProgress] = useState(0.0);
+  const [releaseProgress, setReleaseProgress] = useState(0.0);
   const prevSelectedGrimoireRef = useRef<GrimoireItem | null>(null);
 
   // Trigger normal bubble when a book is clicked on Archive Island
@@ -193,14 +194,15 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     if (!activeDestination) return;
 
     if (currentIsland !== activeDestination) {
-      if (currentIsland === 'ARCHIVE' && activeDestination !== 'ARCHIVE') {
-        // Leaving projects page: trigger bubble retract -> sealed -> tear -> reveal target island!
+      const isBubbleActive =
+        bookBubblePhaseRef.current === 'FLOATING' ||
+        bookBubblePhaseRef.current === 'RELEASING';
+
+      if (isBubbleActive) {
+        // Small bubble joining together and forming big and bursting and revealing new 3D model
         targetDestinationRef.current = activeDestination;
         bookBubblePhaseRef.current = 'RETRACT_BUBBLES';
         setBookBubblePhase('RETRACT_BUBBLES');
-        setBookBubbleMode('SEALED');
-        setBookBubbleProgress(1.0);
-        setMainBubbleScale(0.0);
         bookBubbleStartTime.current = performance.now() / 1000;
       } else if (phaseRef.current === 'IDLE' && bookBubblePhaseRef.current === 'IDLE') {
         startBubbleTransition(currentIsland, activeDestination);
@@ -617,7 +619,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           />
         </group>
 
-        {/* DESTINATION 2: Projects / 5-Column Obsidian Liquid Capsules */}
+        {/* DESTINATION 2: Grand Mage's Archive */}
         <group
           ref={archiveGroupRef}
           name="BubbleArchiveGroup"
@@ -625,12 +627,16 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           scale={ISLAND_DISPLAY_TRANSFORMS.ARCHIVE.scale}
           visible={isIslandVisible('ARCHIVE')}
         >
-          <MetaballGridMorph
-            active={isIslandVisible('ARCHIVE')}
-            releaseProgress={1.0}
-            isReversing={bookBubblePhase === 'RETRACT_BUBBLES'}
-            onSelectProject={onSelectProject}
-          />
+          {/* THE 3D ISLAND MODEL */}
+          <group ref={archiveElevateGroupRef} name="ArchiveElevationContainer">
+            <WorldC_ArchiveIsland
+              disableCamera={true}
+              selectedGrimoire={selectedGrimoire || null}
+              onSelectGrimoire={onSelectGrimoire || (() => {})}
+              resetSignal={resetSignal}
+              onResetComplete={onResetComplete}
+            />
+          </group>
         </group>
 
         {/* DESTINATION 3: Whispering Forest */}
@@ -700,6 +706,21 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
               position={[0, 0, 0]}
             />
           </group>
+        )}
+
+        {/* THE RELEASED SMALL BUBBLES SWARM TO RANDOM PLACES ON SCREEN */}
+        {bookBubblePhase !== 'IDLE' &&
+          bookBubblePhase !== 'FORMING' &&
+          bookBubblePhase !== 'SEALED' &&
+          bookBubblePhase !== 'RETRACT_SEALED' &&
+          bookBubblePhase !== 'TEARING' && (
+          <ReleasedSmallBubbles
+            active={true}
+            releaseProgress={releaseProgress}
+            isReversing={bookBubblePhase === 'RETRACT_BUBBLES'}
+            onClose={() => onSelectGrimoire?.(null as any)}
+            onSelectProject={onSelectProject}
+          />
         )}
       </group>
     </>
