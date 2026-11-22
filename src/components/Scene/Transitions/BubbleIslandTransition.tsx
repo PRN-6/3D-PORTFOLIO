@@ -674,6 +674,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
             releaseProgress={releaseProgress}
             isReversing={bookBubblePhase === 'RETRACT_BUBBLES'}
             onClose={() => onSelectGrimoire?.(null as any)}
+            onSelectProject={onSelectProject}
           />
         )}
       </group>
