@@ -107,7 +107,6 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     | 'SEALED'
     | 'RELEASING'
     | 'FLOATING'
-    | 'RETRACT_BOOKS'
     | 'RETRACT_BUBBLES'
     | 'RETRACT_SEALED'
     | 'TEARING';
@@ -121,7 +120,6 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const [bookBubbleMode, setBookBubbleMode] = useState<BubbleAnimationMode>('FORMING');
   const [mainBubbleScale, setMainBubbleScale] = useState(1.0);
   const [releaseProgress, setReleaseProgress] = useState(0.0);
-  const [reverseBooksProgress, setReverseBooksProgress] = useState(0.0);
   const prevSelectedGrimoireRef = useRef<GrimoireItem | null>(null);
 
   // Trigger normal bubble when a book is clicked on Archive Island
@@ -138,22 +136,16 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       setBookBubbleProgress(0.0);
       setMainBubbleScale(1.0);
       setReleaseProgress(0.0);
-      setReverseBooksProgress(0.0);
       bookBubbleStartTime.current = performance.now() / 1000;
     } else if (wasInspecting && !isNowInspecting) {
       // EXACT REVERSE SEQUENCE TRIGGER:
-      // When book is closed / unselected: run exact same animation in reverse order!
-      // 1. RETRACT_BOOKS: 6 books shrink back into the 6 bubbles
-      // 2. RETRACT_BUBBLES: 6 bubbles fly back to center into main bubble
-      // 3. RETRACT_SEALED: main bubble sealed at center
-      // 4. TEARING: main bubble tears open, restoring Archive Island!
+      // When book is closed / unselected: 6 bubbles fly back to center into main bubble, then bubble tears open restoring island!
       if (
         bookBubblePhaseRef.current === 'FLOATING' ||
         bookBubblePhaseRef.current === 'RELEASING'
       ) {
-        bookBubblePhaseRef.current = 'RETRACT_BOOKS';
-        setBookBubblePhase('RETRACT_BOOKS');
-        setReverseBooksProgress(0.0);
+        bookBubblePhaseRef.current = 'RETRACT_BUBBLES';
+        setBookBubblePhase('RETRACT_BUBBLES');
         bookBubbleStartTime.current = performance.now() / 1000;
       }
     }
@@ -297,25 +289,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       if (archiveElevateGroupRef.current) {
         archiveElevateGroupRef.current.visible = false;
       }
-    } else if (bookBubblePhaseRef.current === 'RETRACT_BOOKS') {
-      // 1. REVERSE STEP 1: Books shrink down back into the 6 bubbles (0.40s)
-      if (archiveElevateGroupRef.current) {
-        archiveElevateGroupRef.current.visible = false;
-      }
-      const DURATION = 0.40;
-      const elapsed = now - bookBubbleStartTime.current;
-      const t = Math.min(1.0, elapsed / DURATION);
-      setReverseBooksProgress(t);
-      setMainBubbleScale(0.0);
-      setReleaseProgress(1.0);
-
-      if (t >= 1.0) {
-        bookBubblePhaseRef.current = 'RETRACT_BUBBLES';
-        setBookBubblePhase('RETRACT_BUBBLES');
-        bookBubbleStartTime.current = now;
-      }
     } else if (bookBubblePhaseRef.current === 'RETRACT_BUBBLES') {
-      // 2. REVERSE STEP 2: 6 bubbles fly back to center while main bubble grows (1.25s)
+      // REVERSE: 6 bubbles fly back to center while main bubble grows (1.25s)
       if (archiveElevateGroupRef.current) {
         archiveElevateGroupRef.current.visible = false;
       }
@@ -386,7 +361,6 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         setBookBubbleProgress(0.0);
         setMainBubbleScale(1.0);
         setReleaseProgress(0.0);
-        setReverseBooksProgress(0.0);
         if (archiveElevateGroupRef.current) {
           archiveElevateGroupRef.current.visible = true;
           archiveElevateGroupRef.current.scale.set(1, 1, 1);
@@ -698,13 +672,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           <ReleasedSmallBubbles
             active={true}
             releaseProgress={releaseProgress}
-            isReversing={bookBubblePhase === 'RETRACT_BOOKS' || bookBubblePhase === 'RETRACT_BUBBLES'}
-            reverseStage={bookBubblePhase === 'RETRACT_BOOKS' ? 'BOOKS' : 'BUBBLES'}
-            reverseBooksProgress={reverseBooksProgress}
-            onSelectGrimoire={onSelectGrimoire}
-            selectedGrimoire={selectedGrimoire}
-            onSelectProject={onSelectProject}
-            selectedProject={selectedProject}
+            isReversing={bookBubblePhase === 'RETRACT_BUBBLES'}
+            onClose={() => onSelectGrimoire?.(null as any)}
           />
         )}
       </group>

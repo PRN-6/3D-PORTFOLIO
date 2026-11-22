@@ -15,12 +15,11 @@ import { ProjectsModal } from '../components/UI/ProjectsModal';
 import { ProductsModal } from '../components/UI/ProductsModal';
 import { ProjectDetailModal } from '../components/UI/ProjectDetailModal';
 import { GrimoireDetailModal } from '../components/UI/GrimoireDetailModal';
-import { ThemedOpenGrimoireModal } from '../components/UI/ThemedOpenGrimoireModal';
 import { ArchiveScrollModal } from '../components/UI/ArchiveScrollModal';
 import { useModelInteraction } from '../hooks/useModelInteraction';
 import { useTheme } from '../context/ThemeContext';
-import { PROJECTS_DATA, type ProjectItem } from '../data/projectsData';
-import { GRIMOIRES_DATA, type GrimoireItem } from '../data/archiveData';
+import type { ProjectItem } from '../data/projectsData';
+import type { GrimoireItem } from '../data/archiveData';
 import type { ForestLandmark } from '../components/Scene/Forest/ForestCameraController';
 import type { DestinationId } from '../components/Scene/Transitions/explodedConfig';
 
@@ -291,19 +290,6 @@ export const Home: React.FC = () => {
       {selectedProject && worldState !== 'ARCHIVE_WORLD' && (
         <ProjectDetailModal
           project={selectedProject}
-          onClose={handleCloseProject}
-        />
-      )}
-
-      {/* WORLD C: Full-Screen Enchanted Themed Open Grimoire Book Modal */}
-      {worldState === 'ARCHIVE_WORLD' && selectedProject && (
-        <ThemedOpenGrimoireModal
-          isOpen={!!selectedProject}
-          project={selectedProject}
-          grimoire={
-            GRIMOIRES_DATA.find((_, i) => PROJECTS_DATA[i]?.id === selectedProject.id) ||
-            selectedGrimoire
-          }
           onClose={handleCloseProject}
         />
       )}
