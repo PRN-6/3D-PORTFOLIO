@@ -35,8 +35,9 @@ export const MusicControls: React.FC = () => {
     <div
       ref={containerRef}
       data-testid="music-controls"
+      data-music-control="true"
       aria-label="Background Music Controls"
-      className={`fixed top-3.5 left-3.5 sm:top-5 sm:left-5 md:top-6 md:left-8 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-md transition-all select-none ${
+      className={`fixed top-3.5 left-20 sm:top-5 sm:left-24 md:top-6 md:left-28 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-md transition-all select-none ${
         isLight
           ? 'bg-[#e8decb]/90 hover:bg-[#e2d6c0] border border-[#c4b79b] text-[#22201d] shadow-[0_4px_20px_rgba(180,160,130,0.45)]'
           : 'bg-black/90 hover:bg-black/95 border border-white/15 hover:border-white/25 text-white shadow-[0_4px_24px_rgba(0,0,0,0.85)]'

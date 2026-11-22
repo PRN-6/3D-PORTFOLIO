@@ -46,7 +46,26 @@ export interface SceneProps {
   onTransitionFromForestToArchiveComplete?: () => void;
   onTransitionToWorkshopComplete?: () => void;
   onDestinationReached?: (dest: DestinationId) => void;
+  onCompiled?: () => void;
 }
+
+const SceneWarmupCompiler: React.FC<{ onCompiled?: () => void }> = ({ onCompiled }) => {
+  const { gl, scene, camera } = useThree();
+  const compiledOnce = React.useRef(false);
+
+  React.useEffect(() => {
+    if (compiledOnce.current) return;
+    compiledOnce.current = true;
+    try {
+      gl.compile(scene, camera);
+    } catch (err) {
+      console.warn('[SceneWarmupCompiler] gl.compile warning:', err);
+    }
+    onCompiled?.();
+  }, [gl, scene, camera, onCompiled]);
+
+  return null;
+};
 
 const PerformanceProfiler: React.FC = () => {
   const { gl, camera, scene } = useThree();
@@ -91,6 +110,7 @@ export const Scene: React.FC<SceneProps> = ({
   onTransitionFromForestToArchiveComplete = () => {},
   onTransitionToWorkshopComplete = () => {},
   onDestinationReached = () => {},
+  onCompiled,
 }) => {
   usePreventZoomGestures();
 
@@ -140,6 +160,7 @@ export const Scene: React.FC<SceneProps> = ({
         }}
       >
         <PerformanceProfiler />
+        <SceneWarmupCompiler onCompiled={onCompiled} />
 
         {/* MULTI-ISLAND FANTASY REALM: EXPLODED 3D ARCHITECTURAL OR VERTICAL STAIRCASE */}
         {isMultiLevelWorld && (
