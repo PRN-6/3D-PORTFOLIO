@@ -1,22 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useProgress } from '@react-three/drei';
-import { Compass } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 interface LoadingScreenProps {
   manualFinished?: boolean;
 }
 
+/**
+ * LoadingScreen (Cover Page)
+ *
+ * Minimalist, ultra-clean branding screen:
+ * - Dark Mode: 100% full black background with white "PRN" logo letters in the center.
+ * - Light Mode: Warm cream parchment background with black "PRN" logo letters in the center.
+ * - Gentle ambient breathing animation while assets initialize.
+ * - Smooth fade-out transition once loading completes.
+ */
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({ manualFinished = false }) => {
   const { progress, active } = useProgress();
+  const { isLight } = useTheme();
   const [visible, setVisible] = useState(true);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
-  const isComplete = (!active || progress >= 100) || manualFinished;
+  // Guarantee at least a brief smooth presentation so cached loads don't flash abruptly
+  useEffect(() => {
+    const minTimer = setTimeout(() => {
+      setMinTimeElapsed(true);
+    }, 600);
+    return () => clearTimeout(minTimer);
+  }, []);
+
+  const isLoaded = manualFinished || (!active && progress >= 100) || progress >= 100;
+  const isComplete = isLoaded && minTimeElapsed;
 
   useEffect(() => {
     if (isComplete) {
       const timer = setTimeout(() => {
         setVisible(false);
-      }, 600);
+      }, 700);
       return () => clearTimeout(timer);
     } else {
       setVisible(true);
@@ -27,41 +47,22 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ manualFinished = f
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#07080d] transition-opacity duration-700 ease-out ${
-        isComplete ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      data-testid="loading-cover-screen"
+      aria-label="Loading"
+      className={`fixed inset-0 z-50 flex items-center justify-center select-none transition-opacity duration-700 ease-out ${
+        isLight ? 'bg-[#f4eee0]' : 'bg-black'
+      } ${isComplete ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
     >
-      <div className="relative flex flex-col items-center">
-        {/* Fantasy Emblem Glow */}
-        <div className="relative mb-6 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-xl animate-pulse" />
-          <div className="relative p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 text-indigo-300">
-            <Compass className="w-8 h-8 animate-spin" style={{ animationDuration: '6s' }} />
-          </div>
-        </div>
-
-        {/* Title */}
-        <h1 className="font-fantasy text-xl md:text-2xl font-bold tracking-[0.25em] text-slate-100 uppercase mb-2">
-          Hero's Home
+      <div className="relative flex flex-col items-center justify-center">
+        {/* Central PRN Logo */}
+        <h1
+          className={`font-mono text-4xl sm:text-5xl md:text-6xl font-bold tracking-[0.35em] pl-[0.35em] transition-colors duration-500 animate-pulse ${
+            isLight ? 'text-black' : 'text-white'
+          }`}
+        >
+          PRN
         </h1>
-        <p className="text-xs uppercase tracking-widest text-indigo-300/70 mb-6">
-          Initializing 3D Realm
-        </p>
-
-        {/* Minimal Progress Bar */}
-        <div className="w-56 h-1 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50">
-          <div
-            className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 transition-all duration-300 ease-out"
-            style={{ width: `${Math.max(progress, isComplete ? 100 : 15)}%` }}
-          />
-        </div>
-
-        {/* Percentage */}
-        <span className="mt-3 text-[11px] font-mono text-slate-400 tracking-wider">
-          {Math.round(progress)}%
-        </span>
       </div>
     </div>
   );
 };
-
