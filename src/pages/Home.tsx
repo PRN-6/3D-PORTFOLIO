@@ -276,7 +276,7 @@ export const Home: React.FC = () => {
         onCompiled={markCompiled}
       />
 
-      {/* Fixed Top-Left Minimalist Music Player Capsule (Desktop & Mobile) */}
+      {/* Fixed Bottom-Center Minimalist Music Player Capsule (Desktop & Mobile) */}
       <MusicControls />
 
       {/* Top Navigation Header with Persistent Docked P R N Wordmark */}
