@@ -335,12 +335,13 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
       bookGroupRef.current.rotateX(0.08);
 
       // Book opening unfolding effect:
-      // When openProg passes 0.35, the closed tome opens up into the open book model
+      // When openProg passes 0.28, the closed tome opens up into the open book model
       if (closedGroupRef.current && openGroupRef.current) {
-        if (openProg > 0.32) {
-          const unfold = THREE.MathUtils.clamp((openProg - 0.32) / 0.68, 0.0, 1.0);
+        if (openProg > 0.28) {
+          const unfold = THREE.MathUtils.clamp((openProg - 0.28) / 0.72, 0.0, 1.0);
           const closedScale = Math.max(0.0, 1.0 - unfold * 1.5);
           closedGroupRef.current.scale.set(closedScale, closedScale, closedScale);
+          closedGroupRef.current.rotation.y = -unfold * (Math.PI * 0.5);
           closedGroupRef.current.visible = closedScale > 0.01;
 
           openGroupRef.current.visible = true;
@@ -350,6 +351,7 @@ const RevealedGrimoireBook: React.FC<RevealedGrimoireBookProps> = ({
         } else {
           closedGroupRef.current.visible = true;
           closedGroupRef.current.scale.set(1, 1, 1);
+          closedGroupRef.current.rotation.y = -openProg * (Math.PI * 0.35);
           openGroupRef.current.visible = false;
           openGroupRef.current.scale.set(0, 0, 0);
         }
