@@ -98,3 +98,4 @@ npm run lint
 1. **GitHub Synchronization**: Always commit and push changes to GitHub (`git push origin <branch>`) after making updates.
 2. **Build Verification**: Always run `npm run build` before completing a task to verify 0 TypeScript / bundler errors.
 3. **Responsive Verification**: Ensure all UI elements maintain negative space and never collide across desktop (1440x900) and mobile (390x844).
+
