@@ -38,9 +38,16 @@ export const Preloader: React.FC<PreloaderProps> = ({
 
   // Set initial hidden state for staggered controls immediately on mount
   useEffect(() => {
-    gsap.set('[data-nav-control], [data-music-control], [data-footer-control]', {
+    // Non-centered controls
+    gsap.set('[data-nav-control]:not([data-nav-control="nav-links"]), [data-footer-control]', {
       opacity: 0,
       y: -8,
+    });
+    // Centered controls preserve -50% horizontal translation
+    gsap.set('[data-nav-control="nav-links"], [data-music-control]', {
+      opacity: 0,
+      y: -8,
+      xPercent: -50,
     });
   }, []);
 
@@ -159,7 +166,7 @@ export const Preloader: React.FC<PreloaderProps> = ({
 
     // Stagger reveal remaining header controls and bottom footer links
     tl.fromTo(
-      '[data-nav-control], [data-music-control], [data-footer-control]',
+      '[data-nav-control]:not([data-nav-control="nav-links"]), [data-footer-control]',
       { opacity: 0, y: -8 },
       {
         opacity: 1,
@@ -169,6 +176,21 @@ export const Preloader: React.FC<PreloaderProps> = ({
         ease: 'power2.out',
       },
       0.9
+    );
+
+    // Stagger reveal centered navigation and music controls preserving -50% horizontal translation
+    tl.fromTo(
+      '[data-nav-control="nav-links"], [data-music-control]',
+      { opacity: 0, y: -8, xPercent: -50 },
+      {
+        opacity: 1,
+        y: 0,
+        xPercent: -50,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: 'power2.out',
+      },
+      0.95
     );
   }, [isDark, onDock, onComplete, targetRef]);
 

@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { WorldA_HeroIsland } from '../WorldA_HeroIsland';
 import { WorldC_ArchiveIsland } from '../WorldC_ArchiveIsland';
-import { FloatingBooksRealm } from '../Archive/FloatingBooksRealm';
 import { WorldD_WhisperingForest } from '../WorldD_WhisperingForest';
 import { WorldE_RuneWorkshop } from '../WorldE_RuneWorkshop';
 import { UnifiedPresentationCameraController } from './UnifiedPresentationCameraController';
@@ -99,6 +98,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   const phaseStartTimeRef = useRef(0);
   const outgoingIslandRef = useRef<DestinationId>(activeDestination);
   const incomingIslandRef = useRef<DestinationId>(activeDestination);
+  const targetDestinationRef = useRef<DestinationId | null>(null);
   const archiveElevateGroupRef = useRef<THREE.Group>(null);
 
   type BookBubblePhase =
@@ -193,8 +193,20 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   useEffect(() => {
     if (!activeDestination) return;
 
-    if (phaseRef.current === 'IDLE' && currentIsland !== activeDestination) {
-      startBubbleTransition(currentIsland, activeDestination);
+    if (currentIsland !== activeDestination) {
+      const isBubbleActive =
+        bookBubblePhaseRef.current === 'FLOATING' ||
+        bookBubblePhaseRef.current === 'RELEASING';
+
+      if (isBubbleActive) {
+        // Small bubble joining together and forming big and bursting and revealing new 3D model
+        targetDestinationRef.current = activeDestination;
+        bookBubblePhaseRef.current = 'RETRACT_BUBBLES';
+        setBookBubblePhase('RETRACT_BUBBLES');
+        bookBubbleStartTime.current = performance.now() / 1000;
+      } else if (phaseRef.current === 'IDLE' && bookBubblePhaseRef.current === 'IDLE') {
+        startBubbleTransition(currentIsland, activeDestination);
+      }
     }
   }, [activeDestination, currentIsland, startBubbleTransition]);
 
@@ -319,16 +331,29 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       }
     } else if (bookBubblePhaseRef.current === 'RETRACT_SEALED') {
       // 3. REVERSE STEP 3: Main bubble fully sealed at center (brief 0.15s pause)
+      const targetDest = targetDestinationRef.current || currentIsland;
+      const outgoingGroup = getIslandGroup(currentIsland);
+      const incomingGroup = getIslandGroup(targetDest);
+      const inBase = getBaseScale(targetDest);
+
+      if (outgoingGroup && targetDest !== currentIsland) {
+        outgoingGroup.visible = false;
+      }
       if (archiveElevateGroupRef.current) {
         archiveElevateGroupRef.current.visible = false;
       }
+      if (incomingGroup) {
+        incomingGroup.visible = true;
+        incomingGroup.scale.set(inBase[0] * 0.82, inBase[1] * 0.82, inBase[2] * 0.82);
+      }
+
       setMainBubbleScale(1.0);
       setBookBubbleMode('SEALED');
       setBookBubbleProgress(1.0);
 
       const elapsed = now - bookBubbleStartTime.current;
       if (elapsed >= 0.15) {
-        // 4. REVERSE STEP 4: Tear open the bubble to reveal the island!
+        // 4. REVERSE STEP 4: Tear open the bubble to reveal the new 3D model!
         bookBubblePhaseRef.current = 'TEARING';
         setBookBubblePhase('TEARING');
         setBookBubbleMode('TEARING');
@@ -337,6 +362,10 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       }
     } else if (bookBubblePhaseRef.current === 'TEARING') {
       // 4. TEARING: Main bubble tears open from bottom-right, revealing the 3D island model
+      const targetDest = targetDestinationRef.current || currentIsland;
+      const incomingGroup = getIslandGroup(targetDest);
+      const inBase = getBaseScale(targetDest);
+
       const TEARING_DURATION = 0.65;
       const elapsed = now - bookBubbleStartTime.current;
       const t = Math.min(1.0, elapsed / TEARING_DURATION);
@@ -345,13 +374,13 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       setMainBubbleScale(1.0);
 
       // Restore island model visibility with elastic settle
-      if (archiveElevateGroupRef.current) {
+      if (incomingGroup) {
         if (t < 0.10) {
-          archiveElevateGroupRef.current.visible = false;
+          incomingGroup.visible = false;
         } else {
-          archiveElevateGroupRef.current.visible = true;
-          const s = THREE.MathUtils.lerp(0.70, 1.0, Math.min(1.0, (t - 0.10) / 0.90));
-          archiveElevateGroupRef.current.scale.set(s, s, s);
+          incomingGroup.visible = true;
+          const s = THREE.MathUtils.lerp(0.82, 1.0, Math.min(1.0, (t - 0.10) / 0.90));
+          incomingGroup.scale.set(inBase[0] * s, inBase[1] * s, inBase[2] * s);
         }
       }
 
@@ -361,9 +390,25 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         setBookBubbleProgress(0.0);
         setMainBubbleScale(1.0);
         setReleaseProgress(0.0);
+
+        if (incomingGroup) {
+          incomingGroup.visible = true;
+          incomingGroup.scale.set(inBase[0], inBase[1], inBase[2]);
+        }
         if (archiveElevateGroupRef.current) {
           archiveElevateGroupRef.current.visible = true;
           archiveElevateGroupRef.current.scale.set(1, 1, 1);
+        }
+
+        if (targetDestinationRef.current) {
+          const dest = targetDestinationRef.current;
+          targetDestinationRef.current = null;
+          setCurrentIsland(dest);
+          onDestinationReached?.(dest);
+          if (dest === 'ARCHIVE') onTransitionToArchiveComplete?.();
+          else if (dest === 'HOME') onTransitionFromArchiveToHomeComplete?.();
+          else if (dest === 'FOREST') onTransitionToForestComplete?.();
+          else if (dest === 'WORKSHOP') onTransitionToWorkshopComplete?.();
         }
       }
     } else {
@@ -530,6 +575,13 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   });
 
   const isIslandVisible = (id: DestinationId): boolean => {
+    if (bookBubblePhase === 'RETRACT_SEALED' || bookBubblePhase === 'TEARING') {
+      const targetDest = targetDestinationRef.current || currentIsland;
+      return id === targetDest;
+    }
+    if (bookBubblePhase !== 'IDLE') {
+      return id === 'ARCHIVE';
+    }
     if (currentPhase === 'IDLE') return currentIsland === id;
     if (currentPhase === 'FORMING') return id === outgoingIslandRef.current;
     // SEALED, TEARING, REVEAL: only the incoming island is visible!
@@ -539,11 +591,11 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   return (
     <>
       <UnifiedPresentationCameraController
-        isTransitioning={isTransitioning}
+        isTransitioning={isTransitioning || bookBubblePhase !== 'IDLE'}
         resetSignal={resetSignal}
         onResetComplete={onResetComplete}
         selectedGrimoire={selectedGrimoire}
-        activeIsland={currentIsland}
+        activeIsland={targetDestinationRef.current || currentIsland}
         inspectDescentY={0}
       />
 
@@ -585,13 +637,6 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
               onResetComplete={onResetComplete}
             />
           </group>
-
-          {/* FloatingBooksRealm disabled per user request: only bubble is shown */}
-          <FloatingBooksRealm
-            selectedGrimoire={selectedGrimoire || null}
-            onSelectGrimoire={onSelectGrimoire || (() => {})}
-            active={false}
-          />
         </group>
 
         {/* DESTINATION 3: Whispering Forest */}

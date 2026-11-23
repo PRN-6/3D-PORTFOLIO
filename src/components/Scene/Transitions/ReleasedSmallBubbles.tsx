@@ -2,7 +2,6 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { BlackBubbleMesh } from './BlackBubbleMesh';
-import { MetaballGridMorph } from './MetaballGridMorph';
 import type { ProjectItem } from '../../../data/projectsData';
 
 export interface SmallBubbleItem {
@@ -69,7 +68,7 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
   isReversing = false,
   isTearing = false,
   onClose,
-  onSelectProject,
+  onSelectProject: _onSelectProject,
 }) => {
   const { camera, size } = useThree();
   const isMobile = size.width < 768;
@@ -234,56 +233,44 @@ export const ReleasedSmallBubbles: React.FC<ReleasedSmallBubblesProps> = ({
       <ambientLight intensity={0.8} />
       <directionalLight position={[0, 8, 10]} intensity={1.2} />
 
-      {/* 1. INITIAL BUDDING / REVERSE RETURN BUBBLES */}
-      {(releaseProgress < 0.95 || isReversing) &&
-        activePresets.map((b, index) => {
-          return (
+      {/* FLOATING ORGANIC GLOSSY BLACK BUBBLES */}
+      {activePresets.map((b, index) => {
+        return (
+          <group
+            key={b.id}
+            ref={(el) => {
+              bubbleRefs.current[index] = el;
+            }}
+            visible={false}
+          >
+            {/* Glossy Black Bubble Mesh */}
             <group
-              key={b.id}
-              ref={(el) => {
-                bubbleRefs.current[index] = el;
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isReversing && onClose) {
+                  onClose();
+                }
               }}
-              visible={false}
+              onPointerOver={(e) => {
+                e.stopPropagation();
+                document.body.style.cursor = 'pointer';
+              }}
+              onPointerOut={(e) => {
+                e.stopPropagation();
+                document.body.style.cursor = 'auto';
+              }}
             >
-              {/* Glossy Black Bubble Mesh */}
-              <group
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!isReversing && onClose) {
-                    onClose();
-                  }
-                }}
-                onPointerOver={(e) => {
-                  e.stopPropagation();
-                  document.body.style.cursor = 'pointer';
-                }}
-                onPointerOut={(e) => {
-                  e.stopPropagation();
-                  document.body.style.cursor = 'auto';
-                }}
-              >
-                <BlackBubbleMesh
-                  radius={b.radius}
-                  progress={1.0}
-                  mode="SEALED"
-                  position={[0, 0, 0]}
-                  wobbleIntensity={0.045}
-                />
-              </group>
+              <BlackBubbleMesh
+                radius={b.radius}
+                progress={1.0}
+                mode="SEALED"
+                position={[0, 0, 0]}
+                wobbleIntensity={0.045}
+              />
             </group>
-          );
-        })}
-
-      {/* 2. CONTINUOUS 4-PHASE METABALL GRID MORPH INTO 5 VERTICAL CAPSULES */}
-      {releaseProgress >= 0.95 && (
-        <MetaballGridMorph
-          active={active}
-          releaseProgress={releaseProgress}
-          isReversing={isReversing}
-          onClose={onClose}
-          onSelectProject={onSelectProject}
-        />
-      )}
+          </group>
+        );
+      })}
     </group>
   );
 };

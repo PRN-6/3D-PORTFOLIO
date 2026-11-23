@@ -143,29 +143,7 @@ export const Footer: React.FC = () => {
         ))}
       </nav>
 
-      {/* 2. Bottom-Center: Fine Editorial Technical Metadata Caption (matches reference design) */}
-      <div
-        className={`hidden lg:flex flex-col items-center justify-center text-center pointer-events-none select-none px-4 ${
-          isLight ? 'opacity-70' : 'opacity-45'
-        }`}
-      >
-        <span
-          className={`font-mono text-[8px] tracking-[0.24em] uppercase leading-tight whitespace-nowrap ${
-            isLight ? 'text-[#38332c] font-medium' : 'text-zinc-400'
-          }`}
-        >
-          TEXT: VECTOR GRAPHICS, 3D WEB INFOGRAPHICS, CHARACTER DESIGN, VOXEL MODELS, WEB3, D.1000 DIALOGUES
-        </span>
-        <span
-          className={`font-mono text-[7.5px] tracking-[0.28em] uppercase leading-tight whitespace-nowrap mt-0.5 ${
-            isLight ? 'text-[#5c5446]' : 'text-zinc-500'
-          }`}
-        >
-          CRAFTING IDEAS, 2011, R. GEOMETRY &mdash; SYSTEM &mdash; PRODUCED BY TECHNIQUANT
-        </span>
-      </div>
-
-      {/* 3. Bottom-Right: Four-Pointed Sparkle Star + Copyright & Visitor Counter */}
+      {/* 2. Bottom-Right: Four-Pointed Sparkle Star + Copyright & Visitor Counter */}
       <div
         data-testid="footer-copyright-counter"
         className={`pointer-events-auto flex items-center gap-1.5 sm:gap-2 font-mono text-[10px] sm:text-[11px] md:text-xs tracking-wider whitespace-nowrap ${
@@ -184,8 +162,8 @@ export const Footer: React.FC = () => {
         >
           <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
         </svg>
-        <span>&copy; {currentYear}</span>
-        <span className={`mx-1 sm:mx-1.5 select-none ${isLight ? 'text-[#a39782]' : 'text-slate-600'}`}>•</span>
+        <span className="hidden sm:inline">&copy; {currentYear}</span>
+        <span className={`hidden sm:inline mx-1 sm:mx-1.5 select-none ${isLight ? 'text-[#a39782]' : 'text-slate-600'}`}>•</span>
         <span>vis: {visitorCount}</span>
       </div>
     </footer>

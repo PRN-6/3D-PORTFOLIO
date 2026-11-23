@@ -93,15 +93,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         </a>
       </div>
 
-      {/* 2. TOP-CENTER DESKTOP NAVIGATION LINKS */}
+      {/* 2. TOP-CENTER DESKTOP NAVIGATION LINKS (Floating Capsule Pill) */}
       <nav
         data-testid="top-center-navigation"
         data-nav-control="nav-links"
         aria-label="Main Navigation"
-        className={`hidden md:flex fixed left-1/2 -translate-x-1/2 z-40 pointer-events-auto items-center font-mono text-xs sm:text-[13px] tracking-wider transition-all duration-300 ${
+        className={`hidden md:flex fixed top-5 sm:top-6 left-1/2 -translate-x-1/2 z-40 pointer-events-auto items-center font-mono text-xs sm:text-[13px] tracking-wider transition-all duration-300 px-5 sm:px-6 py-2 rounded-full backdrop-blur-md ${
           isLight
-            ? 'top-5 sm:top-6 bg-[#1c1a17] text-[#f4eee0] border border-[#38332c] px-5 sm:px-6 py-2 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-md'
-            : 'top-6 sm:top-8'
+            ? 'bg-[#1c1a17] text-[#f4eee0] border border-[#38332c] shadow-[0_8px_30px_rgba(0,0,0,0.4)]'
+            : 'bg-[#1c1a17]/95 text-[#f4eee0] border border-[#38332c] shadow-[0_8px_30px_rgba(0,0,0,0.7)]'
         }`}
       >
         {NAV_ITEMS.map((item, index) => {
@@ -109,11 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           return (
             <React.Fragment key={item.id}>
               {index > 0 && (
-                <span
-                  className={`select-none px-2 sm:px-3 text-[11px] ${
-                    isLight ? 'text-[#5a5245]' : 'text-zinc-600'
-                  }`}
-                >
+                <span className="select-none px-2 sm:px-3 text-[11px] text-[#5a5245]">
                   &middot;
                 </span>
               )}
@@ -128,9 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className={`transition-colors duration-200 cursor-pointer lowercase ${
                   isActive
                     ? 'text-white font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
-                    : isLight
-                    ? 'text-[#a89d8c] hover:text-[#f4eee0]'
-                    : 'text-zinc-500 hover:text-white'
+                    : 'text-[#a89d8c] hover:text-[#f4eee0]'
                 }`}
               >
                 {item.label}

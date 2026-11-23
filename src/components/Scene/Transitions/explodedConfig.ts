@@ -34,7 +34,7 @@ export const ISLAND_DISPLAY_TRANSFORMS: Record<DestinationId, IslandDisplayTrans
   },
   ARCHIVE: {
     scale: [0.70, 0.70, 0.70],
-    position: [-0.85, -0.45, -0.2],
+    position: [0.0, 0.60, 0.0],
   },
   FOREST: {
     scale: [0.58, 0.58, 0.58],

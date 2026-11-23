@@ -6,13 +6,13 @@ import { useTheme } from '../../context/ThemeContext';
 /**
  * MusicControls
  *
- * Minimal, elegant audio control capsule fixed in the top-left corner:
+ * Minimal, elegant audio control capsule fixed in the bottom-center:
  * - Animated soundbar equalizer indicator (animates when actively playing)
  * - Active section soundtrack filename
  * - Play / Pause toggle
  * - Volume Mute / Unmute button
  * - Smooth volume slider (compact on mobile, extended on desktop)
- * - Fixed top-left positioning on BOTH mobile and desktop
+ * - Fixed bottom-center positioning on BOTH mobile and desktop
  * - Theme-aware styling: Dark mode black capsule / Light mode warm parchment capsule
  */
 export const MusicControls: React.FC = () => {
@@ -37,7 +37,7 @@ export const MusicControls: React.FC = () => {
       data-testid="music-controls"
       data-music-control="true"
       aria-label="Background Music Controls"
-      className={`fixed top-3.5 left-20 sm:top-5 sm:left-24 md:top-6 md:left-28 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-md transition-all select-none ${
+      className={`fixed bottom-3.5 sm:bottom-4 md:bottom-5 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-auto flex items-center gap-1.5 sm:gap-2.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full backdrop-blur-md transition-all select-none ${
         isLight
           ? 'bg-[#e8decb]/90 hover:bg-[#e2d6c0] border border-[#c4b79b] text-[#22201d] shadow-[0_4px_20px_rgba(180,160,130,0.45)]'
           : 'bg-black/90 hover:bg-black/95 border border-white/15 hover:border-white/25 text-white shadow-[0_4px_24px_rgba(0,0,0,0.85)]'
@@ -146,7 +146,7 @@ export const MusicControls: React.FC = () => {
       </button>
 
       {/* 5. Smooth Volume Slider (Compact on mobile, extended on desktop) */}
-      <div className="flex items-center">
+      <div className="hidden xs:flex sm:flex items-center">
         <input
           type="range"
           min="0"
@@ -157,7 +157,7 @@ export const MusicControls: React.FC = () => {
           data-testid="audio-volume-slider"
           aria-label="Music volume slider"
           title={`Volume: ${Math.round((isMuted ? 0 : volume) * 100)}%`}
-          className="w-8 sm:w-14 md:w-16 music-volume-slider cursor-pointer"
+          className="w-10 sm:w-14 md:w-16 music-volume-slider cursor-pointer"
         />
       </div>
     </div>
