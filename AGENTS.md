@@ -1,101 +1,32 @@
-# PRINSON — 3D Fantasy RPG Portfolio
+# PRINSON — 3D fantasy portfolio
 
-> High-performance, cinematic 3D fantasy RPG portfolio and interactive digital realm for Prinson ([prinson.is-a.dev](https://prinson.is-a.dev)).
+## Actual architecture
 
----
+- React 19 + TypeScript, Vite 8 SPA; `src/main.tsx` configures local Draco decoding and mounts StrictMode. `App.tsx` wraps a catch-all React Router 7 route in `ThemeProvider`. `pages/Home.tsx` coordinates URL, destination, modal, selection, audio and readiness state; it is not just the home page.
+- `routes.ts` maps `/` to HOME, `/products` to WORKSHOP, `/projects` to ARCHIVE, `/about` to FOREST (now the blue flower garden). `/contact` and `/fun` open overlays over HOME. Preserve deep links and back/forward behavior.
+- Three.js 0.187 via React Three Fiber 9 and Drei 10. `Scene.tsx` owns one WebGL Canvas, ACES tone mapping, exposure 1.15, DPR range 1–1.5, shadows, warmup and debug statistics. `__THREE_STATS__` is sampled every 30 frames; it is not a GPU timer or complete memory profiler.
+- The default `sceneConfig.transitionMode = 'EXPLODED'` currently selects `BubbleIslandTransition`, **not** `ModularExplodedTransition`. `STAIRCASE` selects `Level01_To_Level02_Transition`. Legacy animation/transition code remains in the repository; confirm the active import path before changing it.
+- Active world components: `WorldA_HeroIsland` → `EnvironmentLoader` → `home-island.glb`; `WorldE_RuneWorkshop` → modular workshop GLBs; `WorldC_ArchiveIsland` → Archive environment/books/Frieren; `WorldD_WhisperingForest` → `BlueFlowerGarden/*` and `blue-flower-garden-complete.glb`. The `Forest/*` components and `assets3d/*` also support older paths.
+- `Transitions/explodedConfig.ts` is the source of truth for presentation offsets/scales. `UnifiedPresentationCameraController` governs shared framing/orbit/reset. Retain character proportions and destination anchors.
+- GLB/glTF assets live in `public/models`; manifests, generators, previews and preservation notes live beside them. Existing `scripts/optimize-*` and asset builders can overwrite source models: inspect before executing. Runtime loading uses Drei `useGLTF`, Suspense/error boundaries, module-level preloads, plus custom GLTFLoader paths for legacy scenes. Draco files are in `public/draco/gltf`.
+- GSAP drives DOM/preloader motion. R3F `useFrame`, Three AnimationMixer, Drei `useAnimations`, GLSL bubble shaders, `partyLife`/`partySchedule`, and `src/animation` implement 3D motion. Skinned characters use SkeletonUtils cloning; `partyMaterials` supplies cel paint, expression atlas rows and outlines.
+- `Preloader.tsx` animates the brand into `Navbar`. `useSceneReady` observes LoadingManager/fonts/compile but currently has unconditional 700 ms and 4.5 s fallbacks. `SceneWarmupCompiler` runs once on mount; do not describe this as guaranteed asset-complete warmup.
+- Tailwind 4 through `@tailwindcss/vite`; `src/index.css` imports `styles/index.css`. `Navbar`, `UI/*`, the DOM `CinematicBackgroundTitle`, and `services/audioManager.ts` provide the overlay UI, typography and sound. Use existing conventions and Lucide icons.
 
-## 🛠️ Tech Stack & Key Libraries
+## Coding and preservation standards
 
-- **Framework**: React 19 + TypeScript + Vite 8
-- **3D Graphics & WebGL**: Three.js (`three` 0.187), `@react-three/fiber` (v9), `@react-three/drei` (v10)
-- **Styling**: Tailwind CSS v4 (`@tailwindcss/vite`, modern `@layer` architecture)
-- **Animations & Transitions**: GSAP 3.15 (`gsap.timeline`, `gsap.fromTo`, Flip animations)
-- **Icons & UI**: Lucide React (`lucide-react`)
-- **Linting & Tooling**: Oxlint (`oxlint`), Draco 3D GLTF decoders
+- Scope changes to the request; inspect Git status and preserve unrelated edits. Create a `codex/` branch or an isolated worktree before implementation. Never silently regenerate models while doing a code/documentation audit.
+- Follow adjacent TypeScript/React conventions, use explicit props and type-only imports, and avoid introducing `any` or unused symbols. Keep frame-local values in refs/uniforms rather than React state where possible. Memoize reusable geometry/materials; avoid allocations and full-scene traversal each frame.
+- Preserve the cinematic fantasy/cel aesthetic, silhouettes, scale, palette, material response, character expressions, rig hierarchy, clip names, interaction node names, camera framing and bubble transition identity. Increased realism should enhance grounding/detail without silently replacing the art direction.
+- Clone skinned hierarchies with SkeletonUtils. Do not mutate cached useGLTF assets or dispose shared resources. Track ownership of cloned materials/textures/skeletons, stop and uncache owned mixers, and clean up effects/timelines/listeners. Hidden objects may still run frame callbacks.
+- For asset work, use `.agents/skills/3d-model-quality/SKILL.md`. Record hashes and before/after measurements. Export candidates separately and validate them in this app before replacing originals. Explain proposed dependencies before adding them; reuse installed glTF Transform, Draco and Puppeteer where appropriate.
 
----
+## Required verification
 
-## 🗺️ Project Architecture & Navigation Realms
-
-The portfolio is structured around 4 interactive 3D destination islands, linked via dynamic camera tracking, physics-based liquid bubble transitions, and unified presentation anchors:
-
-1. **Hero's Home (`/` | `HOME`)**:
-   - **Component**: `WorldA_HeroIsland.tsx`
-   - **Setting**: Floating pastoral fantasy island with farmhouse, vegetable garden, cobblestone path, and anime hero companions (Himmel, Frieren, Heiter, Eisen) gathered around a warm animated campfire.
-   - **Background**: Monumental infinite kinetic typography traveling in opposing directions (`PRINSON ROYAL NAZARETH`).
-   - **Subtitle**: Floating capsule `"JUST A DEVELOPER"`.
-
-2. **Rune Creation Workshop (`/products` | `WORKSHOP`)**:
-   - **Component**: `WorldE_RuneWorkshop.tsx`
-   - **Setting**: Magical forge & workshop featuring interactive crafting stations, digital software inventions, and tools.
-   - **Scale & Offset**: `scale: [0.59, 0.59, 0.59]`, `position: [-0.48, 0.65, 0.35]`.
-
-3. **Grand Mage's Archive (`/projects` | `ARCHIVE`)**:
-   - **Component**: `WorldC_ArchiveIsland.tsx`
-   - **Setting**: Gothic grand library in the clouds with Frieren seated at her study desk, floating grimoires, torches, bookshelves, and spiral staircase.
-   - **Scale & Offset**: `scale: [0.70, 0.70, 0.70]`, `position: [0.0, 0.60, 0.0]`.
-   - **Interactivity**: Clicking floating grimoires triggers the organic black liquid bubble animation and project detail inspect mode.
-
-4. **Blue Flower Garden (`/about` | `FOREST`)**:
-   - **Component**: `WorldD_WhisperingForest.tsx`
-   - **Setting**: Ethereal meadow of blooming blue flowers featuring Himmel and Frieren beneath the sacred tree, celebrating memory, companionship, and craftsmanship.
-   - **Scale & Offset**: `scale: [0.58, 0.58, 0.58]`, `position: [0.0, 0.50, 0.0]`.
-
-5. **Modals & Overlays**:
-   - **Contact (`/contact`)**: Glassmorphism inquiry and direct communication modal.
-   - **Fun (`/fun`)**: Interactive developer experiments, sandbox playground, and camera orbit controls.
-
----
-
-## 🎬 Core Animation Systems
-
-### 1. Asset-Gated Preloader & Hero Brand-Flight (`Preloader.tsx`)
-- Gates reveal until all 3D geometries, GLTF assets, shaders, and fonts (`document.fonts.ready`) are 100% loaded.
-- Pre-warms WebGL shaders via `renderer.compile(scene, camera)`.
-- Smoothly flies the centered bold wordmark `P R N` along an organic parabolic trajectory into the persistent top-left header slot across all routes.
-- Stagger-reveals header navigation, audio controls, and footer links.
-
-### 2. Full Black Sweeping Bubble Transition (`BubbleIslandTransition.tsx`)
-- Physics-inspired liquid bubble transition:
-  - **Forming**: Glossy obsidian liquid bubble sweeps in from bottom-right, engulfing the outgoing 3D model with rim droplets.
-  - **Sealed**: Solid 100% enclosed black sphere concealing the model.
-  - **Tearing**: Ruptures and tears open from bottom-right with fluid droplet sprays along the boundary.
-  - **Reveal**: Smoothly settles the newly loaded destination island into place.
-
-### 3. Background Monumental Kinetic Typography (`CinematicBackgroundTitle.tsx`)
-- Two-line infinite traveling marquee in opposing directions:
-  - Upper Line: Travels right (`->`)
-  - Lower Line: Travels left (`<-`)
-- Rendered with `Anton` / `Bebas Neue` font stack, responsive `clamp()`, and `overflow-visible` to ensure zero letter clipping.
-
----
-
-## 📐 Layout & Spatial Rules
-
-- **Top-Left**: Persistent docked brandmark `P R N` (anchors back to home `/`).
-- **Top-Center**: Floating dark navigation pill capsule (`home · products · projects · about me · contact · fun`).
-- **Top-Right**: Theme toggle (`Light / Dark`) + Reset camera button (`↺ reset view`).
-- **Bottom-Center**: Floating audio player capsule (`MusicControls.tsx`) displaying the current section soundtrack (`home.mp3`, `products.mp3`, etc.), equalizer bars, play/pause, volume slider, and mute toggles.
-- **Bottom-Left**: Social links (GitHub, LinkedIn, Email).
-- **Bottom-Right**: Sparkle star + Visitor counter & copyright.
-
----
-
-## ⚡ Developer Guidelines & Commands
-
-```bash
-# Start local development server (runs on port 5175)
-npm run dev
-
-# Run TypeScript check & build production assets
-npm run build
-
-# Run Oxlint
-npm run lint
-```
-
-### Critical Development Rules:
-1. **GitHub Synchronization**: Always commit and push changes to GitHub (`git push origin <branch>`) after making updates.
-2. **Build Verification**: Always run `npm run build` before completing a task to verify 0 TypeScript / bundler errors.
-3. **Responsive Verification**: Ensure all UI elements maintain negative space and never collide across desktop (1440x900) and mobile (390x844).
-
+- Run `npm run build` before completing changes; this runs `tsc -b && vite build`. Run `npm run lint`; report existing warnings separately from regressions. Do not hide failures or treat warning-only exit status as a clean lint report.
+- `npm run dev` uses Vite's default port unless overridden; use `npm run dev -- --port 5175 --strictPort` for a stable requested port. `npm run preview -- --host 127.0.0.1 --port 5187 --strictPort` serves the production build for measurement. Vite emits `404.html`; host rewrites are under `public`.
+- No package-level `test` script or CI workflow currently exists. There are standalone `scripts/test-*.mjs`/`qa-*.mjs`; inspect paths/selectors/output side effects before running. `node scripts/test-assembly-engine.mjs` is a standalone mathematical regression check, not proof the active bubble flow works.
+- Establish and compare production baselines for rendering, loading and asset changes. Record commit, browser/GPU/device, viewport/DPR, route, cache/network conditions, sample duration, p50/p95 frame times, render calls/triangles, resources and errors. Distinguish static geometry estimates, renderer counters and real device timings. Repeat noisy comparisons; do not claim mobile performance from desktop viewport emulation.
+- Capture and inspect screenshots at **1440×900** and **390×844**. Check light/dark themes, legibility, spacing, modal boundaries, navigation/audio/footer collisions, silhouettes and shadow/material consistency. Exercise relevant deep links, forward/reverse transitions, orbit/reset, selection/close, browser back/forward and reduced-motion behavior. Document untested coverage.
+- Current reproducible tools: `node .agents/skills/3d-model-quality/scripts/inspect-assets.mjs public/models <output.json>` and `node scripts/audit-browser-baseline.mjs` (environment options in the script). Keep reference results in `docs/audit`; put new comparisons in a new output directory rather than silently overwriting the initial baseline.
+- Always commit and push task-owned updates to GitHub (`git push origin <branch>`). Exclude unrelated user edits; report any push/verification blocker accurately. Never force-push or discard work to satisfy this requirement.

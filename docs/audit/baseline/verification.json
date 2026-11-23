@@ -1,0 +1,42 @@
+{
+  "auditDate": "2026-11-23",
+  "sourceCommit": "13cbe199c97730cca4cd46899b1b3e74e0976336",
+  "build": {
+    "exitCode": 0,
+    "log": "build.txt"
+  },
+  "lint": {
+    "exitCode": 0,
+    "warnings": 2428,
+    "errors": 0,
+    "dracoVendorWarnings": 2325,
+    "newAuditScriptsWarnings": 0
+  },
+  "assemblyTest": {
+    "exitCode": 0,
+    "log": "tests.txt"
+  },
+  "skillValidation": "quick_validate.py: Skill is valid!",
+  "modelDecode": {
+    "files": 87,
+    "errors": 0
+  },
+  "originalModelHashChanges": [],
+  "browserDirectRoutes": {
+    "completed": 12,
+    "googleFontsFailures": 2,
+    "localModelHttpErrors": 0
+  },
+  "interactionChecks": {
+    "desktop": "passed",
+    "mobileEmulation": "passed"
+  },
+  "notTested": [
+    "real phone hardware",
+    "GPU timing",
+    "exhaustive topology/UV/skin/clip correctness",
+    "grimoire inspection reverse stress",
+    "contact submission",
+    "full accessibility"
+  ]
+}
