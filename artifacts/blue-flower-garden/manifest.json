@@ -1,0 +1,67 @@
+{
+  "generator": "scripts/build-blue-flower-garden-candidate.mjs",
+  "seed": 61429,
+  "triangles": 108566,
+  "primitives": 8,
+  "materialCount": 8,
+  "joints": 151,
+  "flowerCount": 4200,
+  "flowerDistribution": [
+    2100,
+    1050,
+    630,
+    420
+  ],
+  "heroFlowers": 164,
+  "heroFlowerMaxY": 0.560744404176122,
+  "treePositions": [
+    [
+      0,
+      0.4,
+      -6.5
+    ],
+    [
+      -4.2,
+      0.4,
+      -4.8
+    ],
+    [
+      4.5,
+      0.4,
+      -4.5
+    ]
+  ],
+  "shrubs": 24,
+  "satellites": 8,
+  "underbellyGeodes": 6,
+  "petals": 64,
+  "motes": 40,
+  "clips": [
+    {
+      "name": "Island_Idle_Breeze",
+      "duration": 6
+    },
+    {
+      "name": "Floating_Orbit_Crystals",
+      "duration": 6
+    },
+    {
+      "name": "Petal_Wind_Drift",
+      "duration": 6
+    }
+  ],
+  "coordinates": {
+    "up": "+Y",
+    "forward": "+Z",
+    "terrainCrest": 0.42,
+    "stalactiteTip": -3.8,
+    "endpointSpan": 4.22
+  },
+  "bytes": 1473072,
+  "drawCallScope": "8 model color-pass submissions with transparent materials forceSinglePass; shadows/postprocessing add passes. Full behavior requires garden-runtime.mjs.",
+  "limitations": [
+    "Hero characters are staging anchors, not included meshes.",
+    "Standard glTF has no loop flag, depthWrite or material-property animation; runtime helper applies these.",
+    "Sky cloud extent is excluded from the island core dimensions."
+  ]
+}

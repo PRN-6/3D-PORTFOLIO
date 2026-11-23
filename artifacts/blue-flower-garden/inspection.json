@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-23T18:35:49.834Z",
+  "methodology": "Decoded using installed glTF Transform and Draco. Unique mesh counts differ from scene node instances; neither is measured draw calls. Bounds are rest-pose bounds. Texture memory is RGBA8+mips estimate, not measured VRAM. External glTF resources are read but file bytes/hash describe the entry file only. EXT_mesh_gpu_instancing multiplicity is not expanded. Not a Khronos conformance validator.",
+  "totals": {
+    "files": 1,
+    "bytes": 1438288,
+    "errors": 0
+  },
+  "assets": [
+    {
+      "path": "artifacts/blue-flower-garden/blue-flower-garden.glb",
+      "bytes": 1438288,
+      "sha256": "6467444d0c5b189f22429d2de3af9c11afa7ee9ba3f7a7f11c30ac8e2d2d2c1d",
+      "extensions": [
+        "KHR_draco_mesh_compression",
+        "KHR_materials_emissive_strength"
+      ],
+      "nodes": 162,
+      "meshes": 8,
+      "primitives": 8,
+      "uniqueMeshTriangles": 109696,
+      "vertices": 175916,
+      "primitivesWithoutNormals": 0,
+      "primitivesWithMorphTargets": 0,
+      "skins": [
+        {
+          "name": "Garden_Rigid_Batch_Rig",
+          "joints": 151
+        }
+      ],
+      "materials": [
+        {
+          "name": "Living moss and meadow",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.95,
+          "metalness": 0,
+          "alphaMode": "OPAQUE",
+          "doubleSided": false,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "Weathered karst and ruins",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.88,
+          "metalness": 0.05,
+          "alphaMode": "OPAQUE",
+          "doubleSided": false,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "Twisted cedar bark",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.94,
+          "metalness": 0,
+          "alphaMode": "OPAQUE",
+          "doubleSided": false,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "Nemophila and wisteria petals",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.92,
+          "metalness": 0,
+          "alphaMode": "OPAQUE",
+          "doubleSided": true,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "Golden radiant stamens",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.7,
+          "metalness": 0,
+          "alphaMode": "OPAQUE",
+          "doubleSided": false,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0.9386857284565036,
+            0.6104955708001716,
+            0.036889450395083165
+          ]
+        },
+        {
+          "name": "Celestial mana crystal",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.25,
+          "metalness": 0.15,
+          "alphaMode": "OPAQUE",
+          "doubleSided": false,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0.17788841597328695,
+            0.7230551289161951,
+            0.9215818562755338
+          ]
+        },
+        {
+          "name": "Pastel horizon clouds",
+          "baseColor": [
+            1,
+            1,
+            1,
+            0.88
+          ],
+          "roughness": 0.98,
+          "metalness": 0,
+          "alphaMode": "BLEND",
+          "doubleSided": false,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "Wind petals and mana motes",
+          "baseColor": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "roughness": 0.92,
+          "metalness": 0,
+          "alphaMode": "BLEND",
+          "doubleSided": true,
+          "baseColorTexture": false,
+          "normalTexture": false,
+          "occlusionTexture": false,
+          "emissive": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "textures": [
+        {
+          "name": "Particle emission mask",
+          "mime": "image/png",
+          "dimensions": [
+            2,
+            1
+          ],
+          "encodedBytes": 74,
+          "rgba8MipEstimateBytes": 11
+        }
+      ],
+      "animations": [
+        {
+          "name": "Island_Idle_Breeze",
+          "channels": 30,
+          "missingTargets": 0,
+          "duration": 6,
+          "paths": [
+            "rotation"
+          ]
+        },
+        {
+          "name": "Floating_Orbit_Crystals",
+          "channels": 8,
+          "missingTargets": 0,
+          "duration": 6,
+          "paths": [
+            "translation"
+          ]
+        },
+        {
+          "name": "Petal_Wind_Drift",
+          "channels": 232,
+          "missingTargets": 0,
+          "duration": 6,
+          "paths": [
+            "translation",
+            "scale",
+            "rotation"
+          ]
+        }
+      ],
+      "scenes": [
+        {
+          "name": "Blue Flower Garden",
+          "bounds": {
+            "min": [
+              -17.107297897338867,
+              -3.799999952316284,
+              -16.810331344604492
+            ],
+            "max": [
+              17.392972946166992,
+              4.631054401397705,
+              12.558725357055664
+            ]
+          },
+          "primitiveInstances": 8,
+          "triangleInstances": 109696
+        }
+      ]
+    }
+  ]
+}
