@@ -1,0 +1,113 @@
+.project-shelf, .ring-card, .shelf-launch {
+  --paper: #211e25;
+  --card: #2c2830;
+  --ink: #fff1dc;
+  --muted: #d0c0af;
+  --rule: #51464c;
+  --accent: #e4b898;
+  color: var(--ink);
+  background: var(--paper);
+  color-scheme: dark;
+}
+.light :is(.project-shelf, .ring-card, .shelf-launch) {
+  --paper: #f8f1e5;
+  --card: #fffaf1;
+  --ink: #392b29;
+  --muted: #695650;
+  --rule: #d4c4b3;
+  --accent: #824b37;
+  color-scheme: light;
+}
+.project-shelf, .ring-card {
+  width: min(58rem, calc(100vw - 2rem));
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  box-shadow: 0 24px 80px #19132365;
+}
+.project-shelf {
+  margin: auto;
+  padding: 0;
+  height: min(48rem, 87dvh);
+}
+.project-shelf[open] { display: flex; flex-direction: column; }
+.project-shelf::backdrop, .ring-overlay { background: #18131caa; backdrop-filter: blur(6px); }
+.shelf-head, .ring-header, .ring-caption, .shelf-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: .9rem;
+}
+.shelf-head, .ring-header { padding: 1.25rem 1.65rem; border-bottom: 1px solid var(--rule); }
+.shelf-imprint, .ring-header p, .shelf-category, .shelf-book small {
+  font: .76rem/1.4 'Courier Prime', monospace; letter-spacing: .06em; color: var(--accent);
+}
+.shelf-head h1, .ring-header h1, .shelf-record h2 {
+  font: 500 clamp(1.85rem, 4vw, 3.5rem)/1.1 Georgia, serif; letter-spacing: -.045em;
+}
+.shelf-island, .shelf-launch, .shelf-back, .shelf-links a, .ring-caption a, .ring-caption span,
+.shelf-empty button { display: inline-flex; align-items: center; gap: .48rem; }
+.shelf-island, .shelf-launch, .ring-experiments button, .shelf-empty button {
+  border: 1px solid var(--rule); border-radius: .5rem; padding: .55rem .8rem; font-size: .875rem;
+}
+.shelf-launch { position: fixed; left: 50%; transform: translateX(-50%); bottom: max(6rem, 11dvh); z-index: 25; white-space: nowrap; }
+.shelf-filters { display: flex; gap: .65rem; padding: 1rem 1.65rem .6rem; }
+.shelf-search, .shelf-filters select {
+  display: flex; align-items: center; gap: .65rem; background: var(--card); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: .5rem; padding: .6rem .75rem; font-size: 1rem;
+}
+.shelf-search { flex: 1; min-width: 0; }
+.shelf-search input { width: 100%; min-width: 0; }
+.shelf-search input::placeholder { color: var(--muted); }
+.shelf-results, .shelf-record { overflow: auto; overscroll-behavior: contain; flex: 1; padding: .4rem 1.65rem 1.5rem; }
+.shelf-count { color: var(--muted); margin: .3rem 0 .75rem; font-size: .875rem; }
+.shelf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr)); gap: .8rem; }
+.shelf-book {
+  background: var(--card); border: 1px solid var(--rule); border-inline-start: .32rem solid;
+  border-radius: .35rem .7rem .7rem .35rem; padding: 1rem 1.1rem; text-align: left;
+  display: flex; flex-direction: column; align-items: start; gap: .45rem;
+}
+.shelf-book:hover, .shelf-thread button:hover { box-shadow: inset 0 0 0 1px var(--accent); }
+.shelf-book strong { font: 600 1.55rem/1.1 Georgia, serif; }
+.shelf-book span, .shelf-record > p { font-size: 1rem; line-height: 1.5; }
+.shelf-book em { margin-top: auto; padding-top: .45rem; font: .78rem/1.5 monospace; color: var(--muted); }
+.shelf-foot { border-top: 1px solid var(--rule); padding: .7rem 1.65rem; font-size: .875rem; }
+.shelf-foot a, .ring-caption a { text-decoration: underline; text-underline-offset: .22em; }
+.shelf-record { padding-top: 1.15rem; }
+.shelf-record > * { max-width: 45rem; }
+.shelf-record .shelf-back { margin-bottom: 1.25rem; color: var(--accent); font-size: .875rem; }
+.shelf-record h2 { margin: .3rem 0; }
+.shelf-record > p { margin-bottom: .7rem; }
+.shelf-record .shelf-lede { color: var(--muted); font: 1.15rem/1.45 Georgia, serif; }
+.shelf-record .shelf-category { margin: 0; font-size: .8rem; }
+.shelf-tags, .shelf-links, .ring-experiments { display: flex; flex-wrap: wrap; gap: .5rem; margin: .85rem 0; }
+.shelf-tags button { background: var(--card); border: 1px solid var(--rule); border-radius: 2rem; padding: .3rem .75rem; font-size: .86rem; }
+.shelf-links a { font-weight: 600; text-decoration: underline; text-underline-offset: .22em; }
+.shelf-thread { border-top: 1px solid var(--rule); padding-top: .85rem; margin-top: 1.2rem; }
+.shelf-thread h3 { font: 1.25rem Georgia, serif; margin-bottom: .45rem; }
+.shelf-thread button { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .55rem .4rem; text-align: left; border-bottom: 1px solid var(--rule); }
+.shelf-thread small { color: var(--muted); text-align: right; }
+.shelf-empty { display: grid; justify-items: center; gap: .75rem; padding: 2rem 0; }
+.ring-overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; }
+.ring-card { max-height: 92dvh; overflow: auto; overscroll-behavior: contain; }
+.ring-header button { padding: .55rem; }
+.ring-header h1 { font-size: clamp(1.8rem, 3.2vw, 2.8rem); }
+.ring-stage { position: relative; height: clamp(12rem, 51dvh, 34rem); isolation: isolate; }
+.ring-sky { background: radial-gradient(ellipse at 20% 64%, #fff3ba 0%, transparent 52%), linear-gradient(#a997c5, #e6b1bd 37%, #ffd5a3 67%, #d99986); }
+.ring-tools { padding: .85rem 1.65rem; }
+.ring-caption, .ring-tools details { font-size: .9rem; }
+.ring-tools details { margin-top: .8rem; border-top: 1px solid var(--rule); padding-top: .65rem; }
+.ring-tools summary, :is(.ring-card, .project-shelf) button, .shelf-launch { cursor: pointer; }
+.ring-sparkles { pointer-events: none; position: absolute; inset: 0; z-index: 2; }
+.ring-sparkles svg { position: absolute; color: #fff6b9; filter: drop-shadow(0 0 5px #efa968); animation: ring-float 1.3s ease-in-out both; }
+.ring-poster { position: relative; width: 100%; height: 100%; }
+.ring-poster img { width: 100%; height: 100%; object-fit: cover; }
+.ring-poster .ring-view-status { position: absolute; bottom: .7rem; left: .7rem; }
+.ring-view-status { display: block; white-space: nowrap; padding: .45rem .7rem; border-radius: .3rem; color: white; background: #352936; }
+@keyframes ring-float { from { opacity: 0; transform: translateY(8px); } 35% { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+@media (prefers-reduced-motion: reduce) { .ring-sparkles svg { animation: none; } }
+@media (max-width: 600px) {
+  .project-shelf, .ring-card { width: calc(100vw - 1rem); }
+  .shelf-head, .ring-header { padding: .95rem; }
+  .shelf-filters { flex-direction: column; padding: .75rem .95rem .3rem; }
+  .shelf-results, .shelf-record, .ring-tools, .shelf-foot { padding-inline: .95rem; }
+  .shelf-island { font-size: .8rem; }
+  .ring-stage { height: min(49dvh, 25rem); }
+  .ring-caption { flex-wrap: wrap; }
+}

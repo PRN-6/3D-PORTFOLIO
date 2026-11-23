@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import { Sparkles, Eye, Compass, Heart, Layers } from 'lucide-react';
+import { Sparkles, Eye, Compass } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+
+import overview from '../../../artifacts/blue-flower-garden/previews/overview.png';
+import detail from '../../../artifacts/blue-flower-garden/previews/detail.png';
+import underside from '../../../artifacts/blue-flower-garden/previews/underside.png';
 
 interface ShowcaseView {
   id: string;
@@ -13,44 +17,19 @@ interface ShowcaseView {
 
 const SHOWCASE_VIEWS: ShowcaseView[] = [
   {
-    id: 'hero',
-    name: 'Hero Reference',
-    label: 'Himmel & Frieren',
-    caption: 'Himmel and Frieren resting together in the infinite sea of Nemophila blue flowers, crowned with handcrafted floral wreaths.',
-    icon: Sparkles,
-    src: '/models/blue-flower-garden/previews/01_hero_reference_view.png',
+    id: 'overview', name: 'Meadow Overview', label: 'Floating Garden',
+    caption: 'Blue nemophila and flowering cedars surround the stone arch at the edge of the meadow.',
+    icon: Compass, src: overview,
   },
   {
-    id: 'aerial',
-    name: 'Meadow Overview',
-    label: 'Full Floating Island',
-    caption: 'Sweeping perspective over the lush flower knoll, flowering sakura trees, and soft cumulus clouds on the horizon.',
-    icon: Compass,
-    src: '/models/blue-flower-garden/previews/02_aerial_overview.png',
+    id: 'detail', name: 'Flower Detail', label: 'Nemophila Meadow',
+    caption: 'Cyan, lavender and white blossoms break up the blue flower beds around the clearing.',
+    icon: Sparkles, src: detail,
   },
   {
-    id: 'romance',
-    name: 'Intimate View',
-    label: 'Cherished Memory',
-    caption: 'Cinematic close-up preserving the nostalgic, gentle connection inspired by Frieren: Beyond Journey’s End.',
-    icon: Heart,
-    src: '/models/blue-flower-garden/previews/03_romance_closeup.png',
-  },
-  {
-    id: 'horizon',
-    name: 'Horizon Clouds',
-    label: 'Atmospheric Backdrop',
-    caption: 'Dreamy pastel sky with towering anime clouds framing the garden perimeter without foreground occlusion.',
-    icon: Layers,
-    src: '/models/blue-flower-garden/previews/04_horizon_distant.png',
-  },
-  {
-    id: 'underside',
-    name: 'Underside & Crystals',
-    label: 'Floating Rocks',
-    caption: 'Detailed rocky crags and floating crystal monoliths levitating below the island base.',
-    icon: Eye,
-    src: '/models/blue-flower-garden/previews/05_underside_crystals.png',
+    id: 'underside', name: 'Underside & Crystals', label: 'Crystal Outcrops',
+    caption: 'Crystal tips catch the light beneath the island. Smaller rock fragments float around its rim.',
+    icon: Eye, src: underside,
   },
 ];
 

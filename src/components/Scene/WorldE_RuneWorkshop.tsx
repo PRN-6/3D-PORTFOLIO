@@ -5,6 +5,7 @@ import { useGLTF, useAnimations } from '@react-three/drei';
 import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { PROJECTS_DATA, type ProjectItem } from '../../data/projectsData';
 import { createPartyPalette } from './partyMaterials';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { ModelErrorBoundary } from './ModelErrorBoundary';
 
 export interface WorldERuneWorkshopProps {
@@ -97,6 +98,8 @@ const ProjectStation: React.FC<{
   project: ProjectItem;
   onSelectProject?: (p: ProjectItem) => void;
 }> = ({ stationIndex, file, position, project, onSelectProject }) => {
+  const hovered = useRef(false);
+  const reducedMotion = useReducedMotion();
   const gltf = useGLTF(`/models/rune-workshop/${file}`);
   const groupRef = useRef<THREE.Group>(null);
 
@@ -111,17 +114,25 @@ const ProjectStation: React.FC<{
     return cloned;
   }, [gltf.scene]);
 
-  const { actions } = useAnimations(gltf.animations, groupRef);
+  const { actions, mixer } = useAnimations(gltf.animations, groupRef);
 
   useEffect(() => {
     const active = Object.values(actions).filter((a): a is THREE.AnimationAction => a !== null);
-    active.forEach((a) => a.reset().play());
+    active.forEach(a => a.reset().play());
+    return () => active.forEach(a => a.stop());
   }, [actions]);
+
+  useFrame((_, delta) => {
+    const speed = hovered.current ? 1.8 : 1;
+    mixer.timeScale = reducedMotion ? 0 : THREE.MathUtils.damp(mixer.timeScale, speed, 5, delta);
+  });
 
   return (
     <group
       ref={groupRef}
       name={`station-0${stationIndex}`}
+      onPointerOver={() => { hovered.current = true; }}
+      onPointerOut={() => { hovered.current = false; }}
       position={position}
       onClick={(e) => {
         e.stopPropagation();

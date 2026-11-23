@@ -41,26 +41,41 @@ export function createGardenRuntime(scene, clips, { shadows = false, reducedMoti
   const mixer = new THREE.AnimationMixer(scene);
   const actions = clips.map(clip => mixer.clipAction(clip).setLoop(THREE.LoopRepeat, Infinity).play());
   let elapsed = 0, disposed = false;
-  function setTime(time) {
-    if (disposed) return;
-    elapsed = Math.max(0, time);
-    const t = reducedMotion ? 0 : elapsed;
-    mixer.setTime(t);
+  function updateEffects(t) {
     for (const c of crystals) c.node.rotation.y = (t / c.period * Math.PI * 2) % (Math.PI * 2);
     for (const p of petals) {
       const u = (t / 6 + p.phase) % 1, angle = u * Math.PI * 2, radius = 2 + 6 * u;
-      p.node.position.set(Math.cos(angle) * radius, .8 + 2.4 * u, Math.sin(angle) * radius);
+      // A crosswind spreads the petals across the rising spiral.
+      const wind = Math.sin(t * Math.PI / 3 + p.phase * 19);
+      const flutter = Math.sin(angle * 3 + p.phase * 31);
+      p.node.position.set(
+        Math.cos(angle) * radius + 0.48 * wind,
+        0.8 + 2.4 * u + 0.15 * flutter,
+        Math.sin(angle) * radius + 0.32 * flutter,
+      );
       const fade = THREE.MathUtils.smoothstep(u, 0, .12) * (1 - THREE.MathUtils.smoothstep(u, .85, 1));
       for (const index of p.indices) colors.setW(index, fade);
     }
     colors.needsUpdate = true;
     particleMesh.material.emissiveIntensity = .6 + .6 * (1 - Math.cos(t / 6 * Math.PI * 2));
+  }
+  function setTime(time) {
+    if (disposed) return;
+    elapsed = reducedMotion ? 0 : Math.max(0, time);
+    mixer.setTime(elapsed);
+    updateEffects(elapsed);
     scene.updateMatrixWorld(true);
   }
   setTime(0);
   return {
     mixer, actions, setTime,
-    update(delta) { if (!reducedMotion) setTime(elapsed + Math.min(Math.max(0, delta), .05)); },
+    update(delta) {
+      if (disposed || reducedMotion) return;
+      const step = THREE.MathUtils.clamp(delta, 0, 0.05);
+      elapsed += step;
+      mixer.update(step);
+      updateEffects(elapsed);
+    },
     dispose() {
       if (disposed) return;
       disposed = true;

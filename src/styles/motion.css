@@ -1,0 +1,489 @@
+/* -------------------------------------------------------------------------- */
+/* PRN Motion Layer                                                           */
+/*                                                                            */
+/* 1. Enter / exit utilities (`animate-in fade-in zoom-in-95 ...`) used by    */
+/*    the overlay UI. The class names follow the tailwindcss-animate          */
+/*    convention already present in the components; they were previously      */
+/*    undefined, so panels appeared without motion.                           */
+/* 2. Preloader wordmark, progress thread and caption.                        */
+/* 3. Navbar: brand letters, sliding desktop indicator, burger morph and      */
+/*    mobile menu sheet.                                                      */
+/* 4. Route "chapter" card + top progress thread for page changes.            */
+/* 5. Hero subtitle letter reveal.                                            */
+/* Everything collapses to near-instant under prefers-reduced-motion.         */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  --prn-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --prn-ease-in: cubic-bezier(0.55, 0, 0.75, 0.2);
+  --prn-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 1. ENTER / EXIT ---------------------------------------------------------- */
+
+@keyframes prn-enter {
+  from {
+    opacity: var(--prn-enter-opacity, 1);
+    transform: translate3d(var(--prn-enter-x, 0), var(--prn-enter-y, 0), 0)
+      scale(var(--prn-enter-scale, 1));
+    filter: blur(var(--prn-enter-blur, 0));
+  }
+}
+
+@keyframes prn-exit {
+  to {
+    opacity: var(--prn-enter-opacity, 1);
+    transform: translate3d(var(--prn-enter-x, 0), var(--prn-enter-y, 0), 0)
+      scale(var(--prn-enter-scale, 1));
+    filter: blur(var(--prn-enter-blur, 0));
+  }
+}
+
+.animate-in {
+  animation: prn-enter var(--tw-duration, 200ms) var(--prn-ease-out) both;
+}
+
+/* Reverse the same entrance when a presence-managed element is closing. */
+.animate-in[data-state='closed'],
+[data-state='closed'] > .animate-in {
+  animation: prn-exit 200ms var(--prn-ease-in) both;
+  pointer-events: none;
+}
+
+[data-state='closed'] {
+  pointer-events: none;
+}
+
+.fade-in {
+  --prn-enter-opacity: 0;
+}
+.zoom-in-95 {
+  --prn-enter-scale: 0.95;
+  --prn-enter-blur: 4px;
+}
+.slide-in-from-top-2 {
+  --prn-enter-y: -0.5rem;
+}
+.slide-in-from-bottom-4 {
+  --prn-enter-y: 1rem;
+}
+.slide-in-from-right-6 {
+  --prn-enter-x: 1.5rem;
+}
+
+/* Fade-only backdrop that pairs with presence-managed dialogs. */
+@keyframes prn-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes prn-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+.prn-backdrop {
+  animation: prn-fade-in 240ms ease-out both;
+}
+.prn-backdrop[data-state='closed'] {
+  animation: prn-fade-out 200ms ease-in both;
+}
+
+/* 2. PRELOADER ------------------------------------------------------------- */
+
+@keyframes prn-letter-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.55em, 0) rotate(6deg);
+    filter: blur(8px);
+  }
+}
+
+@keyframes prn-letter-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -0.08em, 0);
+  }
+}
+
+.prn-preloader-letter {
+  display: inline-block;
+  animation:
+    prn-letter-rise 900ms var(--prn-ease-out) both,
+    prn-letter-float 2.8s ease-in-out 1.2s infinite;
+  animation-delay: calc(var(--i, 0) * 110ms + 120ms), calc(var(--i, 0) * 180ms + 1.2s);
+}
+
+[data-flight='true'] .prn-preloader-letter {
+  animation: none;
+}
+
+@keyframes prn-thread-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(260%);
+  }
+}
+
+@keyframes prn-caption-in {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+}
+
+.prn-preloader-meta {
+  animation: prn-caption-in 1100ms var(--prn-ease-out) 450ms both;
+}
+
+.prn-preloader-thread {
+  position: relative;
+  overflow: hidden;
+  height: 1px;
+  width: 9rem;
+  background: rgba(38, 36, 34, 0.14);
+}
+
+.prn-preloader-thread-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: #262422;
+}
+
+.prn-preloader-thread::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(242, 237, 228, 0.9), transparent);
+  animation: prn-thread-shimmer 1.6s ease-in-out infinite;
+}
+
+/* 3. NAVBAR ---------------------------------------------------------------- */
+
+.prn-brand-letter {
+  display: inline-block;
+  transition: transform 420ms var(--prn-ease-spring);
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+
+.prn-brand:hover .prn-brand-letter,
+.prn-brand:focus-visible .prn-brand-letter {
+  transform: translate3d(0, -3px, 0);
+}
+
+.prn-brand:active .prn-brand-letter {
+  transform: translate3d(0, 1px, 0) scale(0.96);
+  transition-duration: 120ms;
+}
+
+.prn-nav-indicator {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 1.75rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 18px rgba(255, 255, 255, 0.06);
+  transition:
+    transform 520ms var(--prn-ease-out),
+    width 520ms var(--prn-ease-out),
+    opacity 240ms ease;
+}
+
+.prn-nav-link {
+  position: relative;
+  z-index: 1;
+  transition: color 220ms ease;
+}
+
+/* Burger → close morph */
+.prn-burger {
+  position: relative;
+  width: 16px;
+  height: 12px;
+}
+
+.prn-burger span {
+  position: absolute;
+  left: 0;
+  height: 1.5px;
+  width: 100%;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 380ms var(--prn-ease-out),
+    opacity 200ms ease,
+    width 300ms var(--prn-ease-out);
+}
+
+.prn-burger span:nth-child(1) {
+  top: 0;
+}
+.prn-burger span:nth-child(2) {
+  top: 5.25px;
+  width: 70%;
+  left: auto;
+  right: 0;
+}
+.prn-burger span:nth-child(3) {
+  top: 10.5px;
+}
+
+button:hover .prn-burger span:nth-child(2) {
+  width: 100%;
+}
+
+.prn-burger[data-open='true'] span:nth-child(1) {
+  transform: translateY(5.25px) rotate(45deg);
+}
+.prn-burger[data-open='true'] span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.2);
+}
+.prn-burger[data-open='true'] span:nth-child(3) {
+  transform: translateY(-5.25px) rotate(-45deg);
+}
+
+/* Mobile menu sheet */
+@keyframes prn-menu-open {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.92);
+    clip-path: inset(0 0 100% 30% round 12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0 round 12px);
+  }
+}
+
+@keyframes prn-menu-close {
+  from {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0 round 12px);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0) scale(0.96);
+    clip-path: inset(0 0 100% 30% round 12px);
+  }
+}
+
+@keyframes prn-menu-item-in {
+  from {
+    opacity: 0;
+    transform: translate3d(14px, 0, 0);
+  }
+}
+
+.prn-menu-panel {
+  transform-origin: top right;
+  animation: prn-menu-open 420ms var(--prn-ease-out) both;
+}
+
+.prn-menu-panel[data-state='closed'] {
+  animation: prn-menu-close 220ms var(--prn-ease-in) both;
+}
+
+.prn-menu-item {
+  animation: prn-menu-item-in 420ms var(--prn-ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 90ms);
+}
+
+.prn-menu-panel[data-state='closed'] .prn-menu-item {
+  animation: none;
+}
+
+.prn-menu-dot {
+  animation: prn-dot-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes prn-dot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.55;
+  }
+}
+
+/* 4. ROUTE CHAPTER CARD ---------------------------------------------------- */
+
+@keyframes prn-chapter-card {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0) scale(0.96);
+    filter: blur(6px);
+  }
+  14% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+  80% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+    filter: blur(4px);
+  }
+}
+
+@keyframes prn-chapter-label {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  22% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes prn-chapter-rule {
+  0% {
+    transform: scaleX(0);
+  }
+  30% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes prn-route-thread {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+    transform-origin: left center;
+  }
+  55% {
+    transform: scaleX(1);
+    opacity: 1;
+    transform-origin: left center;
+  }
+  56% {
+    transform-origin: right center;
+  }
+  100% {
+    transform: scaleX(0);
+    opacity: 0.6;
+    transform-origin: right center;
+  }
+}
+
+.prn-chapter {
+  animation: prn-chapter-card 2100ms var(--prn-ease-out) both;
+}
+
+.prn-chapter-label {
+  display: inline-block;
+  animation: prn-chapter-label 2100ms var(--prn-ease-out) both;
+  animation-delay: 80ms;
+}
+
+.prn-chapter-rule {
+  transform-origin: left center;
+  animation: prn-chapter-rule 2100ms var(--prn-ease-out) both;
+  animation-delay: 140ms;
+}
+
+.prn-route-thread {
+  animation: prn-route-thread 1300ms var(--prn-ease-out) both;
+}
+
+/* 5. HERO SUBTITLE --------------------------------------------------------- */
+
+@keyframes prn-char-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.6em, 0);
+    filter: blur(4px);
+  }
+}
+
+@keyframes prn-capsule-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+    clip-path: inset(0 45% 0 45% round 9999px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0 round 9999px);
+  }
+}
+
+.prn-char {
+  display: inline-block;
+  white-space: pre;
+  animation: prn-char-in 640ms var(--prn-ease-out) both;
+  animation-delay: calc(var(--i, 0) * 32ms + 260ms);
+}
+
+.prn-capsule-in {
+  animation: prn-capsule-in 720ms var(--prn-ease-out) both;
+}
+
+[data-awaiting='true'] .prn-char,
+[data-awaiting='true'] .prn-capsule-in,
+[data-awaiting='true'].prn-capsule-in {
+  animation-play-state: paused;
+}
+
+/* Reduced motion ----------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-in[data-state='closed'],
+  [data-state='closed'] > .animate-in,
+  .prn-backdrop,
+  .prn-preloader-letter,
+  .prn-preloader-meta,
+  .prn-menu-panel,
+  .prn-menu-item,
+  .prn-menu-dot,
+  .prn-char,
+  .prn-capsule-in,
+  .prn-chapter-label,
+  .prn-chapter-rule {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .prn-preloader-thread::after,
+  .prn-route-thread {
+    animation: none;
+    opacity: 0;
+  }
+
+  .prn-chapter {
+    animation: prn-fade-in 1ms both;
+  }
+
+  .prn-brand-letter,
+  .prn-nav-indicator,
+  .prn-nav-link,
+  .prn-burger span {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}

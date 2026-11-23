@@ -49,9 +49,9 @@ export const GardenCameraController: React.FC<GardenCameraControllerProps> = ({
     switch (focusedLandmark) {
       case 'biography':
         defaultCamPos = isMobile
-          ? new THREE.Vector3(1.6, 1.8, 3.0)
-          : new THREE.Vector3(1.4, 1.6, 2.4);
-        defaultTarget = new THREE.Vector3(1.4, 0.75, 0.8);
+          ? new THREE.Vector3(2.4, 1.8, 3.0)
+          : new THREE.Vector3(2.2, 1.6, 2.4);
+        defaultTarget = new THREE.Vector3(2.2, 0.75, 0.8);
         break;
 
       case 'heiter':

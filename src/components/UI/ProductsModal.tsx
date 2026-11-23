@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Sparkles, Mail, Layers, ArrowRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { usePresence } from '../../hooks/usePresence';
 
 export interface ProductsModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export const ProductsModal: React.FC<ProductsModalProps> = ({
   onOpenContact,
 }) => {
   const { isLight } = useTheme();
+  const presence = usePresence(isOpen);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -25,13 +27,14 @@ export const ProductsModal: React.FC<ProductsModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!presence.isMounted) return null;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="products-modal-title"
+      data-state={presence.state}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >

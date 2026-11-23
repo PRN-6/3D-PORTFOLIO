@@ -17,6 +17,7 @@ import type { WorldState } from '../Scene';
 import type { GrimoireItem } from '../../../data/archiveData';
 import type { ProjectItem } from '../../../data/projectsData';
 import type { ForestLandmark } from '../Forest/ForestCameraController';
+import { useReducedMotion } from '../../../hooks/useReducedMotion';
 
 export interface BubbleIslandTransitionProps {
   worldState: WorldState;
@@ -78,6 +79,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
   onTransitionToWorkshopComplete,
   onDestinationReached,
 }) => {
+  const reducedMotion = useReducedMotion();
   // References to the 4 world root groups
   const homeGroupRef = useRef<THREE.Group>(null);
   const archiveGroupRef = useRef<THREE.Group>(null);
@@ -435,7 +437,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     // =========================================================================
     if (phase === 'FORMING') {
       const FORMING_DURATION = 0.70;
-      const t = Math.min(1.0, elapsed / FORMING_DURATION);
+      const t = reducedMotion ? 1 : Math.min(1.0, elapsed / FORMING_DURATION);
 
       // Smooth cubic curve for natural fluid sweep
       const p = t * t * (3.0 - 2.0 * t);
@@ -444,14 +446,14 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       // Outgoing island gently contracts inside the forming black bubble
       if (outgoingGroup) {
         outgoingGroup.visible = true;
-        const squeeze = 1.0 - t * 0.10;
+        const squeeze = reducedMotion ? 1 : 1.0 - p * 0.10;
         outgoingGroup.scale.set(outBase[0] * squeeze, outBase[1] * squeeze, outBase[2] * squeeze);
       }
       if (incomingGroup) {
         incomingGroup.visible = false;
       }
 
-      if (elapsed >= FORMING_DURATION) {
+      if (t === 1) {
         // Complete enclosure, switch to SEALED
         phaseRef.current = 'SEALED';
         setCurrentPhase('SEALED');
@@ -473,12 +475,12 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         outgoingGroup.scale.set(outBase[0], outBase[1], outBase[2]);
       }
       if (incomingGroup) {
-        // Prepare incoming island inside the black sphere
+        // Prepare the reveal while the shell covers the island.
         incomingGroup.visible = true;
-        incomingGroup.scale.set(inBase[0] * 0.82, inBase[1] * 0.82, inBase[2] * 0.82);
+        incomingGroup.scale.set(...inBase).multiplyScalar(reducedMotion ? 1 : 0.82);
       }
 
-      if (elapsed >= SEALED_DURATION) {
+      if (reducedMotion || elapsed >= SEALED_DURATION) {
         // TRIGGER TEAR & POP (Silent transition, no audio effect)
         phaseRef.current = 'TEARING';
         setCurrentPhase('TEARING');
@@ -494,7 +496,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     // =========================================================================
     else if (phase === 'TEARING') {
       const TEAR_DURATION = 0.45;
-      const t = Math.min(1.0, elapsed / TEAR_DURATION);
+      const t = reducedMotion ? 1 : Math.min(1.0, elapsed / TEAR_DURATION);
 
       // Accelerated rip curve
       const p = Math.pow(t, 1.3);
@@ -503,14 +505,14 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
       // Incoming island scales up as the black shell peels back
       if (incomingGroup) {
         incomingGroup.visible = true;
-        const s = 0.82 + t * 0.16;
+        const s = reducedMotion ? 1 : THREE.MathUtils.lerp(0.82, 1.025, THREE.MathUtils.smootherstep(t, 0, 1));
         incomingGroup.scale.set(inBase[0] * s, inBase[1] * s, inBase[2] * s);
       }
       if (outgoingGroup) {
         outgoingGroup.visible = false;
       }
 
-      if (elapsed >= TEAR_DURATION) {
+      if (t === 1) {
         // Bubble is now 100% torn away
         setShowBubble(false);
         phaseRef.current = 'REVEAL';
@@ -525,12 +527,9 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     // =========================================================================
     else if (phase === 'REVEAL') {
       const REVEAL_DURATION = 0.40;
-      const t = Math.min(1.0, elapsed / REVEAL_DURATION);
-
-      // Juicy elastic bounce: 0.98 -> 1.05 -> 0.99 -> 1.00
-      const decay = Math.exp(-7.0 * t);
-      const osc = Math.cos(t * Math.PI * 3.5);
-      const spring = 1.0 - 0.16 * decay * osc;
+      const t = reducedMotion ? 1 : Math.min(1.0, elapsed / REVEAL_DURATION);
+      // Start at the exact release scale and settle with zero endpoint velocity.
+      const spring = 1 + 0.025 * (1 - THREE.MathUtils.smootherstep(t, 0, 1)) * Math.cos(Math.PI * t);
 
       if (incomingGroup) {
         incomingGroup.visible = true;
@@ -556,6 +555,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         setCurrentPhase('IDLE');
 
         // Fire destination handover callbacks
+        if (targetId !== activeDestination) return;
         onDestinationReached?.(targetId);
         if (targetId === 'ARCHIVE') {
           if (outgoingIslandRef.current === 'FOREST') {
@@ -588,16 +588,19 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
     return id === incomingIslandRef.current;
   };
 
+  const useGardenCamera = currentIsland === 'FOREST' && _worldState === 'FOREST_WORLD'
+    && !isTransitioning && !!focusedForestLandmark && focusedForestLandmark !== 'overview';
+
   return (
     <>
-      <UnifiedPresentationCameraController
+      {!useGardenCamera && <UnifiedPresentationCameraController
         isTransitioning={isTransitioning || bookBubblePhase !== 'IDLE'}
         resetSignal={resetSignal}
         onResetComplete={onResetComplete}
         selectedGrimoire={selectedGrimoire}
         activeIsland={targetDestinationRef.current || currentIsland}
         inspectDescentY={0}
-      />
+      />}
 
       {/* SINGLE PRESENTATION ANCHOR GROUP AT EXACT PHYSICAL COORDINATES [0, 0, 0] */}
       <group name="BubblePresentationAnchor" position={[0, 0, 0]}>
@@ -610,6 +613,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           visible={isIslandVisible('HOME')}
         >
           <WorldA_HeroIsland
+            active={isIslandVisible('HOME')}
             disableCamera={true}
             resetSignal={resetSignal}
             onResetComplete={onResetComplete}
@@ -648,7 +652,8 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
           visible={isIslandVisible('FOREST')}
         >
           <WorldD_WhisperingForest
-            disableCamera={isTransitioning || _worldState !== 'FOREST_WORLD'}
+            visible={isIslandVisible('FOREST')}
+            disableCamera={!useGardenCamera}
             onOpenAboutModal={onOpenAboutModal || (() => {})}
             isModalOpen={isAboutModalOpen}
             resetSignal={resetSignal}
@@ -673,7 +678,7 @@ export const BubbleIslandTransition: React.FC<BubbleIslandTransitionProps> = ({
         </group>
 
         {/* THE FULL BLACK SWEEPING BUBBLE (Reference Sprite Animation for Page Transitions) */}
-        {showBubble && (
+        {showBubble && !reducedMotion && (
           <>
             <BlackBubbleMesh
               radius={6.9}

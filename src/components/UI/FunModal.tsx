@@ -1,201 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import { X, Sparkles, Orbit, Flame } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Download, Orbit, Sparkles, X } from 'lucide-react';
 
-export interface FunModalProps {
+interface FunModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onTriggerOrbit?: () => void;
+  onTriggerOrbit: () => void;
+  children: ReactNode;
 }
 
-export const FunModal: React.FC<FunModalProps> = ({
-  isOpen,
-  onClose,
-  onTriggerOrbit,
-}) => {
-  const { isLight } = useTheme();
-  const [activeLore, setActiveLore] = useState<string | null>(null);
-  const [sparkleActive, setSparkleActive] = useState(false);
+const lore = [
+  'Frieren is reading a grimoire containing a spell to turn field flowers into sweet tea.',
+  'Fern is quietly watching the campfire, making sure Eisen did not fall asleep with his weapon.',
+  'The stone lantern by the house has been glowing for over three centuries.',
+  'The Archmage leaves forgotten scrolls on pedestals in the Whispering Forest.',
+];
+
+export function FunModal({ isOpen, onClose, onTriggerOrbit, children }: FunModalProps) {
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const [secret, setSecret] = useState(-1);
+  const [sparkles, setSparkles] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const previous = document.activeElement;
+    closeButton.current?.focus();
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', escape);
+    return () => {
+      window.removeEventListener('keydown', escape);
+      if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+    };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!sparkles) return;
+    const timer = window.setTimeout(() => setSparkles(false), 1800);
+    return () => window.clearTimeout(timer);
+  }, [sparkles]);
 
-  const handleSparkleBurst = () => {
-    setSparkleActive(true);
-    setTimeout(() => setSparkleActive(false), 2000);
-  };
-
-  const PARTY_LORE = [
-    '✦ Frieren is reading a grimoire containing a rare spell to turn field flowers into sweet tea.',
-    '✦ Fern is quietly watching the campfire, making sure Eisen did not fall asleep with his weapon.',
-    '✦ The ancient stone lantern by the house has been glowing continuously for over three centuries.',
-    '✦ Somewhere high above in the Whispering Forest, the Archmage leaves forgotten scrolls on pedestals.',
-  ];
-
+  // Keep the single portfolio canvas mounted in the same DOM slot on every route.
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="Fun & Experiments"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className={`relative w-full max-w-md rounded-2xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in zoom-in-95 duration-200 select-text overflow-hidden ${
-          isLight
-            ? 'bg-[#f4eee0]/95 border border-[#c8bc9f] text-[#2c2823] shadow-[0_20px_50px_rgba(180,160,130,0.4)]'
-            : 'bg-black/95 border border-white/15 text-slate-200'
-        }`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div
-          className={`flex items-center justify-between pb-4 border-b ${
-            isLight ? 'border-[#cfc3a9]' : 'border-white/10'
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <Sparkles className={`w-4 h-4 animate-pulse ${isLight ? 'text-cyan-700' : 'text-cyan-400'}`} />
-            <h2
-              className={`font-mono text-sm uppercase tracking-wider font-semibold ${
-                isLight ? 'text-[#1c1a17]' : 'text-white'
-              }`}
-            >
-              fun.experiments
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close modal"
-            className={`p-1 rounded-lg transition-colors cursor-pointer ${
-              isLight
-                ? 'text-[#5c5446] hover:text-[#1c1a17] hover:bg-black/5'
-                : 'text-slate-400 hover:text-white hover:bg-white/10'
-            }`}
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <div className={isOpen ? 'ring-overlay' : 'contents'} role={isOpen ? 'dialog' : undefined}
+      aria-modal={isOpen || undefined} aria-labelledby={isOpen ? 'ring-title' : undefined}
+      onClick={event => { if (isOpen && event.target === event.currentTarget) onClose(); }}>
+      <section className={isOpen ? 'ring-card' : 'contents'}>
+        {isOpen && (
+          <header className="ring-header">
+            <div><p>Frieren &amp; Himmel</p><h1 id="ring-title">Ring at Sundown</h1></div>
+            <button ref={closeButton} onClick={onClose} aria-label="Close Fun page"><X /></button>
+          </header>
+        )}
+        <div className={isOpen ? 'ring-stage' : 'contents'}>
+          {children}
+          {isOpen && sparkles && <div className="ring-sparkles" aria-hidden="true">
+            {[16, 28, 41, 53, 64, 76, 87].map((x, i) => <Sparkles key={x}
+              style={{ left: x + '%', top: (27 + i * 17 % 50) + '%', animationDelay: i * 0.07 + 's' }} />)}
+          </div>}
         </div>
-
-        {/* Description */}
-        <p
-          className={`mt-3 text-xs font-mono leading-relaxed ${
-            isLight ? 'text-[#5c5446]' : 'text-slate-400'
-          }`}
-        >
-          Interactive developer playground and hidden secrets of the floating RPG realm.
-        </p>
-
-        {/* Interactive Actions */}
-        <div className="mt-5 flex flex-col gap-2.5">
-          <button
-            type="button"
-            onClick={() => {
-              if (onTriggerOrbit) onTriggerOrbit();
-              onClose();
-            }}
-            className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer group active:scale-[0.98] ${
-              isLight
-                ? 'bg-[#eae1cf] hover:bg-[#e2d7c2] border-[#cfc3a9]'
-                : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/30'
-            }`}
-          >
-            <Orbit className={`w-4 h-4 group-hover:rotate-180 transition-transform duration-500 ${isLight ? 'text-cyan-700' : 'text-cyan-400'}`} />
-            <div>
-              <div className={`text-xs font-mono font-medium ${isLight ? 'text-[#1c1a17]' : 'text-white'}`}>
-                Reset &amp; Orbit Camera
-              </div>
-              <div className={`text-[11px] ${isLight ? 'text-[#5c5446]' : 'text-slate-400'}`}>
-                Glide to the default cinematic angle
-              </div>
+        {isOpen && (
+          <div className="ring-tools">
+            <div className="ring-caption">
+              <span><Orbit size={16} aria-hidden="true" /> Drag to orbit</span>
+              <a href="/models/fun/ring-at-sundown.glb" download><Download size={16} /> Download 3D model</a>
             </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSparkleBurst}
-            className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer group active:scale-[0.98] ${
-              isLight
-                ? 'bg-[#eae1cf] hover:bg-[#e2d7c2] border-[#cfc3a9]'
-                : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/30'
-            }`}
-          >
-            <Sparkles className={`w-4 h-4 group-hover:scale-110 transition-transform ${isLight ? 'text-amber-700' : 'text-amber-400'}`} />
-            <div>
-              <div className={`text-xs font-mono font-medium ${isLight ? 'text-[#1c1a17]' : 'text-white'}`}>
-                {sparkleActive ? '✦ Sparkles active!' : 'Starlight Sparkle'}
+            <details>
+              <summary>More experiments</summary>
+              <div className="ring-experiments">
+                <button onClick={() => { onTriggerOrbit(); onClose(); }}>Reset island camera</button>
+                <button onClick={() => setSparkles(true)}>Starlight sparkle</button>
+                <button onClick={() => setSecret(index => (index + 1) % lore.length)}>Reveal campfire secret</button>
               </div>
-              <div className={`text-[11px] ${isLight ? 'text-[#5c5446]' : 'text-slate-400'}`}>
-                Trigger celestial star sparkles
-              </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              const rand = PARTY_LORE[Math.floor(Math.random() * PARTY_LORE.length)];
-              setActiveLore(rand);
-            }}
-            className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer group active:scale-[0.98] ${
-              isLight
-                ? 'bg-[#eae1cf] hover:bg-[#e2d7c2] border-[#cfc3a9]'
-                : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/30'
-            }`}
-          >
-            <Flame className={`w-4 h-4 group-hover:scale-110 transition-transform ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`} />
-            <div>
-              <div className={`text-xs font-mono font-medium ${isLight ? 'text-[#1c1a17]' : 'text-white'}`}>
-                Reveal Campfire Secret
-              </div>
-              <div className={`text-[11px] ${isLight ? 'text-[#5c5446]' : 'text-slate-400'}`}>
-                Read a lore snippet from the hero party
-              </div>
-            </div>
-          </button>
-        </div>
-
-        {/* Lore Snippet Box */}
-        {activeLore && (
-          <div
-            className={`mt-4 p-3 rounded-xl border text-xs font-mono animate-in fade-in duration-200 ${
-              isLight
-                ? 'bg-[#e2d7c2] border-emerald-600/40 text-emerald-900'
-                : 'bg-slate-900/80 border-emerald-500/30 text-emerald-300'
-            }`}
-          >
-            {activeLore}
+              {secret >= 0 && <p role="status">{lore[secret]}</p>}
+            </details>
           </div>
         )}
-
-        {/* Footer */}
-        <div
-          className={`mt-6 pt-3 border-t flex justify-end ${
-            isLight ? 'border-[#cfc3a9]' : 'border-white/10'
-          }`}
-        >
-          <button
-            type="button"
-            onClick={onClose}
-            className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-colors cursor-pointer ${
-              isLight
-                ? 'bg-[#1c1a17] text-[#f4eee0] hover:bg-[#332e26]'
-                : 'bg-white text-black hover:bg-slate-200'
-            }`}
-          >
-            Close
-          </button>
-        </div>
-      </div>
+      </section>
     </div>
   );
-};
+}

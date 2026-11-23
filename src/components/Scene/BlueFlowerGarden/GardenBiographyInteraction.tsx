@@ -5,23 +5,29 @@ import { Html } from '@react-three/drei';
 import { BookOpen, Sparkles as SparklesIcon } from 'lucide-react';
 
 export interface GardenBiographyInteractionProps {
+  moving: boolean;
   onOpenAboutModal: () => void;
   isModalOpen?: boolean;
 }
 
 export const GardenBiographyInteraction: React.FC<GardenBiographyInteractionProps> = ({
+  moving,
   onOpenAboutModal,
   isModalOpen = false,
 }) => {
   const [hovered, setHovered] = useState(false);
   const ringRef = useRef<THREE.Mesh>(null);
+  const time = useRef(0);
   const pedestalRef = useRef<THREE.Group>(null);
 
   // Subtle floating rotation on the arcane concentric ring
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+  useFrame((_, delta) => {
+    if (!moving) return;
+    time.current += Math.min(delta, 0.05);
+    const t = time.current;
     if (ringRef.current) {
-      ringRef.current.rotation.z = t * 0.4;
+      const scale = THREE.MathUtils.damp(ringRef.current.scale.x, hovered ? 1.12 : 1, 7, delta);
+      ringRef.current.scale.setScalar(scale);
     }
     if (pedestalRef.current) {
       pedestalRef.current.position.y = 0.45 + Math.sin(t * 1.8) * 0.03;
@@ -29,7 +35,7 @@ export const GardenBiographyInteraction: React.FC<GardenBiographyInteractionProp
   });
 
   return (
-    <group position={[1.4, 0.42, 0.8]} name="ForestBiographyInteractionRoot">
+    <group position={[2.2, 0.42, 0.8]} name="ForestBiographyInteractionRoot">
       {/* 1. Invisible Raycast Hit Trigger Box */}
       <mesh
         position={[0, 0.2, 0]}
@@ -68,7 +74,7 @@ export const GardenBiographyInteraction: React.FC<GardenBiographyInteractionProp
 
       {/* 3. Floating 3D HTML Tooltip Badge only on Hover when modal is not open */}
       {hovered && !isModalOpen && (
-        <group ref={pedestalRef}>
+        <group ref={pedestalRef} position={[0, 0.45, 0]}>
           <Html
             position={[0, 0.35, 0]}
             center

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { GardenEnvironment } from './BlueFlowerGarden/GardenEnvironment';
 import { GardenPartyCharacters } from './BlueFlowerGarden/GardenPartyCharacters';
 import { GardenBiographyInteraction } from './BlueFlowerGarden/GardenBiographyInteraction';
@@ -6,6 +7,7 @@ import { GardenCameraController } from './BlueFlowerGarden/GardenCameraControlle
 import type { ForestLandmark } from './Forest/ForestCameraController';
 
 export interface WorldDWhisperingForestProps {
+  visible?: boolean;
   disableCamera?: boolean;
   onOpenAboutModal: () => void;
   isModalOpen?: boolean;
@@ -20,6 +22,7 @@ export interface WorldDWhisperingForestProps {
  * surrounded by flowering trees, dreamy clouds, and an interactive biography pedestal.
  */
 export const WorldD_WhisperingForest: React.FC<WorldDWhisperingForestProps> = ({
+  visible = true,
   disableCamera = false,
   onOpenAboutModal,
   isModalOpen = false,
@@ -27,6 +30,8 @@ export const WorldD_WhisperingForest: React.FC<WorldDWhisperingForestProps> = ({
   focusedLandmark = 'overview',
   onResetComplete,
 }) => {
+  const reducedMotion = useReducedMotion();
+  const moving = visible && !reducedMotion;
   return (
     <group name="WorldD_WhisperingForestRoot">
       {/* 1. Warm Golden Sunlight illuminating the flower meadow */}
@@ -55,13 +60,13 @@ export const WorldD_WhisperingForest: React.FC<WorldDWhisperingForestProps> = ({
       <pointLight position={[0.0, 2.0, 1.8]} color="#fff7e6" intensity={1.6} distance={6} decay={2} />
 
       {/* MASTER BLUE FLOWER GARDEN ENVIRONMENT (Island, Dense Flowers, Trees, Clouds, Petals, Motes) */}
-      <GardenEnvironment />
+      <GardenEnvironment moving={moving} />
 
       {/* HIMMEL & FRIEREN ORIGINAL CHARACTERS WITH CEL-SHADING & FLOWER WREATHS */}
-      <GardenPartyCharacters />
+      <GardenPartyCharacters moving={moving} />
 
       {/* INTERACTIVE BIOGRAPHY PEDESTAL (Opens Archmage's Chronicle & Bio modal) */}
-      <GardenBiographyInteraction onOpenAboutModal={onOpenAboutModal} isModalOpen={isModalOpen} />
+      <GardenBiographyInteraction moving={moving} onOpenAboutModal={onOpenAboutModal} isModalOpen={isModalOpen} />
 
       {/* BLUE FLOWER GARDEN CAMERA CONTROLLER & LANDMARK NAVIGATION */}
       {!disableCamera && (
