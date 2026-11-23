@@ -1,6 +1,7 @@
 import React from 'react';
 import * as THREE from 'three';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
+import { RingAtSundown } from './RingAtSundown';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
@@ -26,6 +27,7 @@ export type WorldState =
   | 'TRANSITIONING_ISLAND';
 
 export interface SceneProps {
+  funOpen?: boolean;
   worldState: WorldState;
   activeDestination?: DestinationId;
   resetSignal?: number;
@@ -91,6 +93,7 @@ const PerformanceProfiler: React.FC = () => {
 
 export const Scene: React.FC<SceneProps> = ({
   worldState,
+  funOpen = false,
   activeDestination,
   resetSignal = 0,
   onResetComplete,
@@ -130,12 +133,12 @@ export const Scene: React.FC<SceneProps> = ({
   return (
     <div
       className={`relative w-full h-full overflow-hidden select-none transition-colors duration-500 ${
-        isLight ? 'bg-[#f4eee0]' : 'bg-[#000000]'
+        funOpen ? 'ring-sky' : isLight ? 'bg-[#f4eee0]' : 'bg-[#000000]'
       }`}
       onWheel={(e) => e.preventDefault()}
     >
       {/* 1. Fixed cinematic screen-space DOM typography layer across all worlds */}
-      <CinematicBackgroundTitle hidden={!!selectedGrimoire} />
+      <CinematicBackgroundTitle hidden={funOpen || !!selectedGrimoire} />
 
       {/* 2. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
       <Canvas
@@ -163,7 +166,8 @@ export const Scene: React.FC<SceneProps> = ({
         <SceneWarmupCompiler onCompiled={onCompiled} />
 
         {/* MULTI-ISLAND FANTASY REALM: EXPLODED 3D ARCHITECTURAL OR VERTICAL STAIRCASE */}
-        {isMultiLevelWorld && (
+        {funOpen && <RingAtSundown />}
+        {!funOpen && isMultiLevelWorld && (
           SCENE_CONFIG.transitionMode === 'STAIRCASE' ? (
             <Level01_To_Level02_Transition
               worldState={worldState}

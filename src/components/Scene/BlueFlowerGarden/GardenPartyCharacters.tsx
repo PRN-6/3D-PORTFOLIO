@@ -1,136 +1,99 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
-import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
+import { clone } from 'three/addons/utils/SkeletonUtils.js';
 import { createPartyPalette } from '../partyMaterials';
 import { ModelErrorBoundary } from '../ModelErrorBoundary';
 
-useGLTF.preload('/models/transition/himmel.glb');
-useGLTF.preload('/models/transition/frieren.glb');
-useGLTF.preload('/models/blue-flower-garden/flowers/flower-wreath.glb');
+const bouquetUrl = '/models/blue-flower-garden/flowers/flower-wreath.glb';
+const actors = {
+  Himmel: { x: -0.48, yaw: 0.28, hand: 'L', beats: ['idle', 'speak', 'listen', 'watch'] },
+  Frieren: { x: 0.48, yaw: -0.28, hand: 'R', beats: ['flowers', 'listen', 'speak', 'idle'] },
+} as const;
 
-const CharactersMesh: React.FC = () => {
-  const himmelGltf = useGLTF('/models/transition/himmel.glb');
-  const frierenGltf = useGLTF('/models/transition/frieren.glb');
-  const wreathGltf = useGLTF('/models/blue-flower-garden/flowers/flower-wreath.glb');
+type ActorName = keyof typeof actors;
 
-  const himmelGroupRef = useRef<THREE.Group>(null);
-  const frierenGroupRef = useRef<THREE.Group>(null);
-  const himmelMixerRef = useRef<THREE.AnimationMixer | null>(null);
-  const frierenMixerRef = useRef<THREE.AnimationMixer | null>(null);
+function GardenActor({ name, moving }: { name: ActorName; moving: boolean }) {
+  const gltf = useGLTF('/models/transition/' + name.toLowerCase() + '.glb');
+  const bouquet = useGLTF(bouquetUrl);
+  const mount = useRef<THREE.Group>(null);
+  const advance = useRef<((delta: number) => void) | null>(null);
+  const staging = actors[name];
 
-  // Staging Himmel: [-0.48, 0.42, 0.12], yaw +0.15
   useEffect(() => {
-    if (!himmelGroupRef.current) return;
-    const character = cloneSkeleton(himmelGltf.scene);
-    const root = character.getObjectByName('Himmel') || character;
-
-    root.position.set(-0.48, 0.42, 0.12);
-    root.rotation.set(0, 0.15, 0);
-    root.scale.set(1.0, 1.0, 1.0);
-
+    const character = clone(gltf.scene);
+    const actor = character.getObjectByName(name) ?? character;
+    const skeletons = new Set<THREE.Skeleton>();
+    character.traverse(node => {
+      if (node instanceof THREE.SkinnedMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+        skeletons.add(node.skeleton);
+      }
+    });
     const palette = createPartyPalette();
-    const dressed = palette.dress(root);
+    const paint = palette.dress(actor);
+    const eyes = actor.getObjectByName(name + 'EyeL');
+    const flowers = bouquet.scene.clone(true);
+    flowers.name = 'flower-wreath-' + name.toLowerCase();
+    flowers.rotation.x = 0.35;
+    flowers.scale.setScalar(name === 'Himmel' ? 0.85 : 0.8);
+    actor.getObjectByName(name + 'Hand' + staging.hand)?.add(flowers);
 
-    const mixer = new THREE.AnimationMixer(root);
-    const clip =
-      himmelGltf.animations.find((c) => c.name === 'himmel_idle') ||
-      himmelGltf.animations[0];
-    if (clip) {
-      const action = mixer.clipAction(clip);
-      action.setLoop(THREE.LoopRepeat, Infinity);
-      action.play();
-    }
-    himmelMixerRef.current = mixer;
+    const mixer = new THREE.AnimationMixer(actor);
+    const beats = staging.beats.map(beat => {
+      const clip = THREE.AnimationClip.findByName(gltf.animations, name.toLowerCase() + '_' + beat);
+      return clip ? mixer.clipAction(clip) : undefined;
+    });
+    let time = 0;
+    let beat = 0;
+    beats[0]?.play();
+    mixer.update(0);
+    mount.current?.add(character);
 
-    // Attach Himmel flower wreath
-    if (wreathGltf) {
-      const wreath = wreathGltf.scene.clone(true);
-      wreath.name = 'flower-wreath-himmel';
-      wreath.position.set(-0.24, 0.76, 0.35);
-      wreath.scale.set(0.85, 0.85, 0.85);
-      wreath.rotation.set(0.35, 0.15, -0.2);
-      character.add(wreath);
-    }
-
-    himmelGroupRef.current.add(character);
-
+    advance.current = delta => {
+      time = (time + delta) % 24;
+      const next = Math.floor(time / 6);
+      if (next !== beat) {
+        beats[beat]?.fadeOut(0.8);
+        beats[next]?.reset().fadeIn(0.8).play();
+        beat = next;
+      }
+      mixer.update(delta);
+      const speaking = staging.beats[beat] === 'speak' && Math.sin(time * 12) > 0.1;
+      const smiling = staging.beats[beat] === 'listen' && Math.sin(time * 1.6) > 0.5;
+      paint?.setExpression((eyes?.scale.y ?? 1) < 0.53 ? 'blink' :
+        speaking ? 'speaking' : smiling ? 'smile' : 'neutral');
+    };
     return () => {
+      advance.current = null;
       mixer.stopAllAction();
-      mixer.uncacheRoot(root);
-      himmelMixerRef.current = null;
-      dressed?.dispose();
+      mixer.uncacheRoot(actor);
+      paint?.dispose();
       palette.dispose();
+      skeletons.forEach(skeleton => skeleton.dispose());
       character.removeFromParent();
     };
-  }, [himmelGltf, wreathGltf]);
-
-  // Staging Frieren: [0.48, 0.40, 0.08], yaw -0.15
-  useEffect(() => {
-    if (!frierenGroupRef.current) return;
-    const character = cloneSkeleton(frierenGltf.scene);
-    const root = character.getObjectByName('Frieren') || character;
-
-    root.position.set(0.48, 0.40, 0.08);
-    root.rotation.set(0, -0.15, 0);
-    root.scale.set(1.0, 1.0, 1.0);
-
-    const palette = createPartyPalette();
-    const dressed = palette.dress(root);
-
-    const mixer = new THREE.AnimationMixer(root);
-    const clip =
-      frierenGltf.animations.find((c) => c.name === 'frieren_idle') ||
-      frierenGltf.animations[0];
-    if (clip) {
-      const action = mixer.clipAction(clip);
-      action.setLoop(THREE.LoopRepeat, Infinity);
-      action.play();
-    }
-    frierenMixerRef.current = mixer;
-
-    // Attach Frieren flower wreath
-    if (wreathGltf) {
-      const wreath = wreathGltf.scene.clone(true);
-      wreath.name = 'flower-wreath-frieren';
-      wreath.position.set(0.26, 0.72, 0.32);
-      wreath.scale.set(0.8, 0.8, 0.8);
-      wreath.rotation.set(0.35, -0.15, 0.2);
-      character.add(wreath);
-    }
-
-    frierenGroupRef.current.add(character);
-
-    return () => {
-      mixer.stopAllAction();
-      mixer.uncacheRoot(root);
-      frierenMixerRef.current = null;
-      dressed?.dispose();
-      palette.dispose();
-      character.removeFromParent();
-    };
-  }, [frierenGltf, wreathGltf]);
+  }, [gltf, bouquet, name, staging]);
 
   useFrame((_, delta) => {
-    const clamped = Math.min(delta, 0.05);
-    if (himmelMixerRef.current) himmelMixerRef.current.update(clamped);
-    if (frierenMixerRef.current) frierenMixerRef.current.update(clamped);
+    if (moving) advance.current?.(Math.min(delta, 0.05));
   });
+  return <group name={name + 'Root'} ref={mount} position={[staging.x, 0.42, 0.1]} rotation={[0, staging.yaw, 0]} />;
+}
 
-  return (
-    <group name="GardenPartyCharactersRoot">
-      <group ref={himmelGroupRef} name="HimmelRoot" />
-      <group ref={frierenGroupRef} name="FrierenRoot" />
-    </group>
-  );
-};
-
-export const GardenPartyCharacters: React.FC = () => {
+export function GardenPartyCharacters({ moving }: { moving: boolean }) {
   return (
     <ModelErrorBoundary fallback={null}>
-      <CharactersMesh />
+      <group name="GardenPartyCharactersRoot">
+        <GardenActor name="Himmel" moving={moving} />
+        <GardenActor name="Frieren" moving={moving} />
+      </group>
     </ModelErrorBoundary>
   );
-};
+}
 
+useGLTF.preload('/models/transition/himmel.glb');
+useGLTF.preload('/models/transition/frieren.glb');
+useGLTF.preload(bouquetUrl);

@@ -1,6 +1,6 @@
 # Blue Flower Garden — standalone GLB candidate
 
-An original procedural fantasy meadow asset for Three.js / React Three Fiber. This package is separate from the live portfolio; no existing model was replaced and no website route imports it.
+An original procedural fantasy meadow asset for Three.js / React Three Fiber. The About route imports the GLB and its runtime from this package. Vite emits the model with a content-hashed URL for the production build.
 
 ## Deliverables
 
@@ -54,7 +54,7 @@ node scripts/verify-blue-flower-garden-candidate.mjs
 
 Generation is seeded and only writes the standalone artifact directory. No new dependency is needed. The viewer uses installed Three.js modules and the repository's local Draco decoder.
 
-For an authorized future integration, copy the GLB to the chosen public URL, place the helper/component together in the application, then mount `<BlueFlowerGarden url="/models/your-candidate.glb" />` inside Canvas. The component supplies the local `/draco/gltf/` decoder path explicitly. Use one camera controller and tune framing to include the horizon extent. Do not retain the old garden at the same time unless intentionally comparing them.
+The live integration is in `src/components/Scene/BlueFlowerGarden/GardenEnvironment.tsx`. It clones the skinned scene, uses the local Draco decoder and pauses playback while the destination is hidden or the visitor prefers reduced motion.
 
 Example imperative use:
 

@@ -7,9 +7,11 @@ import { createPartyLife } from './partyLife';
 import { members } from './partySchedule';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { ModelErrorBoundary } from './ModelErrorBoundary';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { PlaceholderIsland } from './PlaceholderIsland';
 
 export interface EnvironmentLoaderProps {
+  active?: boolean;
   modelPath?: string;
   position?: [number, number, number];
   scale?: [number, number, number];
@@ -43,6 +45,7 @@ function getInteractiveName(target: THREE.Object3D): string {
  * Actual GLTF Loader component loaded within Suspense & ModelErrorBoundary
  */
 const ModelScene: React.FC<{
+  active: boolean;
   path: string;
   position: [number, number, number];
   scale: [number, number, number];
@@ -51,6 +54,7 @@ const ModelScene: React.FC<{
   onHoverObject?: (name: string | null) => void;
   onLoaded?: () => void;
 }> = ({
+  active,
   path,
   position,
   scale,
@@ -60,6 +64,7 @@ const ModelScene: React.FC<{
   onLoaded,
 }) => {
   const gltf = useGLTF(path);
+  const moving = !useReducedMotion() && active;
 
   // Clone scene so multiple instances don't mutate the cached GLTF
   const clonedScene = useMemo(() => {
@@ -86,12 +91,30 @@ const ModelScene: React.FC<{
       party.current = undefined;
     };
   }, [clonedScene, world, gltf.animations]);
-  useFrame((_, delta) => party.current?.update(Math.min(delta, .10)));
+  const flames = useMemo(() => [1, 2, 3].flatMap(index => {
+    const node = clonedScene.getObjectByName('HearthFlame' + index);
+    return node ? [{ node, rest: node.rotation.z, phase: index * 0.8 }] : [];
+  }), [clonedScene]);
+  const windTime = useRef(0);
+  useFrame((_, delta) => {
+    if (!moving) return;
+    const step = Math.min(delta, 0.1);
+    party.current?.update(step);
+    windTime.current += step;
+    // The GLB animates flame height. A shared gust bends the tips in sequence.
+    for (const { node, rest, phase } of flames) {
+      node.rotation.z = rest + 0.10 * Math.sin(windTime.current * 2.3 + phase)
+        + 0.035 * Math.sin(windTime.current * 5.7 + phase);
+    }
+  });
 
   const ambientClips = useMemo(() => gltf.animations.filter(clip =>
     !members.some(name => clonedScene.getObjectByName(name)?.userData.partyMember && clip.name.startsWith(name + '_'))
   ), [gltf.animations, clonedScene]);
-  const { actions } = useAnimations(ambientClips, clonedScene);
+  const { actions, mixer } = useAnimations(ambientClips, clonedScene);
+  useEffect(() => {
+    mixer.timeScale = moving ? 1 : 0;
+  }, [mixer, moving]);
   useEffect(() => {
     const loops = Object.values(actions).filter(action => action !== null);
     loops.forEach(action => action.reset().play());
@@ -144,6 +167,7 @@ const modelAvailabilityCache: Record<string, boolean> = {
  * - Supports position, scale, rotation and interactive object events
  */
 export const EnvironmentLoader: React.FC<EnvironmentLoaderProps> = ({
+  active = true,
   modelPath = SCENE_CONFIG.modelPath,
   position = SCENE_CONFIG.modelTransform.position,
   scale = SCENE_CONFIG.modelTransform.scale,
@@ -205,6 +229,7 @@ export const EnvironmentLoader: React.FC<EnvironmentLoaderProps> = ({
     >
       <Suspense fallback={fallbackPlaceholder}>
         <ModelScene
+          active={active}
           path={modelPath}
           position={position}
           scale={scale}

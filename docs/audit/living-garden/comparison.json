@@ -1,0 +1,34 @@
+{
+  "baseCommit": "eea84c02156472422c7d6faeaff75501bb05d262",
+  "before": {
+    "file": "public/models/blue-flower-garden/blue-flower-garden-complete.glb",
+    "bytes": 945368,
+    "sha256": "408fbe551062dbaa8ab4ce8dd7462563d75490b9c093f50ba1ead0dd63f7efa6",
+    "primitives": 114,
+    "uniqueMeshTriangles": 123009,
+    "clips": 70
+  },
+  "after": {
+    "file": "artifacts/blue-flower-garden/blue-flower-garden.glb",
+    "bytes": 1480932,
+    "sha256": "060375c69517667d7ad333f56492624e052a5fc74692b70ac2e303e6198df252",
+    "primitives": 8,
+    "uniqueMeshTriangles": 109466,
+    "clips": 3
+  },
+  "decodedGarden": {
+    "triangles": 109466,
+    "vertices": 193794,
+    "joints": 151,
+    "maxWeightError": 0,
+    "animationChannels": 270,
+    "clips": [
+      "Island_Idle_Breeze",
+      "Floating_Orbit_Crystals",
+      "Petal_Wind_Drift"
+    ],
+    "petals": 64,
+    "motes": 40
+  },
+  "verification": "Decoded with the shipped Draco WASM. Verified finite positions, normals, skin weights, valid joint and clip targets, zero-to-six-second key ranges, and all eight garden character beat assignments. Counts describe the model geometry. Production build, lint, screenshots and frame timing were unavailable because the dependency registry was unreachable."
+}

@@ -60,7 +60,7 @@ export const ROUTES: Record<NavTabId, RouteConfig> = {
     destination: 'HOME',
     worldState: 'HOME_IDLE',
     title: "Fun & Experiments | PRINSON",
-    description: "Interactive developer playground, easter eggs, and experiments in the floating realm.",
+    description: "Orbit an animated 3D sunset scene with Frieren and Himmel in the clock square.",
     isModal: true,
   },
 };

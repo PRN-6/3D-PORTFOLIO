@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { useTheme } from '../context/ThemeContext';
+import { PRELOADER_DONE_EVENT } from '../config/motionEvents';
+
+const BRAND_LETTERS = ['P', 'R', 'N'] as const;
 
 export interface PreloaderProps {
   isReady: boolean;
@@ -21,6 +24,8 @@ export interface PreloaderProps {
  *    to crisp off-white (#F5F5F5 in dark mode) or dark charcoal (#262422 in light mode).
  * 4. Phase 3 (0.9s – 1.5s): Docks seamlessly into persistent Navbar brand slot (data-flip-id="brand-prn")
  *    and stagger-reveals remaining header controls, music capsule, and footer links.
+ * While waiting, the letters rise in with a stagger and float gently above an eased
+ * loading thread; under prefers-reduced-motion the flight is skipped and the overlay dissolves.
  */
 export const Preloader: React.FC<PreloaderProps> = ({
   isReady,
@@ -31,6 +36,8 @@ export const Preloader: React.FC<PreloaderProps> = ({
   const { isDark } = useTheme();
   const overlayRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
+  const metaRef = useRef<HTMLDivElement>(null);
+  const threadFillRef = useRef<HTMLDivElement>(null);
 
   const [hasStartedFlight, setHasStartedFlight] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -51,12 +58,57 @@ export const Preloader: React.FC<PreloaderProps> = ({
     });
   }, []);
 
+  // Loading thread: eases toward ~88% while assets stream in, completes on ready.
+  // This is a visual pacing cue, not a byte-accurate percentage.
+  useEffect(() => {
+    const fill = threadFillRef.current;
+    if (!fill) return;
+    const tween = gsap.fromTo(
+      fill,
+      { scaleX: 0 },
+      { scaleX: 0.88, duration: 7, ease: 'power2.out' }
+    );
+    return () => {
+      tween.kill();
+    };
+  }, []);
+
   const runBrandFlight = useCallback(() => {
     const overlayEl = overlayRef.current;
     const wordmarkEl = wordmarkRef.current;
     const targetEl = targetRef.current;
+    const metaEl = metaRef.current;
 
     if (!overlayEl || !wordmarkEl) return;
+
+    const announceIntroComplete = () => {
+      window.dispatchEvent(new Event(PRELOADER_DONE_EVENT));
+    };
+
+    // Reduced motion: skip the flight, dock immediately and dissolve the overlay.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      onDock?.();
+      announceIntroComplete();
+      gsap.set(
+        '[data-nav-control]:not([data-nav-control="nav-links"]), [data-footer-control]',
+        { opacity: 1, y: 0 }
+      );
+      gsap.set('[data-nav-control="nav-links"], [data-music-control]', {
+        opacity: 1,
+        y: 0,
+        xPercent: -50,
+      });
+      gsap.to(overlayEl, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'none',
+        onComplete: () => {
+          setIsFinished(true);
+          onComplete?.();
+        },
+      });
+      return;
+    }
 
     // 1. Calculate trajectory deltas between viewport center and target navbar slot
     const startRect = wordmarkEl.getBoundingClientRect();
@@ -90,6 +142,15 @@ export const Preloader: React.FC<PreloaderProps> = ({
         onComplete?.();
       },
     });
+
+    // Phase 0 (0.0s – 0.35s): Complete the loading thread and lift the caption away
+    if (threadFillRef.current) {
+      gsap.killTweensOf(threadFillRef.current);
+      tl.to(threadFillRef.current, { scaleX: 1, duration: 0.25, ease: 'power2.out' }, 0);
+    }
+    if (metaEl) {
+      tl.to(metaEl, { opacity: 0, y: 10, filter: 'blur(4px)', duration: 0.35, ease: 'power2.in' }, 0.1);
+    }
 
     // Phase 1 (0.0s – 1.1s): Curved Upward-Left Flight Arc + Scale & Tracking Morph
     // Asymmetric easing produces an organic parabolic arc:
@@ -151,6 +212,7 @@ export const Preloader: React.FC<PreloaderProps> = ({
     // At 0.9s: Hand off brand wordmark to persistent Navbar slot
     tl.add(() => {
       onDock?.();
+      announceIntroComplete();
     }, 0.9);
 
     // Hide preloader duplicate wordmark at flight completion (1.1s)
@@ -224,12 +286,38 @@ export const Preloader: React.FC<PreloaderProps> = ({
         pointerEvents: hasStartedFlight ? 'none' : 'auto',
       }}
     >
-      <div
-        ref={wordmarkRef}
-        data-testid="preloader-brand-wordmark"
-        className="font-mono font-bold text-3xl sm:text-4xl md:text-[34px] tracking-[0.28em] text-[#262422] select-none pointer-events-none uppercase inline-block whitespace-nowrap will-change-transform"
-      >
-        P R N
+      <div className="flex flex-col items-center gap-7">
+        <div
+          ref={wordmarkRef}
+          data-testid="preloader-brand-wordmark"
+          data-flight={hasStartedFlight ? 'true' : 'false'}
+          className="font-mono font-bold text-3xl sm:text-4xl md:text-[34px] tracking-[0.28em] text-[#262422] select-none pointer-events-none uppercase inline-block whitespace-nowrap will-change-transform"
+        >
+          {BRAND_LETTERS.map((letter, index) => (
+            <React.Fragment key={letter}>
+              {index > 0 && ' '}
+              <span
+                className="prn-preloader-letter"
+                style={{ '--i': index } as React.CSSProperties}
+              >
+                {letter}
+              </span>
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div
+          ref={metaRef}
+          aria-hidden="true"
+          className="prn-preloader-meta flex flex-col items-center gap-3 pointer-events-none"
+        >
+          <div className="prn-preloader-thread">
+            <div ref={threadFillRef} className="prn-preloader-thread-fill" style={{ transform: 'scaleX(0)' }} />
+          </div>
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.42em] text-[#262422]/55">
+            summoning worlds
+          </span>
+        </div>
       </div>
     </div>
   );

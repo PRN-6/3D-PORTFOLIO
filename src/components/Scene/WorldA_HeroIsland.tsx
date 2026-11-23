@@ -5,6 +5,7 @@ import { CameraController } from './CameraController';
 import { EnvironmentLoader } from './EnvironmentLoader';
 
 interface WorldAHeroIslandProps {
+  active?: boolean;
   disableCamera?: boolean;
   resetSignal?: number;
   onResetComplete?: () => void;
@@ -14,6 +15,7 @@ interface WorldAHeroIslandProps {
 }
 
 export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
+  active = true,
   disableCamera = false,
   resetSignal = 0,
   onResetComplete,
@@ -69,6 +71,7 @@ export const WorldA_HeroIsland: React.FC<WorldAHeroIslandProps> = ({
 
       {/* Floating Island Model & Chibi Characters at Home */}
       <EnvironmentLoader
+        active={active}
         onSelectObject={onSelectObject}
         onHoverObject={onHoverObject}
         onStatusChange={onStatusChange}

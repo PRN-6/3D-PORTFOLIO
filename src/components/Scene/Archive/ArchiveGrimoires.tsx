@@ -2,6 +2,7 @@ import React, { useRef, useState, useMemo, useEffect, Suspense } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useAnimations, useGLTF } from '@react-three/drei';
+import { useReducedMotion } from '../../../hooks/useReducedMotion';
 import { ModelErrorBoundary } from '../ModelErrorBoundary';
 import { GRIMOIRES_DATA, type GrimoireItem } from '../../../data/archiveData';
 
@@ -44,6 +45,7 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
   onSelectGrimoire,
 }) => {
   const gltf = useGLTF('/models/archive/archive-grimoires.glb');
+  const reducedMotion = useReducedMotion();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const runeRingsRef = useRef<Map<string, THREE.Mesh>>(new Map());
   const bookWrappersRef = useRef<Map<string, THREE.Group>>(new Map());
@@ -183,6 +185,10 @@ const GrimoiresMasterScene: React.FC<ArchiveGrimoiresProps> = ({
         targetScale = 1.05;
         targetTiltX = 0.12;
         targetYawY = 0.0;
+      } else if (hoveredId === grimoire.id && !reducedMotion) {
+        targetLiftY = 0.24;
+        targetTiltX = 0.13;
+        targetYawY = gx > 0 ? -0.08 : 0.08;
       }
 
       // Smooth damping

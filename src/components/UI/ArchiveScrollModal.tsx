@@ -3,6 +3,7 @@ import { X, Scroll, Award, GraduationCap, Briefcase, User, Sparkles } from 'luci
 import { MAGE_PROFILE_DATA } from '../../data/archiveData';
 import { BlueFlowerGardenShowcase } from './BlueFlowerGardenShowcase';
 import { useTheme } from '../../context/ThemeContext';
+import { usePresence } from '../../hooks/usePresence';
 
 export interface ArchiveScrollModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const ArchiveScrollModal: React.FC<ArchiveScrollModalProps> = ({
   const { isLight } = useTheme();
   const [activeTab, setActiveTab] = useState<TabType>('bio');
   const profile = MAGE_PROFILE_DATA;
+  const presence = usePresence(isOpen);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,7 +31,7 @@ export const ArchiveScrollModal: React.FC<ArchiveScrollModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!presence.isMounted) return null;
 
   return (
     <div
@@ -37,10 +39,12 @@ export const ArchiveScrollModal: React.FC<ArchiveScrollModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label="The Archmage's Chronicle"
+      data-state={presence.state}
     >
       {/* Dimmed backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-md pointer-events-auto transition-opacity"
+        data-state={presence.state}
+        className="prn-backdrop fixed inset-0 bg-black/60 backdrop-blur-md pointer-events-auto"
         onClick={onClose}
         aria-hidden="true"
       />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Check, ExternalLink, Send, MessageSquare } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { usePresence } from '../../hooks/usePresence';
 
 export interface ContactModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   const [submitted, setSubmitted] = useState(false);
 
   const contactEmail = 'prins.engineering@outlook.com';
+  const presence = usePresence(isOpen);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,13 +48,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     }, 2000);
   };
 
-  if (!isOpen) return null;
+  if (!presence.isMounted) return null;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="contact-modal-title"
+      data-state={presence.state}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
       onClick={onClose}
     >

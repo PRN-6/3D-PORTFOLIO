@@ -52,7 +52,6 @@ export const Home: React.FC = () => {
     const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
     return r.tabId === 'CONTACT';
   });
-  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isFunOpen, setIsFunOpen] = useState(() => {
     const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
@@ -254,92 +253,83 @@ export const Home: React.FC = () => {
       }`}
     >
       {/* 3D Canvas Scene Hosting All Worlds & Transitions */}
-      <Scene
-        worldState={worldState}
-        activeDestination={activeDestination}
-        resetSignal={resetSignal}
-        onSelectObject={handleSelect}
-        onHoverObject={handleHover}
-        selectedProject={selectedProject}
-        onSelectProject={handleSelectProject}
-        selectedGrimoire={selectedGrimoire}
-        onSelectGrimoire={handleSelectGrimoire}
-        onOpenAboutModal={handleOpenScroll}
-        isAboutModalOpen={isScrollOpen}
-        focusedForestLandmark={focusedForestLandmark}
-        onTransitionToArchiveComplete={handleTransitionToArchiveComplete}
-        onTransitionFromArchiveToHomeComplete={handleTransitionFromArchiveToHomeComplete}
-        onTransitionToForestComplete={handleTransitionToForestComplete}
-        onTransitionFromForestToArchiveComplete={handleTransitionFromForestToArchiveComplete}
-        onTransitionToWorkshopComplete={handleTransitionToWorkshopComplete}
-        onDestinationReached={handleDestinationReached}
-        onCompiled={markCompiled}
-      />
-
-      {/* Fixed Bottom-Center Minimalist Music Player Capsule (Desktop & Mobile) */}
-      <MusicControls />
-
-      {/* Top Navigation Header with Persistent Docked P R N Wordmark */}
-      <Navbar
-        brandRef={brandRef}
-        showBrand={hasDocked}
-        onResetCamera={handleResetCamera}
-        activeNav={activeNavTab}
-        onSelectNav={handleSelectNav}
-      />
-
-      {/* HERO SUBTITLE: Just a Developer */}
-      {worldState === 'HOME_IDLE' && <HeroSubtitle />}
-
-      {/* Selected Project Information Panel (Interactive 5-column capsules on /projects and workshop stations) */}
-      {selectedProject && (
-        <ProjectDetailModal
-          project={selectedProject}
-          onClose={handleCloseProject}
+      <FunModal isOpen={isFunOpen} onClose={handleCloseFun} onTriggerOrbit={handleResetCamera}>
+        <Scene
+          funOpen={isFunOpen}
+          worldState={worldState}
+          activeDestination={activeDestination}
+          resetSignal={resetSignal}
+          onSelectObject={handleSelect}
+          onHoverObject={handleHover}
+          selectedProject={selectedProject}
+          onSelectProject={handleSelectProject}
+          selectedGrimoire={selectedGrimoire}
+          onSelectGrimoire={handleSelectGrimoire}
+          onOpenAboutModal={handleOpenScroll}
+          isAboutModalOpen={isScrollOpen}
+          focusedForestLandmark={focusedForestLandmark}
+          onTransitionToArchiveComplete={handleTransitionToArchiveComplete}
+          onTransitionFromArchiveToHomeComplete={handleTransitionFromArchiveToHomeComplete}
+          onTransitionToForestComplete={handleTransitionToForestComplete}
+          onTransitionFromForestToArchiveComplete={handleTransitionFromForestToArchiveComplete}
+          onTransitionToWorkshopComplete={handleTransitionToWorkshopComplete}
+          onDestinationReached={handleDestinationReached}
+          onCompiled={markCompiled}
         />
-      )}
+      </FunModal>
+      <div className="contents" inert={isFunOpen}>
 
-      {/* 2D Projects Catalog Modal: Clean, standard presentation ready for content */}
-      <ProjectsModal
-        isOpen={isProjectsOpen}
-        onClose={() => setIsProjectsOpen(false)}
-        onNavigateToWorkshop={() => {
-          setIsProjectsOpen(false);
-          navigate('/products');
-        }}
-      />
+        {/* Fixed Bottom-Center Minimalist Music Player Capsule (Desktop & Mobile) */}
+        <MusicControls />
 
-      {/* Products Modal: Clean, minimal digital inventions ready for content */}
-      <ProductsModal
-        isOpen={isProductsOpen}
-        onClose={() => setIsProductsOpen(false)}
-        onOpenContact={() => {
-          setIsProductsOpen(false);
-          navigate('/contact');
-        }}
-      />
+        {/* Top Navigation Header with Persistent Docked P R N Wordmark */}
+        <Navbar
+          brandRef={brandRef}
+          showBrand={hasDocked}
+          onResetCamera={handleResetCamera}
+          activeNav={activeNavTab}
+          onSelectNav={handleSelectNav}
+        />
 
-      {/* WORLD C & D: Archmage's Chronicle & Biography Parchment Scroll (About Modal) */}
-      <ArchiveScrollModal
-        isOpen={isScrollOpen}
-        onClose={handleCloseScroll}
-      />
+        {/* HERO SUBTITLE: Just a Developer */}
+        {worldState === 'HOME_IDLE' && <HeroSubtitle />}
 
-      {/* Contact & Inquiries Modal */}
-      <ContactModal
-        isOpen={isContactOpen}
-        onClose={handleCloseContact}
-      />
+        {/* Selected Project Information Panel (Interactive 5-column capsules on /projects and workshop stations) */}
+        {selectedProject && (
+          <ProjectDetailModal
+            project={selectedProject}
+            onClose={handleCloseProject}
+          />
+        )}
 
-      {/* Fun & Experiments Playground Modal */}
-      <FunModal
-        isOpen={isFunOpen}
-        onClose={handleCloseFun}
-        onTriggerOrbit={handleResetCamera}
-      />
+        {/* 2D Projects Catalog Modal: Clean, standard presentation ready for content */}
+        {currentRoute.tabId === 'PROJECTS' && <ProjectsModal />}
 
-      {/* Fixed Bottom Footer (Desktop: Left Icons + Right Vis Counter; Mobile: Responsive Safe Insets) */}
-      <Footer />
+        {/* Products Modal: Clean, minimal digital inventions ready for content */}
+        <ProductsModal
+          isOpen={isProductsOpen}
+          onClose={() => setIsProductsOpen(false)}
+          onOpenContact={() => {
+            setIsProductsOpen(false);
+            navigate('/contact');
+          }}
+        />
+
+        {/* WORLD C & D: Archmage's Chronicle & Biography Parchment Scroll (About Modal) */}
+        <ArchiveScrollModal
+          isOpen={isScrollOpen}
+          onClose={handleCloseScroll}
+        />
+
+        {/* Contact & Inquiries Modal */}
+        <ContactModal
+          isOpen={isContactOpen}
+          onClose={handleCloseContact}
+        />
+
+        {/* Fixed Bottom Footer (Desktop: Left Icons + Right Vis Counter; Mobile: Responsive Safe Insets) */}
+        <Footer />
+      </div>
 
       {/* Master Asset-Gated Preloader & Hero Brand-Flight Transition */}
       <Preloader
