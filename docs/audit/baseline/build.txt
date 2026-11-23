@@ -1,0 +1,17 @@
+
+> 3d-portfolio@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.8 building client environment for production...
+transforming...
+✓ 2738 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               2.06 kB │ gzip:   0.78 kB
+dist/assets/index-BRTGv8xp.css               97.33 kB │ gzip:  16.04 kB
+dist/assets/rolldown-runtime-XKyaHtl9.js      0.72 kB │ gzip:   0.42 kB
+dist/assets/index-qs4S7jSq.js               258.69 kB │ gzip:  79.24 kB
+dist/assets/react-vendor-CtxuJ6cu.js        271.51 kB │ gzip:  86.75 kB
+dist/assets/three-vendor-DwVFgqW8.js      1,126.41 kB │ gzip: 311.98 kB
+
+✓ built in 1.60s

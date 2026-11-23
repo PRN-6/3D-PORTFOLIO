@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Model Quality"
+  short_description: "Measure and preserve portfolio 3D asset quality"
+  default_prompt: "Use $3d-model-quality to audit the active portfolio models and recommend measured optimizations that preserve their appearance and animation."

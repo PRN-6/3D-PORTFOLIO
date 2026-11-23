@@ -1,0 +1,207 @@
+{
+  "generatedAt": "2026-11-23T18:27:26.573Z",
+  "base": "http://127.0.0.1:5187",
+  "methodology": "Warm SPA navigation; 6-second rAF window around each click, followed by dark-theme screenshots; desktop GPU for both viewports. Back/forward and reset exercised. No GPU timer, contact submit, full clip validation or mobile hardware test.",
+  "results": [
+    {
+      "viewport": "desktop",
+      "errors": [],
+      "transitions": [
+        {
+          "route": "/products",
+          "p50Ms": 7,
+          "p95Ms": 7.100000000000364,
+          "maxMs": 515,
+          "over50ms": 2,
+          "groups": [
+            "BubbleWorkshopGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 243,
+            "triangles": 138370,
+            "points": 0,
+            "lines": 0,
+            "geometries": 162,
+            "textures": 36,
+            "programs": 30
+          }
+        },
+        {
+          "route": "/projects",
+          "p50Ms": 7,
+          "p95Ms": 7.100000000002183,
+          "maxMs": 1113.0999999999985,
+          "over50ms": 4,
+          "groups": [
+            "BubbleArchiveGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 162,
+            "triangles": 185718,
+            "points": 0,
+            "lines": 0,
+            "geometries": 305,
+            "textures": 45,
+            "programs": 40
+          }
+        },
+        {
+          "route": "/about",
+          "p50Ms": 7,
+          "p95Ms": 13.799999999999272,
+          "maxMs": 681.8999999999978,
+          "over50ms": 2,
+          "groups": [
+            "BubbleForestGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 243,
+            "triangles": 327822,
+            "points": 0,
+            "lines": 0,
+            "geometries": 429,
+            "textures": 52,
+            "programs": 51
+          }
+        },
+        {
+          "route": "/",
+          "p50Ms": 7,
+          "p95Ms": 7.19999999999709,
+          "maxMs": 48.79999999999927,
+          "over50ms": 0,
+          "groups": [
+            "BubbleHomeGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 95,
+            "triangles": 341196,
+            "points": 0,
+            "lines": 54,
+            "geometries": 431,
+            "textures": 52,
+            "programs": 56
+          }
+        }
+      ],
+      "screenshots": [
+        "desktop-products-dark.png",
+        "desktop-projects-dark.png",
+        "desktop-about-dark.png",
+        "desktop-home-dark.png"
+      ],
+      "backPath": "/about",
+      "forwardPath": "/",
+      "resetCamera": [
+        14,
+        10,
+        14.000000000000002
+      ],
+      "passed": true
+    },
+    {
+      "viewport": "mobile",
+      "errors": [],
+      "transitions": [
+        {
+          "route": "/products",
+          "p50Ms": 7,
+          "p95Ms": 7.100000000000364,
+          "maxMs": 76.5,
+          "over50ms": 2,
+          "groups": [
+            "BubbleWorkshopGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 243,
+            "triangles": 138370,
+            "points": 0,
+            "lines": 0,
+            "geometries": 162,
+            "textures": 36,
+            "programs": 30
+          }
+        },
+        {
+          "route": "/projects",
+          "p50Ms": 7,
+          "p95Ms": 7.100000000000364,
+          "maxMs": 90.39999999999964,
+          "over50ms": 1,
+          "groups": [
+            "BubbleArchiveGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 162,
+            "triangles": 185718,
+            "points": 0,
+            "lines": 0,
+            "geometries": 305,
+            "textures": 45,
+            "programs": 40
+          }
+        },
+        {
+          "route": "/about",
+          "p50Ms": 7,
+          "p95Ms": 7.100000000002183,
+          "maxMs": 90.40000000000146,
+          "over50ms": 1,
+          "groups": [
+            "BubbleForestGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 243,
+            "triangles": 327822,
+            "points": 0,
+            "lines": 0,
+            "geometries": 429,
+            "textures": 52,
+            "programs": 51
+          }
+        },
+        {
+          "route": "/",
+          "p50Ms": 7,
+          "p95Ms": 7.100000000002183,
+          "maxMs": 34.79999999999927,
+          "over50ms": 0,
+          "groups": [
+            "BubbleHomeGroup"
+          ],
+          "passed": true,
+          "stats": {
+            "calls": 95,
+            "triangles": 341196,
+            "points": 0,
+            "lines": 54,
+            "geometries": 431,
+            "textures": 52,
+            "programs": 56
+          }
+        }
+      ],
+      "screenshots": [
+        "mobile-products-dark.png",
+        "mobile-projects-dark.png",
+        "mobile-about-dark.png",
+        "mobile-home-dark.png"
+      ],
+      "backPath": "/about",
+      "forwardPath": "/",
+      "resetCamera": [
+        12.499999999999996,
+        11.999999999999998,
+        12.499999999999998
+      ],
+      "passed": true
+    }
+  ]
+}
