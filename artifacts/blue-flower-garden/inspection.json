@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-23T18:35:49.834Z",
+  "generatedAt": "2026-11-23T18:40:49.270Z",
   "methodology": "Decoded using installed glTF Transform and Draco. Unique mesh counts differ from scene node instances; neither is measured draw calls. Bounds are rest-pose bounds. Texture memory is RGBA8+mips estimate, not measured VRAM. External glTF resources are read but file bytes/hash describe the entry file only. EXT_mesh_gpu_instancing multiplicity is not expanded. Not a Khronos conformance validator.",
   "totals": {
     "files": 1,
-    "bytes": 1438288,
+    "bytes": 1480916,
     "errors": 0
   },
   "assets": [
     {
       "path": "artifacts/blue-flower-garden/blue-flower-garden.glb",
-      "bytes": 1438288,
-      "sha256": "6467444d0c5b189f22429d2de3af9c11afa7ee9ba3f7a7f11c30ac8e2d2d2c1d",
+      "bytes": 1480916,
+      "sha256": "38efb87eae628a7e2bfb45d6e8aca7dd116d87ef03004a637d679565cbdf0df5",
       "extensions": [
         "KHR_draco_mesh_compression",
         "KHR_materials_emissive_strength"
@@ -19,8 +19,8 @@
       "nodes": 162,
       "meshes": 8,
       "primitives": 8,
-      "uniqueMeshTriangles": 109696,
-      "vertices": 175916,
+      "uniqueMeshTriangles": 109466,
+      "vertices": 193794,
       "primitivesWithoutNormals": 0,
       "primitivesWithMorphTargets": 0,
       "skins": [
@@ -247,18 +247,18 @@
           "name": "Blue Flower Garden",
           "bounds": {
             "min": [
-              -17.107297897338867,
+              -17.877790451049805,
               -3.799999952316284,
-              -16.810331344604492
+              -16.743017196655273
             ],
             "max": [
-              17.392972946166992,
-              4.631054401397705,
-              12.558725357055664
+              17.366849899291992,
+              4.76420783996582,
+              11.378092765808105
             ]
           },
           "primitiveInstances": 8,
-          "triangleInstances": 109696
+          "triangleInstances": 109466
         }
       ]
     }

@@ -6,11 +6,13 @@ export function createGardenRuntime(scene, clips, { shadows = false, reducedMoti
   if (!garden?.userData.runtime) throw new Error('Expected the generated Blue Flower Garden candidate.');
   const data = garden.userData.runtime;
   const ownedMaterials = new Set();
+  const originalMaterials = new Map();
   const meshes = [];
   const particleMesh = scene.getObjectByName(data.mesh);
   scene.traverse(object => {
     if (!object.isMesh) return;
     meshes.push(object);
+    originalMaterials.set(object, object.material);
     object.material = object.material.clone();
     ownedMaterials.add(object.material);
     object.material.forceSinglePass = true;
@@ -51,13 +53,14 @@ export function createGardenRuntime(scene, clips, { shadows = false, reducedMoti
   setTime(0);
   return {
     mixer, actions, setTime,
-    update(delta) { setTime(elapsed + Math.min(Math.max(0, delta), .05)); },
+    update(delta) { if (!reducedMotion) setTime(elapsed + Math.min(Math.max(0, delta), .05)); },
     dispose() {
       if (disposed) return;
       disposed = true;
       mixer.stopAllAction(); mixer.uncacheRoot(scene);
       particleMesh.geometry.dispose(); particleMesh.geometry = originalGeometry;
       ownedMaterials.forEach(material => material.dispose());
+      originalMaterials.forEach((material, mesh) => { mesh.material = material; });
       const skeletons = new Set(meshes.filter(m => m.isSkinnedMesh).map(m => m.skeleton));
       skeletons.forEach(skeleton => skeleton.dispose());
     },

@@ -114,6 +114,10 @@ for(let k=0;k<1250;k++){
   for(let b=0;b<3;b++){const az=a+b*2.094,w=.025; batches[0].add(geo([[x-w,y,z],[x+w,y,z],[x+Math.sin(az)*.08,y+h,z+Math.cos(az)*.08]],[0,2,1]),new T.Matrix4(),k%3?'#6d9c67':'#7ca276',joint);}
 }
 // Twenty-four edge shrubs, with small colored flower flecks.
+for(let k=0;k<150;k++){
+  const a=rand()*Math.PI*2,r=Math.sqrt(rand())*8.3,x=Math.sin(a)*r,z=Math.cos(a)*r,y=height(x,z)+.028,j=swayBones[k%12];
+  for(let leaf=0;leaf<3;leaf++){const az=a+leaf*Math.PI*2/3;const point=(radius,angle)=>[x+Math.sin(angle)*radius,y,z+Math.cos(angle)*radius];batches[0].add(geo([[x,y,z],point(.07,az-.65),point(.12,az),point(.07,az+.65)],[0,1,2,0,2,3]),new T.Matrix4(),'#82aa79',j);}
+}
 for(let k=0;k<24;k++){const a=k/24*Math.PI*2,r=7.8,x=Math.sin(a)*r,z=Math.cos(a)*r,j=swayBones[k%12];ico(0,[x,.45,z],[range(.36,.6),range(.28,.43),range(.32,.54)],k%2?'#527f63':'#71966c',1,j);for(let f=0;f<5;f++)blossom(x+range(-.3,.3),range(.65,.83),z+range(-.25,.25),.08,flowerColors[(k+f)%4],j,false);}
 const treePositions=[[0,.4,-6.5],[-4.2,.4,-4.8],[4.5,.4,-4.5]],branchBones=[];
 for(let t=0;t<3;t++){
@@ -142,8 +146,8 @@ for(const x of [1.55,2.85])for(let k=0;k<5;k++)batches[1].add(new T.BoxGeometry(
 for(let k=0;k<9;k++){const a=k/8*Math.PI; batches[1].add(new T.BoxGeometry(.3,.34,.44),matrix([2.2+Math.cos(a)*.65,2.1+Math.sin(a)*.65,.8],[1,1,1],[0,0,a-Math.PI/2]),'#b8bcb0');}
 batches[1].add(new T.CylinderGeometry(.46,.52,.24,8),matrix([2.2,.51,.8]),'#a2aaa0');
 for(let k=0;k<26;k++){const a=k*.65,x=1.55+Math.sin(a)*.17,y=.55+k*.065;ico(0,[x,y,.99],[.09,.05,.13],'#527b69');}
-function crystal(p,size,joint=0){const v=[],ix=[];for(const [r,y] of [[.22,0],[.3,.65]])for(let k=0;k<5;k++)v.push([Math.sin(k/5*Math.PI*2)*size*r,y*size,Math.cos(k/5*Math.PI*2)*size*r]);v.push([0,size,0]);for(let k=0;k<5;k++){const n=(k+1)%5;ix.push(k,k+5,n,n,k+5,n+5,k+5,10,n+5);}batches[5].add(geo(v,ix),matrix(p),'#84E5FF',joint);}
-for(let k=0;k<6;k++){const a=k/6*Math.PI*2+.25,r=7.65;crystal([Math.sin(a)*r,-1.65,Math.cos(a)*r],range(.7,.95));}
+function crystal(p,size,joint=0,axis=[0,1,0]){const v=[],ix=[];for(const [r,y] of [[.22,0],[.3,.65]])for(let k=0;k<5;k++)v.push([Math.sin(k/5*Math.PI*2)*size*r,y*size,Math.cos(k/5*Math.PI*2)*size*r]);v.push([0,size,0]);for(let k=0;k<5;k++){const n=(k+1)%5;ix.push(k,k+5,n,n,k+5,n+5,k+5,10,n+5);}const m=new T.Matrix4().compose(new T.Vector3(...p),new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),new T.Vector3(...axis).normalize()),new T.Vector3(1,1,1));batches[5].add(geo(v,ix),m,'#84E5FF',joint);}
+for(let k=0;k<6;k++){const a=k/6*Math.PI*2+.25,r=7.4;crystal([Math.sin(a)*r,-1.2,Math.cos(a)*r],range(.85,1.05),0,[Math.sin(a),-.35,Math.cos(a)]);}
 const orbitBones=[];
 for(let k=0;k<8;k++){
   const a=k/8*Math.PI*2+.2,r=range(10.3,11.6),p=[Math.sin(a)*r,range(-1.25,.95),Math.cos(a)*r];

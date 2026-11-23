@@ -1,7 +1,7 @@
 {
   "generator": "scripts/build-blue-flower-garden-candidate.mjs",
   "seed": 61429,
-  "triangles": 108566,
+  "triangles": 109466,
   "primitives": 8,
   "materialCount": 8,
   "joints": 151,
@@ -57,7 +57,7 @@
     "stalactiteTip": -3.8,
     "endpointSpan": 4.22
   },
-  "bytes": 1473072,
+  "bytes": 1480916,
   "drawCallScope": "8 model color-pass submissions with transparent materials forceSinglePass; shadows/postprocessing add passes. Full behavior requires garden-runtime.mjs.",
   "limitations": [
     "Hero characters are staging anchors, not included meshes.",
