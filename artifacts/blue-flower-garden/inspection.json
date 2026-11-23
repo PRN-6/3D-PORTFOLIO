@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-23T18:40:49.270Z",
+  "generatedAt": "2026-11-23T18:43:00.601Z",
   "methodology": "Decoded using installed glTF Transform and Draco. Unique mesh counts differ from scene node instances; neither is measured draw calls. Bounds are rest-pose bounds. Texture memory is RGBA8+mips estimate, not measured VRAM. External glTF resources are read but file bytes/hash describe the entry file only. EXT_mesh_gpu_instancing multiplicity is not expanded. Not a Khronos conformance validator.",
   "totals": {
     "files": 1,
-    "bytes": 1480916,
+    "bytes": 1480932,
     "errors": 0
   },
   "assets": [
     {
       "path": "artifacts/blue-flower-garden/blue-flower-garden.glb",
-      "bytes": 1480916,
-      "sha256": "38efb87eae628a7e2bfb45d6e8aca7dd116d87ef03004a637d679565cbdf0df5",
+      "bytes": 1480932,
+      "sha256": "060375c69517667d7ad333f56492624e052a5fc74692b70ac2e303e6198df252",
       "extensions": [
         "KHR_draco_mesh_compression",
         "KHR_materials_emissive_strength"

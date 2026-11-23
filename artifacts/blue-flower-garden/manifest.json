@@ -57,7 +57,7 @@
     "stalactiteTip": -3.8,
     "endpointSpan": 4.22
   },
-  "bytes": 1480916,
+  "bytes": 1480932,
   "drawCallScope": "8 model color-pass submissions with transparent materials forceSinglePass; shadows/postprocessing add passes. Full behavior requires garden-runtime.mjs.",
   "limitations": [
     "Hero characters are staging anchors, not included meshes.",

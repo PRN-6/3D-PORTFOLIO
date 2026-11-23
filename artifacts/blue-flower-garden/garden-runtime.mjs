@@ -16,6 +16,13 @@ export function createGardenRuntime(scene, clips, { shadows = false, reducedMoti
     object.material = object.material.clone();
     ownedMaterials.add(object.material);
     object.material.forceSinglePass = true;
+    if (object.name === 'Blossoms') {
+      object.material.onBeforeCompile = shader => {
+        shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>',
+          'if (!gl_FrontFacing) outgoingLight += diffuseColor.rgb * 0.08;\n#include <opaque_fragment>');
+      };
+      object.material.customProgramCacheKey = () => 'garden-petal-backfill-v1';
+    }
     object.castShadow = shadows && object.userData.castShadow === true;
     object.receiveShadow = shadows && object.name !== 'Horizon_Clouds';
     // Rig animation covers a large known domain; avoid rest-pose-only frustum clipping.

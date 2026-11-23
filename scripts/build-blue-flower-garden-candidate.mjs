@@ -146,7 +146,7 @@ for(const x of [1.55,2.85])for(let k=0;k<5;k++)batches[1].add(new T.BoxGeometry(
 for(let k=0;k<9;k++){const a=k/8*Math.PI; batches[1].add(new T.BoxGeometry(.3,.34,.44),matrix([2.2+Math.cos(a)*.65,2.1+Math.sin(a)*.65,.8],[1,1,1],[0,0,a-Math.PI/2]),'#b8bcb0');}
 batches[1].add(new T.CylinderGeometry(.46,.52,.24,8),matrix([2.2,.51,.8]),'#a2aaa0');
 for(let k=0;k<26;k++){const a=k*.65,x=1.55+Math.sin(a)*.17,y=.55+k*.065;ico(0,[x,y,.99],[.09,.05,.13],'#527b69');}
-function crystal(p,size,joint=0,axis=[0,1,0]){const v=[],ix=[];for(const [r,y] of [[.22,0],[.3,.65]])for(let k=0;k<5;k++)v.push([Math.sin(k/5*Math.PI*2)*size*r,y*size,Math.cos(k/5*Math.PI*2)*size*r]);v.push([0,size,0]);for(let k=0;k<5;k++){const n=(k+1)%5;ix.push(k,k+5,n,n,k+5,n+5,k+5,10,n+5);}const m=new T.Matrix4().compose(new T.Vector3(...p),new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),new T.Vector3(...axis).normalize()),new T.Vector3(1,1,1));batches[5].add(geo(v,ix),m,'#84E5FF',joint);}
+function crystal(p,size,joint=0,axis=[0,1,0]){const v=[],ix=[];for(const [r,y] of [[.22,0],[.3,.65]])for(let k=0;k<5;k++)v.push([Math.sin(k/5*Math.PI*2)*size*r,y*size,Math.cos(k/5*Math.PI*2)*size*r]);v.push([0,size,0]);for(let k=0;k<5;k++){const n=(k+1)%5;ix.push(k,n,k+5,n,n+5,k+5,k+5,n+5,10);}const m=new T.Matrix4().compose(new T.Vector3(...p),new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),new T.Vector3(...axis).normalize()),new T.Vector3(1,1,1));batches[5].add(geo(v,ix),m,'#84E5FF',joint);}
 for(let k=0;k<6;k++){const a=k/6*Math.PI*2+.25,r=7.4;crystal([Math.sin(a)*r,-1.2,Math.cos(a)*r],range(.85,1.05),0,[Math.sin(a),-.35,Math.cos(a)]);}
 const orbitBones=[];
 for(let k=0;k<8;k++){

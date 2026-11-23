@@ -37,6 +37,12 @@ try{
     await page.screenshot({path:path.join(out,name+'.png')});report.views.push({name,width,height,stats});
   }
   report.passed=report.errors.length===0&&report.validation.primitives===8&&report.validation.triangles>=75000&&report.validation.triangles<=110000&&report.validation.finite&&report.validation.weights&&report.validation.animationPosesFinite&&report.views.every(v=>v.stats.calls<=8);
+  report.frameSample=await page.evaluate(async()=>{
+    const g=window.__GARDEN__;g.pause(false);const intervals=[];let last=performance.now();const start=last;
+    await new Promise(resolve=>{function sample(t){intervals.push(t-last);last=t;if(t-start<5000)requestAnimationFrame(sample);else resolve();}requestAnimationFrame(sample);});
+    intervals.shift();intervals.sort((a,b)=>a-b);g.pause();
+    return{viewport:'390x844 on desktop GPU, not physical phone',durationMs:5000,p50Ms:intervals[Math.floor(intervals.length*.5)],p95Ms:intervals[Math.floor(intervals.length*.95)],maxMs:intervals.at(-1)};
+  });
   fs.writeFileSync(path.join(out,'verification.json'),JSON.stringify(report,null,2)+'\n');
   console.log(JSON.stringify({...report,validation:{...report.validation,poses:'saved in verification.json'}},null,2));
   if(!report.passed)process.exitCode=1;
