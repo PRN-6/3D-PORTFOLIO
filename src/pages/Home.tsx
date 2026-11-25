@@ -57,6 +57,7 @@ export const Home: React.FC = () => {
     const r = getRouteFromPath(typeof window !== 'undefined' ? window.location.pathname : '/');
     return r.tabId === 'FUN';
   });
+  const [isBattlePaused, setIsBattlePaused] = useState(false);
 
   // Archive World (Island 02) State
   const [selectedGrimoire, setSelectedGrimoire] = useState<GrimoireItem | null>(null);
@@ -253,9 +254,11 @@ export const Home: React.FC = () => {
       }`}
     >
       {/* 3D Canvas Scene Hosting All Worlds & Transitions */}
-      <FunModal isOpen={isFunOpen} onClose={handleCloseFun} onTriggerOrbit={handleResetCamera}>
+      <FunModal isOpen={isFunOpen} onClose={handleCloseFun} onTriggerOrbit={handleResetCamera}
+        battlePaused={isBattlePaused} onToggleBattle={() => setIsBattlePaused(value => !value)}>
         <Scene
           funOpen={isFunOpen}
+          funPaused={isBattlePaused}
           worldState={worldState}
           activeDestination={activeDestination}
           resetSignal={resetSignal}
