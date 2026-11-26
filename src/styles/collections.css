@@ -85,13 +85,13 @@
 .shelf-thread small { color: var(--muted); text-align: right; }
 .shelf-empty { display: grid; justify-items: center; gap: .75rem; padding: 2rem 0; }
 .ring-overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; }
-.ring-card { max-height: 92dvh; overflow: auto; overscroll-behavior: contain; }
+.ring-card { width: min(80rem, calc(100vw - 2rem)); max-height: 94dvh; overflow: auto; overscroll-behavior: contain; }
 .ring-header button { padding: .55rem; }
 .ring-header h1 { font-size: clamp(1.8rem, 3.2vw, 2.8rem); }
-.ring-stage { position: relative; height: clamp(12rem, 51dvh, 34rem); isolation: isolate; }
+.ring-stage { position: relative; height: clamp(16rem, 61dvh, 42rem); isolation: isolate; }
 .ring-sky { background: radial-gradient(ellipse at 20% 64%, #fff3ba 0%, transparent 52%), linear-gradient(#a997c5, #e6b1bd 37%, #ffd5a3 67%, #d99986); }
 .battle-sky { background: radial-gradient(ellipse at 30% 68%, #a39aab 0%, transparent 65%), linear-gradient(#302b49, #635876 60%, #a28a9c); }
-.battle-status { width: min(16rem, 70vw); padding: .8rem 1rem; border-radius: .5rem; text-align: center; color: #fff1dc; background: #302b49; font-size: .9rem; }
+.battle-status { position: absolute; z-index: 20; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(16rem, 70vw); padding: .8rem 1rem; border-radius: .5rem; text-align: center; color: #fff1dc; background: #302b49; font-size: .9rem; }
 .battle-caption { margin-top: .8rem; color: var(--muted); font-size: .875rem; line-height: 1.5; }
 .battle-controls button { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; }
 .battle-controls button:disabled { cursor: default; opacity: .65; }
@@ -113,6 +113,6 @@
   .shelf-filters { flex-direction: column; padding: .75rem .95rem .3rem; }
   .shelf-results, .shelf-record, .ring-tools, .shelf-foot { padding-inline: .95rem; }
   .shelf-island { font-size: .8rem; }
-  .ring-stage { height: min(49dvh, 25rem); }
+  .ring-stage { height: min(52dvh, 28rem); }
   .ring-caption { flex-wrap: wrap; }
 }

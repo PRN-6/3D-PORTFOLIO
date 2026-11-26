@@ -86,9 +86,15 @@ const ModelScene: React.FC<{
   const party = useRef<ReturnType<typeof createPartyLife>>(undefined);
   useEffect(() => {
     party.current = createPartyLife(clonedScene, world, gltf.animations);
+    const ownedSkeletons = new Set<THREE.Skeleton>();
+    clonedScene.traverse(node => {
+      if (node instanceof THREE.SkinnedMesh) ownedSkeletons.add(node.skeleton);
+    });
     return () => {
       party.current?.dispose();
       party.current = undefined;
+      // Fun unmounts the home world. Free only the cloned rigs' bone textures.
+      ownedSkeletons.forEach(skeleton => skeleton.dispose());
     };
   }, [clonedScene, world, gltf.animations]);
   const flames = useMemo(() => [1, 2, 3].flatMap(index => {

@@ -37,7 +37,7 @@ export function FunModal({ isOpen, onClose, onTriggerOrbit, battlePaused, onTogg
       <section className={isOpen ? 'ring-card' : 'contents'}>
         {isOpen && (
           <header className="ring-header">
-            <div><p>The hero party · A miniature battle</p><h1 id="ring-title">The Scales of Battle</h1></div>
+            <div><p>The hero party · The ruined courtyard</p><h1 id="ring-title">The Scales of Battle</h1></div>
             <button ref={closeButton} onClick={onClose} aria-label="Close Fun page"><X /></button>
           </header>
         )}
@@ -47,8 +47,8 @@ export function FunModal({ isOpen, onClose, onTriggerOrbit, battlePaused, onTogg
         {isOpen && (
           <div className="ring-tools">
             <div className="ring-caption">
-              <span><Orbit size={16} aria-hidden="true" /> Drag to orbit</span>
-              <a href="/models/fun/demon-battle.glb" download><Download size={16} aria-hidden="true" /> Download 3D model</a>
+              <span><Orbit size={16} aria-hidden="true" /> Drag to orbit · Scroll to explore</span>
+              <a href="/models/fun/demon-battle-grand-arena.glb" download><Download size={16} aria-hidden="true" /> Download 3D model</a>
             </div>
             <p className="battle-caption">Frieren casts. Himmel charges. Eisen strikes. Heiter shields the party from the demon’s magic.</p>
             <div className="ring-experiments battle-controls">

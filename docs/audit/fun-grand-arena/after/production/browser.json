@@ -1,0 +1,1018 @@
+{
+  "generatedAt": "2026-11-26T09:34:10.635Z",
+  "commit": "faf86819abeff13b5764dfcd88ab3348bd05d1a8",
+  "browser": "Chrome/158.0.8127.88",
+  "platform": "win32 10.0.26300",
+  "cpu": "AMD Ryzen 5 8645HS w/ Radeon 760M Graphics",
+  "base": "http://127.0.0.1:5187",
+  "methodology": "Production preview, fresh browser context per direct route, cache disabled, unthrottled loopback. 5-second rAF sample after loader disappears and 5-second settle. Mobile is viewport/touch emulation on this desktop GPU, not a phone benchmark. Renderer stats are existing app snapshots updated every 30 frames; not GPU timings.",
+  "results": [
+    {
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      },
+      "route": "/fun",
+      "errors": [],
+      "warnings": [
+        "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.",
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+      ],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5187/audio/home.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/products.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/projects.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/about.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/contact.mp3",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "httpErrors": [],
+      "readyObservedMs": 3098,
+      "sample": {
+        "medianFrameMs": 6.900000000001455,
+        "p95FrameMs": 7.100000000000364,
+        "meanFps": 143.99999999999997,
+        "framesOver50ms": 0,
+        "stats": {
+          "calls": 68,
+          "triangles": 302400,
+          "points": 0,
+          "lines": 0,
+          "geometries": 38,
+          "textures": 11,
+          "programs": 5
+        },
+        "totalMeshes": 40,
+        "visibleMeshes": 40,
+        "lights": 4,
+        "shadowLights": 1,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": {
+          "width": 1278,
+          "height": 549
+        },
+        "title": "The Scales of Battle | PRINSON",
+        "horizontalOverflow": false,
+        "resources": [
+          {
+            "url": "http://127.0.0.1:5187/fonts/BebasNeue-Regular.ttf",
+            "duration": 6.599999964237213,
+            "transferSize": 56436,
+            "decodedBodySize": 56136
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/PressStart2P-Regular.ttf",
+            "duration": 7.100000023841858,
+            "transferSize": 115580,
+            "decodedBodySize": 115280
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/BodoniModa-Black.ttf",
+            "duration": 7.200000047683716,
+            "transferSize": 45180,
+            "decodedBodySize": 44880
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/UnifrakturCook-Bold.ttf",
+            "duration": 8.700000047683716,
+            "transferSize": 36744,
+            "decodedBodySize": 36444
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/Cinzel-Bold.ttf",
+            "duration": 11,
+            "transferSize": 46424,
+            "decodedBodySize": 46124
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/PlayfairDisplay-Black.ttf",
+            "duration": 13.600000023841858,
+            "transferSize": 123832,
+            "decodedBodySize": 123532
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/CourierPrime-Bold.ttf",
+            "duration": 13.699999988079071,
+            "transferSize": 68380,
+            "decodedBodySize": 68080
+          },
+          {
+            "url": "https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&family=Space+Mono:wght@700&display=swap",
+            "duration": 328.9000000357628,
+            "transferSize": 1255,
+            "decodedBodySize": 12797
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/rolldown-runtime-XKyaHtl9.js",
+            "duration": 14,
+            "transferSize": 1026,
+            "decodedBodySize": 726
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/index-BjjuHUym.js",
+            "duration": 22.69999998807907,
+            "transferSize": 83291,
+            "decodedBodySize": 264238
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/react-vendor-UYFy5eIx.js",
+            "duration": 24.100000023841858,
+            "transferSize": 86333,
+            "decodedBodySize": 272018
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/three-vendor-BciRJkyb.js",
+            "duration": 60.80000001192093,
+            "transferSize": 310318,
+            "decodedBodySize": 1127815
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/index-57iOFw7H.css",
+            "duration": 17.899999976158142,
+            "transferSize": 19605,
+            "decodedBodySize": 110118
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-island.glb",
+            "duration": 12.699999988079071,
+            "transferSize": 152016,
+            "decodedBodySize": 151716
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-library.glb",
+            "duration": 15.400000035762787,
+            "transferSize": 331360,
+            "decodedBodySize": 331060
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-decorations.glb",
+            "duration": 16.100000023841858,
+            "transferSize": 412756,
+            "decodedBodySize": 412456
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-grimoires.glb",
+            "duration": 18,
+            "transferSize": 511300,
+            "decodedBodySize": 511000
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-floating-books.glb",
+            "duration": 13,
+            "transferSize": 188692,
+            "decodedBodySize": 188392
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/frieren.glb",
+            "duration": 19,
+            "transferSize": 537788,
+            "decodedBodySize": 537488
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/frieren-magic.glb",
+            "duration": 18.30000001192093,
+            "transferSize": 84372,
+            "decodedBodySize": 84072
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/blue-flower-garden-DVP45226.glb",
+            "duration": 44.80000001192093,
+            "transferSize": 1481232,
+            "decodedBodySize": 1480932
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/himmel.glb",
+            "duration": 32.80000001192093,
+            "transferSize": 480624,
+            "decodedBodySize": 480324
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/blue-flower-garden/flowers/flower-wreath.glb",
+            "duration": 22.69999998807907,
+            "transferSize": 49196,
+            "decodedBodySize": 48896
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/island/workshop-island.glb",
+            "duration": 30.600000023841858,
+            "transferSize": 335108,
+            "decodedBodySize": 334808
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/architecture/rune-workshop.glb",
+            "duration": 33.19999998807907,
+            "transferSize": 503556,
+            "decodedBodySize": 503256
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/workshop/rune-crafting-table.glb",
+            "duration": 24.30000001192093,
+            "transferSize": 78744,
+            "decodedBodySize": 78444
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/workshop/shelves-and-benches.glb",
+            "duration": 35.30000001192093,
+            "transferSize": 257916,
+            "decodedBodySize": 257616
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/workshop/crafting-tools.glb",
+            "duration": 34.19999998807907,
+            "transferSize": 30432,
+            "decodedBodySize": 30132
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/arcane-rings.glb",
+            "duration": 36.69999998807907,
+            "transferSize": 76764,
+            "decodedBodySize": 76464
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/rune-symbol.glb",
+            "duration": 36.59999996423721,
+            "transferSize": 31460,
+            "decodedBodySize": 31160
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/rune-floor-circle.glb",
+            "duration": 40.09999996423721,
+            "transferSize": 85056,
+            "decodedBodySize": 84756
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/crystal-cluster.glb",
+            "duration": 41.30000001192093,
+            "transferSize": 55248,
+            "decodedBodySize": 54948
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/enchanted-scroll.glb",
+            "duration": 41.5,
+            "transferSize": 22016,
+            "decodedBodySize": 21716
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/floating-tome.glb",
+            "duration": 41.19999998807907,
+            "transferSize": 26416,
+            "decodedBodySize": 26116
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/decorative-artifacts.glb",
+            "duration": 41.69999998807907,
+            "transferSize": 29600,
+            "decodedBodySize": 29300
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/workshop-motes.glb",
+            "duration": 46.90000003576279,
+            "transferSize": 24420,
+            "decodedBodySize": 24120
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/decorations/enchanted-lamp.glb",
+            "duration": 47.299999952316284,
+            "transferSize": 78928,
+            "decodedBodySize": 78628
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/decorations/island-landscaping.glb",
+            "duration": 48.09999996423721,
+            "transferSize": 267552,
+            "decodedBodySize": 267252
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-01.glb",
+            "duration": 47.299999952316284,
+            "transferSize": 102932,
+            "decodedBodySize": 102632
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-02.glb",
+            "duration": 47.10000002384186,
+            "transferSize": 82124,
+            "decodedBodySize": 81824
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-03.glb",
+            "duration": 47.09999996423721,
+            "transferSize": 91832,
+            "decodedBodySize": 91532
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-04.glb",
+            "duration": 49.5,
+            "transferSize": 95832,
+            "decodedBodySize": 95532
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-05.glb",
+            "duration": 49.89999997615814,
+            "transferSize": 80544,
+            "decodedBodySize": 80244
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/eisen.glb",
+            "duration": 50.89999997615814,
+            "transferSize": 603268,
+            "decodedBodySize": 602968
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/home.mp3",
+            "duration": 1081.300000011921,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/products.mp3",
+            "duration": 1079.2999999523163,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/projects.mp3",
+            "duration": 1079.2999999523163,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/about.mp3",
+            "duration": 1079.300000011921,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/contact.mp3",
+            "duration": 1079.3999999761581,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_wasm_wrapper.js",
+            "duration": 263.60000002384186,
+            "transferSize": 0,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_decoder.wasm",
+            "duration": 303.39999997615814,
+            "transferSize": 0,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/fun/demon-battle-grand-arena.glb",
+            "duration": 53.19999998807907,
+            "transferSize": 2270288,
+            "decodedBodySize": 2269988
+          },
+          {
+            "url": "http://127.0.0.1:5187/favicon.svg",
+            "duration": 5.900000035762787,
+            "transferSize": 1790,
+            "decodedBodySize": 9522
+          }
+        ],
+        "controls": [
+          {
+            "text": "Close Fun page",
+            "x": 1291.015625,
+            "y": 77.3125,
+            "width": 41.59375,
+            "height": 41.59375
+          },
+          {
+            "text": "Download 3D model",
+            "x": 1170.046875,
+            "y": 714.84375,
+            "width": 162.5625,
+            "height": 21.609375
+          },
+          {
+            "text": "Pause battle",
+            "x": 107.390625,
+            "y": 783.84375,
+            "width": 133.265625,
+            "height": 44
+          },
+          {
+            "text": "Reset view",
+            "x": 248.65625,
+            "y": 783.84375,
+            "width": 121.71875,
+            "height": 44
+          },
+          {
+            "text": "Pause music",
+            "x": 612.6015625,
+            "y": 851,
+            "width": 14,
+            "height": 14
+          },
+          {
+            "text": "Pause background soundtrack",
+            "x": 699.3984375,
+            "y": 847,
+            "width": 22,
+            "height": 22
+          },
+          {
+            "text": "Mute soundtrack",
+            "x": 731.3984375,
+            "y": 847,
+            "width": 22,
+            "height": 22
+          },
+          {
+            "text": "P R N - Return to Home",
+            "x": 32,
+            "y": 30,
+            "width": 60,
+            "height": 24
+          },
+          {
+            "text": "home",
+            "x": 495.10968017578125,
+            "y": 33,
+            "width": 31.203125,
+            "height": 17.328125
+          },
+          {
+            "text": "products",
+            "x": 557.0159301757812,
+            "y": 33,
+            "width": 62.390625,
+            "height": 17.328125
+          },
+          {
+            "text": "projects",
+            "x": 650.1096801757812,
+            "y": 33,
+            "width": 62.390625,
+            "height": 17.328125
+          },
+          {
+            "text": "about me",
+            "x": 743.2034301757812,
+            "y": 33,
+            "width": 62.390625,
+            "height": 17.328125
+          },
+          {
+            "text": "contact",
+            "x": 836.2971801757812,
+            "y": 33,
+            "width": 54.59375,
+            "height": 17.328125
+          },
+          {
+            "text": "fun",
+            "x": 921.5940551757812,
+            "y": 33,
+            "width": 23.40625,
+            "height": 17.328125
+          },
+          {
+            "text": "Switch to Dark Mode",
+            "x": 1233.578125,
+            "y": 32,
+            "width": 53,
+            "height": 16
+          },
+          {
+            "text": "Reset camera view",
+            "x": 1322.015625,
+            "y": 32,
+            "width": 85.984375,
+            "height": 16
+          },
+          {
+            "text": "GitHub",
+            "x": 24,
+            "y": 858,
+            "width": 18,
+            "height": 18
+          },
+          {
+            "text": "LinkedIn",
+            "x": 60,
+            "y": 858,
+            "width": 18,
+            "height": 18
+          },
+          {
+            "text": "Email",
+            "x": 96,
+            "y": 858,
+            "width": 18,
+            "height": 18
+          }
+        ]
+      },
+      "screenshot": "desktop-fun.png"
+    },
+    {
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2,
+        "isMobile": true,
+        "hasTouch": true
+      },
+      "route": "/fun",
+      "errors": [],
+      "warnings": [
+        "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.",
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+      ],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5187/audio/home.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/products.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/about.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/contact.mp3",
+          "error": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5187/audio/projects.mp3",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "httpErrors": [],
+      "readyObservedMs": 3405,
+      "sample": {
+        "medianFrameMs": 6.900000000001455,
+        "p95FrameMs": 7.100000000000364,
+        "meanFps": 144.00576023040924,
+        "framesOver50ms": 0,
+        "stats": {
+          "calls": 68,
+          "triangles": 302400,
+          "points": 0,
+          "lines": 0,
+          "geometries": 38,
+          "textures": 11,
+          "programs": 5
+        },
+        "totalMeshes": 40,
+        "visibleMeshes": 40,
+        "lights": 4,
+        "shadowLights": 1,
+        "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "canvas": {
+          "width": 558,
+          "height": 658
+        },
+        "title": "The Scales of Battle | PRINSON",
+        "horizontalOverflow": false,
+        "resources": [
+          {
+            "url": "http://127.0.0.1:5187/fonts/BebasNeue-Regular.ttf",
+            "duration": 5.5,
+            "transferSize": 56436,
+            "decodedBodySize": 56136
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/PressStart2P-Regular.ttf",
+            "duration": 12.199999988079071,
+            "transferSize": 115580,
+            "decodedBodySize": 115280
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/UnifrakturCook-Bold.ttf",
+            "duration": 11.5,
+            "transferSize": 36744,
+            "decodedBodySize": 36444
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/BodoniModa-Black.ttf",
+            "duration": 11.599999964237213,
+            "transferSize": 45180,
+            "decodedBodySize": 44880
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/Cinzel-Bold.ttf",
+            "duration": 12,
+            "transferSize": 46424,
+            "decodedBodySize": 46124
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/PlayfairDisplay-Black.ttf",
+            "duration": 18.200000047683716,
+            "transferSize": 123832,
+            "decodedBodySize": 123532
+          },
+          {
+            "url": "http://127.0.0.1:5187/fonts/CourierPrime-Bold.ttf",
+            "duration": 17.899999976158142,
+            "transferSize": 68380,
+            "decodedBodySize": 68080
+          },
+          {
+            "url": "https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&family=Space+Mono:wght@700&display=swap",
+            "duration": 311.19999998807907,
+            "transferSize": 1319,
+            "decodedBodySize": 13521
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/index-BjjuHUym.js",
+            "duration": 32.80000001192093,
+            "transferSize": 83291,
+            "decodedBodySize": 264238
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/rolldown-runtime-XKyaHtl9.js",
+            "duration": 25.600000023841858,
+            "transferSize": 1026,
+            "decodedBodySize": 726
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/react-vendor-UYFy5eIx.js",
+            "duration": 41.299999952316284,
+            "transferSize": 86333,
+            "decodedBodySize": 272018
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/index-57iOFw7H.css",
+            "duration": 34.5,
+            "transferSize": 19605,
+            "decodedBodySize": 110118
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/three-vendor-BciRJkyb.js",
+            "duration": 67.80000001192093,
+            "transferSize": 310318,
+            "decodedBodySize": 1127815
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-island.glb",
+            "duration": 10.800000011920929,
+            "transferSize": 152016,
+            "decodedBodySize": 151716
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-library.glb",
+            "duration": 15.399999976158142,
+            "transferSize": 331360,
+            "decodedBodySize": 331060
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-decorations.glb",
+            "duration": 17,
+            "transferSize": 412756,
+            "decodedBodySize": 412456
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-grimoires.glb",
+            "duration": 18.30000001192093,
+            "transferSize": 511300,
+            "decodedBodySize": 511000
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/archive/archive-floating-books.glb",
+            "duration": 13.5,
+            "transferSize": 188692,
+            "decodedBodySize": 188392
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/frieren.glb",
+            "duration": 19.69999998807907,
+            "transferSize": 537788,
+            "decodedBodySize": 537488
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/frieren-magic.glb",
+            "duration": 17.900000035762787,
+            "transferSize": 84372,
+            "decodedBodySize": 84072
+          },
+          {
+            "url": "http://127.0.0.1:5187/assets/blue-flower-garden-DVP45226.glb",
+            "duration": 39,
+            "transferSize": 1481232,
+            "decodedBodySize": 1480932
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/himmel.glb",
+            "duration": 26.599999964237213,
+            "transferSize": 480624,
+            "decodedBodySize": 480324
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/blue-flower-garden/flowers/flower-wreath.glb",
+            "duration": 23.19999998807907,
+            "transferSize": 49196,
+            "decodedBodySize": 48896
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/island/workshop-island.glb",
+            "duration": 30.19999998807907,
+            "transferSize": 335108,
+            "decodedBodySize": 334808
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/architecture/rune-workshop.glb",
+            "duration": 33.5,
+            "transferSize": 503556,
+            "decodedBodySize": 503256
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/workshop/rune-crafting-table.glb",
+            "duration": 28,
+            "transferSize": 78744,
+            "decodedBodySize": 78444
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/workshop/shelves-and-benches.glb",
+            "duration": 34,
+            "transferSize": 257916,
+            "decodedBodySize": 257616
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/workshop/crafting-tools.glb",
+            "duration": 34.39999997615814,
+            "transferSize": 30432,
+            "decodedBodySize": 30132
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/arcane-rings.glb",
+            "duration": 35.69999998807907,
+            "transferSize": 76764,
+            "decodedBodySize": 76464
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/rune-symbol.glb",
+            "duration": 36.30000001192093,
+            "transferSize": 31460,
+            "decodedBodySize": 31160
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/rune-floor-circle.glb",
+            "duration": 41,
+            "transferSize": 85056,
+            "decodedBodySize": 84756
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/crystal-cluster.glb",
+            "duration": 41.80000001192093,
+            "transferSize": 55248,
+            "decodedBodySize": 54948
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/enchanted-scroll.glb",
+            "duration": 41.90000003576279,
+            "transferSize": 22016,
+            "decodedBodySize": 21716
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/floating-tome.glb",
+            "duration": 43.69999998807907,
+            "transferSize": 26416,
+            "decodedBodySize": 26116
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/decorative-artifacts.glb",
+            "duration": 44,
+            "transferSize": 29600,
+            "decodedBodySize": 29300
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/magical-objects/workshop-motes.glb",
+            "duration": 45.59999996423721,
+            "transferSize": 24420,
+            "decodedBodySize": 24120
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/decorations/enchanted-lamp.glb",
+            "duration": 48.30000001192093,
+            "transferSize": 78928,
+            "decodedBodySize": 78628
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/decorations/island-landscaping.glb",
+            "duration": 52.5,
+            "transferSize": 267552,
+            "decodedBodySize": 267252
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-01.glb",
+            "duration": 50.30000001192093,
+            "transferSize": 102932,
+            "decodedBodySize": 102632
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-02.glb",
+            "duration": 50.59999996423721,
+            "transferSize": 82124,
+            "decodedBodySize": 81824
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-03.glb",
+            "duration": 50.90000003576279,
+            "transferSize": 91832,
+            "decodedBodySize": 91532
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-04.glb",
+            "duration": 53.30000001192093,
+            "transferSize": 95832,
+            "decodedBodySize": 95532
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/rune-workshop/project-displays/station-05.glb",
+            "duration": 55.59999996423721,
+            "transferSize": 80544,
+            "decodedBodySize": 80244
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/transition/eisen.glb",
+            "duration": 64.30000001192093,
+            "transferSize": 603268,
+            "decodedBodySize": 602968
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/home.mp3",
+            "duration": 319.0999999642372,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/products.mp3",
+            "duration": 319.4000000357628,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/projects.mp3",
+            "duration": 320.30000001192093,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/about.mp3",
+            "duration": 319.19999998807907,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/audio/contact.mp3",
+            "duration": 319.2000000476837,
+            "transferSize": 300,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_wasm_wrapper.js",
+            "duration": 263.60000002384186,
+            "transferSize": 0,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "https://www.gstatic.com/draco/versioned/decoders/1.5.5/draco_decoder.wasm",
+            "duration": 296.30000001192093,
+            "transferSize": 0,
+            "decodedBodySize": 0
+          },
+          {
+            "url": "http://127.0.0.1:5187/models/fun/demon-battle-grand-arena.glb",
+            "duration": 37,
+            "transferSize": 2270288,
+            "decodedBodySize": 2269988
+          },
+          {
+            "url": "http://127.0.0.1:5187/favicon.svg",
+            "duration": 5.199999988079071,
+            "transferSize": 1790,
+            "decodedBodySize": 9522
+          }
+        ],
+        "controls": [
+          {
+            "text": "Close Fun page",
+            "x": 324.21875,
+            "y": 75.859375,
+            "width": 41.59375,
+            "height": 41.59375
+          },
+          {
+            "text": "Download 3D model",
+            "x": 24.1875,
+            "y": 634.171875,
+            "width": 162.5625,
+            "height": 21.609375
+          },
+          {
+            "text": "Pause battle",
+            "x": 24.1875,
+            "y": 724.171875,
+            "width": 133.265625,
+            "height": 44
+          },
+          {
+            "text": "Reset view",
+            "x": 165.453125,
+            "y": 724.171875,
+            "width": 121.71875,
+            "height": 44
+          },
+          {
+            "text": "Pause music",
+            "x": 142.40625,
+            "y": 811,
+            "width": 12,
+            "height": 12
+          },
+          {
+            "text": "Pause background soundtrack",
+            "x": 209.59375,
+            "y": 809,
+            "width": 16,
+            "height": 16
+          },
+          {
+            "text": "Mute soundtrack",
+            "x": 231.59375,
+            "y": 809,
+            "width": 16,
+            "height": 16
+          },
+          {
+            "text": "P R N - Return to Home",
+            "x": 14,
+            "y": 20,
+            "width": 52.5,
+            "height": 20
+          },
+          {
+            "text": "Switch to Dark Mode",
+            "x": 250,
+            "y": 16,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "text": "Reset camera view",
+            "x": 294,
+            "y": 16,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "text": "Open navigation menu",
+            "x": 338,
+            "y": 16,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "text": "GitHub",
+            "x": 16,
+            "y": 814,
+            "width": 16,
+            "height": 16
+          },
+          {
+            "text": "LinkedIn",
+            "x": 46,
+            "y": 814,
+            "width": 16,
+            "height": 16
+          },
+          {
+            "text": "Email",
+            "x": 76,
+            "y": 814,
+            "width": 16,
+            "height": 16
+          }
+        ]
+      },
+      "screenshot": "mobile-fun.png"
+    }
+  ]
+}
