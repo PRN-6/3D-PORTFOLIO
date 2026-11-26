@@ -59,8 +59,8 @@ export const ROUTES: Record<NavTabId, RouteConfig> = {
     tabId: 'FUN',
     destination: 'HOME',
     worldState: 'HOME_IDLE',
-    title: "Fun & Experiments | PRINSON",
-    description: "Orbit an animated 3D sunset scene with Frieren and Himmel in the clock square.",
+    title: "The Scales of Battle | PRINSON",
+    description: "Frieren, Himmel, Heiter and Eisen face a horned demon in an animated miniature fantasy battlefield.",
     isModal: true,
   },
 };

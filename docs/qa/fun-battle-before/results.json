@@ -1,0 +1,64 @@
+{
+  "browser": "Chrome/158.0.8127.88",
+  "before": true,
+  "results": [
+    {
+      "mobile": false,
+      "stats": {
+        "calls": 6,
+        "triangles": 87426,
+        "points": 0,
+        "lines": 0,
+        "geometries": 4,
+        "textures": 7,
+        "programs": 3
+      },
+      "p95Ms": 7.100000000000364,
+      "maxMs": 7.300000000000182,
+      "canvases": 1,
+      "heading": "Ring at Sundown",
+      "overflow": false,
+      "names": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Ring_at_Sundown"
+      ],
+      "battle": false,
+      "errors": [
+        "NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
+      ]
+    },
+    {
+      "mobile": true,
+      "stats": {
+        "calls": 6,
+        "triangles": 87426,
+        "points": 0,
+        "lines": 0,
+        "geometries": 4,
+        "textures": 7,
+        "programs": 3
+      },
+      "p95Ms": 7.100000000000364,
+      "maxMs": 7.300000000000182,
+      "canvases": 1,
+      "heading": "Ring at Sundown",
+      "overflow": false,
+      "names": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Ring_at_Sundown"
+      ],
+      "battle": false,
+      "errors": [
+        "NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
+      ]
+    }
+  ]
+}

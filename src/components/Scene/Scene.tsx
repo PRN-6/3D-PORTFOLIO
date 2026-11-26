@@ -1,7 +1,7 @@
 import React from 'react';
 import * as THREE from 'three';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { RingAtSundown } from './RingAtSundown';
+import { DemonBattle } from './DemonBattle';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
@@ -28,6 +28,7 @@ export type WorldState =
 
 export interface SceneProps {
   funOpen?: boolean;
+  funPaused?: boolean;
   worldState: WorldState;
   activeDestination?: DestinationId;
   resetSignal?: number;
@@ -94,6 +95,7 @@ const PerformanceProfiler: React.FC = () => {
 export const Scene: React.FC<SceneProps> = ({
   worldState,
   funOpen = false,
+  funPaused = false,
   activeDestination,
   resetSignal = 0,
   onResetComplete,
@@ -133,7 +135,7 @@ export const Scene: React.FC<SceneProps> = ({
   return (
     <div
       className={`relative w-full h-full overflow-hidden select-none transition-colors duration-500 ${
-        funOpen ? 'ring-sky' : isLight ? 'bg-[#f4eee0]' : 'bg-[#000000]'
+        funOpen ? 'battle-sky' : isLight ? 'bg-[#f4eee0]' : 'bg-[#000000]'
       }`}
       onWheel={(e) => e.preventDefault()}
     >
@@ -166,7 +168,7 @@ export const Scene: React.FC<SceneProps> = ({
         <SceneWarmupCompiler onCompiled={onCompiled} />
 
         {/* MULTI-ISLAND FANTASY REALM: EXPLODED 3D ARCHITECTURAL OR VERTICAL STAIRCASE */}
-        {funOpen && <RingAtSundown />}
+        {funOpen && <DemonBattle paused={funPaused} resetSignal={resetSignal} />}
         {!funOpen && isMultiLevelWorld && (
           SCENE_CONFIG.transitionMode === 'STAIRCASE' ? (
             <Level01_To_Level02_Transition

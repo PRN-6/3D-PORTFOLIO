@@ -90,6 +90,11 @@
 .ring-header h1 { font-size: clamp(1.8rem, 3.2vw, 2.8rem); }
 .ring-stage { position: relative; height: clamp(12rem, 51dvh, 34rem); isolation: isolate; }
 .ring-sky { background: radial-gradient(ellipse at 20% 64%, #fff3ba 0%, transparent 52%), linear-gradient(#a997c5, #e6b1bd 37%, #ffd5a3 67%, #d99986); }
+.battle-sky { background: radial-gradient(ellipse at 30% 68%, #a39aab 0%, transparent 65%), linear-gradient(#302b49, #635876 60%, #a28a9c); }
+.battle-status { width: min(16rem, 70vw); padding: .8rem 1rem; border-radius: .5rem; text-align: center; color: #fff1dc; background: #302b49; font-size: .9rem; }
+.battle-caption { margin-top: .8rem; color: var(--muted); font-size: .875rem; line-height: 1.5; }
+.battle-controls button { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; }
+.battle-controls button:disabled { cursor: default; opacity: .65; }
 .ring-tools { padding: .85rem 1.65rem; }
 .ring-caption, .ring-tools details { font-size: .9rem; }
 .ring-tools details { margin-top: .8rem; border-top: 1px solid var(--rule); padding-top: .65rem; }
