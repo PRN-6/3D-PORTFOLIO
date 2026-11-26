@@ -56,7 +56,8 @@ try{
    await page.mouse.move(rect.x+rect.w*.72,rect.y+rect.h*.57,{steps:12});await page.mouse.up();await wait(400);
    row.orbits=JSON.stringify(original)!==JSON.stringify(await camera());
    await press(page,'Reset view');await wait(800);
-   row.resets=(await camera()).every((v,i)=>Math.abs(v-original[i])<.01);
+   row.cameraReset={original,after:await camera()};
+   row.resets=row.cameraReset.after.every((v,i)=>Math.abs(v-original[i])<.01);
    await page.emulateMediaFeatures([{name:'prefers-reduced-motion',value:'reduce'}]);await wait(200);
    const reduced=await pose(page);await wait(450);row.reducedStill=JSON.stringify(reduced)===JSON.stringify(await pose(page));
    row.reducedControl=await page.$eval('.battle-controls button',el=>el.disabled&&el.textContent.includes('Motion reduced'));
@@ -72,8 +73,9 @@ try{
     await page.goForward();await wait(350);
    }
    row.reopenResources=resources;
+   row.resourcesStable=resources.every(s=>s.textures===resources[0].textures&&s.geometries===resources[0].geometries);
    row.passed=!row.errors.length&&!row.failures.length&&row.layout.canvasCount===1&&!row.layout.overflow&&
-    row.pauseStill&&row.resumes&&row.orbits&&row.resets&&row.reducedStill&&row.reducedControl&&row.escapeCloses&&row.backReopens&&row.forwardCloses;
+    row.pauseStill&&row.resumes&&row.orbits&&row.resets&&row.reducedStill&&row.reducedControl&&row.escapeCloses&&row.backReopens&&row.forwardCloses&&row.resourcesStable;
   }catch(error){row.failure=error.stack;row.passed=false;}
   finally{
    console.log(JSON.stringify(row));fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({browser:await browser.version(),base,results},null,2)+'\n');

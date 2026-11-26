@@ -57,10 +57,16 @@ export function DemonBattle({ paused, resetSignal, onStatus }: {
   const distance = Math.max(15.4, 18 / aspect);
   const position = useMemo<[number, number, number]>(() => [distance * .45, distance * .46, distance * .78], [distance]);
   useEffect(() => {
-    if (!controls.current) return;
-    controls.current.object.position.set(...position);
-    controls.current.target.set(0, .65, 0);
-    controls.current.update();
+    const orbit = controls.current;
+    if (!orbit) return;
+    // Drain residual drag/zoom before applying the new framing.
+    const damping = orbit.enableDamping;
+    orbit.enableDamping = false;
+    orbit.update();
+    orbit.object.position.set(...position);
+    orbit.target.set(0, .65, 0);
+    orbit.update();
+    orbit.enableDamping = damping;
   }, [resetSignal, position]);
   return <>
     <PerspectiveCamera makeDefault position={position} fov={39} near={.05} far={100} />
