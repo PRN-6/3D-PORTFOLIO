@@ -1,0 +1,9 @@
+{
+  "errors": [],
+  "zoomWorks": true,
+  "rapidNavigation": true,
+  "tabResume": true,
+  "loadFailureMessage": "The battle scene could not load. Please reload to try again.",
+  "loadFailureCloses": true,
+  "passed": true
+}
