@@ -1,0 +1,68 @@
+{
+  "browser": "Chrome/158.0.8127.88",
+  "base": "http://127.0.0.1:5187",
+  "results": [
+    {
+      "mobile": false,
+      "theme": "light",
+      "errors": [],
+      "warnings": [
+        "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.",
+        "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead."
+      ],
+      "failures": [],
+      "layout": {
+        "canvasCount": 1,
+        "heading": "The Scales of Battle",
+        "overflow": false,
+        "card": {
+          "x": 80,
+          "y": 43.96875,
+          "width": 1280,
+          "height": 812.0625
+        },
+        "stageHeight": 549,
+        "download": "/models/fun/demon-battle-grand-arena.glb"
+      },
+      "pauseStill": true,
+      "resumes": true,
+      "orbits": true,
+      "resets": false,
+      "reducedStill": true,
+      "reducedControl": true,
+      "escapeCloses": true,
+      "backReopens": true,
+      "forwardCloses": true,
+      "reopenResources": [
+        {
+          "calls": 68,
+          "triangles": 302400,
+          "points": 0,
+          "lines": 0,
+          "geometries": 83,
+          "textures": 20,
+          "programs": 10
+        },
+        {
+          "calls": 68,
+          "triangles": 302400,
+          "points": 0,
+          "lines": 0,
+          "geometries": 83,
+          "textures": 24,
+          "programs": 10
+        },
+        {
+          "calls": 68,
+          "triangles": 302400,
+          "points": 0,
+          "lines": 0,
+          "geometries": 83,
+          "textures": 28,
+          "programs": 10
+        }
+      ],
+      "passed": false
+    }
+  ]
+}

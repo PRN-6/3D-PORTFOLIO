@@ -1,0 +1,66 @@
+{
+  "browser": "Chrome/158.0.8127.88",
+  "before": true,
+  "results": [
+    {
+      "mobile": false,
+      "stats": {
+        "calls": 43,
+        "triangles": 207392,
+        "points": 0,
+        "lines": 0,
+        "geometries": 25,
+        "textures": 11,
+        "programs": 5
+      },
+      "p95Ms": 7,
+      "maxMs": 20.900000000001455,
+      "canvases": 1,
+      "heading": "The Scales of Battle",
+      "overflow": false,
+      "names": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "The_Scales_of_Battle"
+      ],
+      "battle": true,
+      "errors": [
+        "NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
+      ]
+    },
+    {
+      "mobile": true,
+      "stats": {
+        "calls": 43,
+        "triangles": 207392,
+        "points": 0,
+        "lines": 0,
+        "geometries": 25,
+        "textures": 11,
+        "programs": 5
+      },
+      "p95Ms": 7.100000000000364,
+      "maxMs": 7.700000000000728,
+      "canvases": 1,
+      "heading": "The Scales of Battle",
+      "overflow": false,
+      "names": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "The_Scales_of_Battle"
+      ],
+      "battle": true,
+      "errors": [
+        "NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
+      ]
+    }
+  ]
+}

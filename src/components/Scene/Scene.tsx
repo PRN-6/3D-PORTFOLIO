@@ -2,6 +2,7 @@ import React from 'react';
 import * as THREE from 'three';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { DemonBattle } from './DemonBattle';
+import type { BattleLoadStatus } from './DemonBattle';
 import { SCENE_CONFIG } from '../../config/sceneConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { Level01_To_Level02_Transition } from './Transitions/Level01_To_Level02_Transition';
@@ -131,6 +132,7 @@ export const Scene: React.FC<SceneProps> = ({
     worldState === 'TRANSITIONING_ISLAND';
 
   const { isLight } = useTheme();
+  const [battleStatus, setBattleStatus] = React.useState<BattleLoadStatus>('loading');
 
   return (
     <div
@@ -140,7 +142,15 @@ export const Scene: React.FC<SceneProps> = ({
       onWheel={(e) => e.preventDefault()}
     >
       {/* 1. Fixed cinematic screen-space DOM typography layer across all worlds */}
-      <CinematicBackgroundTitle hidden={funOpen || !!selectedGrimoire} />
+      {!funOpen && <CinematicBackgroundTitle hidden={!!selectedGrimoire} />}
+
+      {funOpen && battleStatus !== 'ready' && (
+        <div className="battle-status" role="status">
+          {battleStatus === 'error'
+            ? 'The battle scene could not load. Please reload to try again.'
+            : 'Gathering the hero party…'}
+        </div>
+      )}
 
       {/* 2. Three.js Canvas with transparent WebGL alpha (island renders in front) */}
       <Canvas
@@ -168,7 +178,7 @@ export const Scene: React.FC<SceneProps> = ({
         <SceneWarmupCompiler onCompiled={onCompiled} />
 
         {/* MULTI-ISLAND FANTASY REALM: EXPLODED 3D ARCHITECTURAL OR VERTICAL STAIRCASE */}
-        {funOpen && <DemonBattle paused={funPaused} resetSignal={resetSignal} />}
+        {funOpen && <DemonBattle paused={funPaused} resetSignal={resetSignal} onStatus={setBattleStatus} />}
         {!funOpen && isMultiLevelWorld && (
           SCENE_CONFIG.transitionMode === 'STAIRCASE' ? (
             <Level01_To_Level02_Transition

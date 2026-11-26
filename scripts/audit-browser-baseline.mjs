@@ -15,7 +15,7 @@ const report = { generatedAt: new Date().toISOString(), commit: execFileSync('gi
   base, methodology: 'Production preview, fresh browser context per direct route, cache disabled, unthrottled loopback. 5-second rAF sample after loader disappears and 5-second settle. Mobile is viewport/touch emulation on this desktop GPU, not a phone benchmark. Renderer stats are existing app snapshots updated every 30 frames; not GPU timings.', results: [] };
 try {
   for (const viewport of [{ name: 'desktop', width: 1440, height: 900, deviceScaleFactor: 1 }, { name: 'mobile', width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true }]) {
-    for (const route of ['/', '/products', '/projects', '/about', '/contact', '/fun']) {
+    for (const route of process.env.AUDIT_ROUTES?.split(',') || ['/', '/products', '/projects', '/about', '/contact', '/fun']) {
       const context = await browser.createBrowserContext();
       const page = await context.newPage();
       const { name, ...size } = viewport;
